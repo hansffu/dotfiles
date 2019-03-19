@@ -1,6 +1,8 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
+export DOTFILES_DIR="$HOME/.dotfiles/"
+
 # Path to your oh-my-zsh installation.
   export ZSH=~/.dotfiles/zsh/oh-my-zsh
 
@@ -115,7 +117,8 @@ export TERM="xterm-256color"
 
 source /usr/share/nvm/init-nvm.sh
 #PATH="$PATH:/home/hansffu/Android/Sdk/platform-tools/"
-PATH=$HOME/.cabal/bin:$HOME/.local/bin:/home/hansffu/Android/Sdk/platform-tools/:$HOME/.gem/ruby/2.6.0/bin:$PATH
+#PATH=$HOME/.cabal/bin:$HOME/.local/bin:/home/hansffu/Android/Sdk/platform-tools/:$HOME/.gem/ruby/2.6.0/bin:$PATH
+PATH=$LOCAL_PATH:$HOME/.dotfiles/utils/bin:$PATH
 
 # terminalName=`basename "/"$(ps -f -p $(cat /proc/$(echo $$)/stat | cut -d \  -f 4) | tail -1 | sed 's/^.* //')`
 # if [ $terminalName = "drop-down-terminal@gs-extensions.zzrough.org" ]

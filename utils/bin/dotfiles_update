@@ -1,0 +1,4 @@
+#!/bin/bash
+cd $DOTFILES_DIR
+git submodule init
+git submodule update
