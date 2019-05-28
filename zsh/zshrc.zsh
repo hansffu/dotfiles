@@ -61,6 +61,9 @@ export ZSH=~/.dotfiles/zsh/oh-my-zsh
 # Would you like to use another custom folder than $ZSH/custom?
 ZSH_CUSTOM=~/.dotfiles/zsh/oh-my-zsh-custom
 
+# Node version manager
+[ -d "/usr/share/nvm" ] && source /usr/share/nvm/init-nvm.sh
+
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
@@ -120,7 +123,6 @@ source $ZSH/oh-my-zsh.sh
 export TERM="xterm-256color"
 
 
-[ -d "/usr/share/nvm" ] && source /usr/share/nvm/init-nvm.sh
 #PATH="$PATH:/home/hansffu/Android/Sdk/platform-tools/"
 #PATH=$HOME/.cabal/bin:$HOME/.local/bin:/home/hansffu/Android/Sdk/platform-tools/:$HOME/.gem/ruby/2.6.0/bin:$PATH
 PATH=$LOCAL_PATH:$HOME/.dotfiles/utils/bin:$PATH
