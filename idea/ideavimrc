@@ -11,8 +11,11 @@ nmap <leader>pc :action GotoClass<cr>
 nmap <leader>ns :action GotoSymbol<cr>
 nmap <leader>nm :action FileStructurePopup<cr>
 nmap <leader>d :action ShowErrorDescription<cr>
-nmap gw :action AceWordAction<cr>
-nmap gc :action AceAction<cr>
+"nmap gw :action AceWordAction<cr>
+"nmap gc :action AceAction<cr>
+"nmap gb :action Back<cr>
+nmap <leader>gw :action KJumpAction.Word1<cr>
+nmap <leader>gg :action KJumpAction<cr>
 nmap gb :action Back<cr>
 
 " refactoring
@@ -60,6 +63,9 @@ nnoremap <leader>tl Vy<cr>:action ActivateTerminalToolWindow<cr>
 vnoremap <leader>tl y<cr>:action ActivateTerminalToolWindow<cr>
 nnoremap ]e :action GotoNextError<cr>
 nnoremap [e :action GotoPreviousError<cr>
+
+nnoremap <leader>flf :action Javascript.Linters.EsLint.Fix<cr>
+nnoremap <leader>fp :action ReformatWithPrettierAction<cr>
 
 map <leader>gs :action EditorCodeBlockStart<CR>
 map <leader>ge :action EditorCodeBlockEnd<CR>
