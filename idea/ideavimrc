@@ -26,10 +26,10 @@ nmap <leader>rs :action ChangeSignature<CR>
 
 " key bindings for quickly moving between windows
 " h left, l right, k up, j down
-nmap <leader>h <c-w>h
-nmap <leader>l <c-w>l
-nmap <leader>k <c-w>k
-nmap <leader>j <c-w>j
+nmap <leader>wh <c-w>h
+nmap <leader>wl <c-w>l
+nmap <leader>wk <c-w>k
+nmap <leader>wj <c-w>j
 
 nnoremap gi :action GotoImplementation<cr>
 
