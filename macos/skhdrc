@@ -50,23 +50,20 @@ shift + alt - d : chunkc tiling::window --grid-layout 1:2:1:0:1:1
 cmd + alt - x : chunkc tiling::desktop --focus $(chunkc get _last_active_desktop)
 ctrl + alt - p : chunkc tiling::desktop --focus prev
 ctrl + alt - n : chunkc tiling::desktop --focus next
-alt - 1 : chunkc tiling::desktop --focus 1
-alt - 2 : chunkc tiling::desktop --focus 2
-alt - 3 : chunkc tiling::desktop --focus 3
-alt - 4 : chunkc tiling::desktop --focus 4
-alt - 5 : chunkc tiling::desktop --focus 5
-alt - 6 : chunkc tiling::desktop --focus 6
+alt - 1 : chunkc tiling::desktop --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 1)
+alt - 2 : chunkc tiling::desktop --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 2)
+alt - 3 : chunkc tiling::desktop --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 3)
+alt - 4 : chunkc tiling::desktop --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 4)
+alt - 5 : chunkc tiling::desktop --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 5)
+alt - 6 : chunkc tiling::desktop --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 6)
 
 # move focused container to workspace
-shift + alt - m : chunkc tiling::window --send-to-desktop $(chunkc get _last_active_desktop)
-shift + alt - p : chunkc tiling::window --send-to-desktop prev
-shift + alt - n : chunkc tiling::window --send-to-desktop next
-shift + alt - 1 : chunkc tiling::window --send-to-desktop 1
-shift + alt - 2 : chunkc tiling::window --send-to-desktop 2
-shift + alt - 3 : chunkc tiling::window --send-to-desktop 3
-shift + alt - 4 : chunkc tiling::window --send-to-desktop 4
-shift + alt - 5 : chunkc tiling::window --send-to-desktop 5
-shift + alt - 6 : chunkc tiling::window --send-to-desktop 6
+shift + alt - 1 : chunkc tiling::window --send-to-desktop $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 1)
+shift + alt - 2 : chunkc tiling::window --send-to-desktop $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 2)
+shift + alt - 3 : chunkc tiling::window --send-to-desktop $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 3)
+shift + alt - 4 : chunkc tiling::window --send-to-desktop $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 4)
+shift + alt - 5 : chunkc tiling::window --send-to-desktop $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 5)
+shift + alt - 6 : chunkc tiling::window --send-to-desktop $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 6)
 
 # Change monitor
 cmd + alt - z  : chunkc tiling::monitor -f prev
