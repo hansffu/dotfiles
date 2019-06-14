@@ -13,19 +13,19 @@ alt - m : chunkc tiling::desktop --layout monocle
 shift + alt - q : chunkc tiling::window --close
 
 # change focus
-cmd - h : chunkc tiling::window --focus west
-cmd - j : chunkc tiling::window --focus south
-cmd - k : chunkc tiling::window --focus north
-cmd - l : chunkc tiling::window --focus east
+alt - h : chunkc tiling::window --focus west
+alt - j : chunkc tiling::window --focus south
+alt - k : chunkc tiling::window --focus north
+alt - l : chunkc tiling::window --focus east
 
 alt - p : chunkc tiling::window --focus prev
 alt - n : chunkc tiling::window --focus next
 
 # move focused window
-shift + cmd - h : chunkc tiling::window --warp west
-shift + cmd - j : chunkc tiling::window --warp south
-shift + cmd - k : chunkc tiling::window --warp north
-shift + cmd - l : chunkc tiling::window --warp east
+shift + alt - h : chunkc tiling::window --warp west
+shift + alt - j : chunkc tiling::window --warp south
+shift + alt - k : chunkc tiling::window --warp north
+shift + alt - l : chunkc tiling::window --warp east
 
 # rotate tree
 alt - r : chunkc tiling::desktop --rotate 90
@@ -56,7 +56,6 @@ alt - 3 : chunkc tiling::desktop --focus 3
 alt - 4 : chunkc tiling::desktop --focus 4
 alt - 5 : chunkc tiling::desktop --focus 5
 alt - 6 : chunkc tiling::desktop --focus 6
-alt - 7 : chunkc tiling::desktop --focus 7
 
 # move focused container to workspace
 shift + alt - m : chunkc tiling::window --send-to-desktop $(chunkc get _last_active_desktop)
@@ -85,7 +84,7 @@ cmd + shift - 2  : chunkc tiling::window --send-to-monitor 2
 cmd + shift - 3  : chunkc tiling::window --send-to-monitor 3
 
 # Open terminal
-alt - return : open -na /Applications/iTerm.app
+alt - return : open -a /Applications/iTerm.app
 
 # change region size
 ctrl + alt - j : chunkc tiling::window --use-temporary-ratio 0.1 --adjust-window-edge south
