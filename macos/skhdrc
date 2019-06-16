@@ -81,7 +81,7 @@ cmd + shift - 2  : chunkc tiling::window --send-to-monitor 2
 cmd + shift - 3  : chunkc tiling::window --send-to-monitor 3
 
 # Open terminal
-alt - return : open -a /Applications/iTerm.app
+alt - return : open -na /Applications/iTerm.app
 
 # change region size
 ctrl + alt - j : chunkc tiling::window --use-temporary-ratio 0.1 --adjust-window-edge south

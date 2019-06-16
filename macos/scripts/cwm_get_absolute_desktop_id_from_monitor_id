@@ -1,7 +1,7 @@
 #! /bin/bash
 
-MONITOR=`chunkc tiling::query --monitor id`
-DESKTOPS=`chunkc tiling::query --desktops-for-monitor $MONITOR`
+MONITOR=`/usr/local/bin/chunkc tiling::query --monitor id`
+DESKTOPS=`/usr/local/bin/chunkc tiling::query --desktops-for-monitor $MONITOR`
 FIRST=($DESKTOPS[0])
 let DESKTOP_ID=$FIRST+$1-1
 if [ -z $1 ]; then
