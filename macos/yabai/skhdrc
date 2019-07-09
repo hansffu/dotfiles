@@ -1,10 +1,10 @@
-:: default : yabai -m config active_window_border_color 0xff6f5bab
-:: switcher @ : yabai -m config active_window_border_color 0xfffc8617
-:: swap @ : yabai -m config active_window_border_color 0xff7dfdee
-:: window @ : yabai -m config active_window_border_color 0xfffc3052
-:: monitor @ : yabai -m config active_window_border_color 0xfffc3052
-:: layout @ : yabai -m config active_window_border_color 0xfffdec5a
-:: insertW @ : yabai -m config active_window_border_color 0xff22ee22
+:: default : yabai -m config active_window_border_color 0xff6f5bab; notify-send -m "default"
+:: switcher @ : yabai -m config active_window_border_color 0xfffc8617; notify-send -m "switch"
+:: swap @ : yabai -m config active_window_border_color 0xff7dfdee; notify-send -m "swap "
+:: window @ : yabai -m config active_window_border_color 0xfffc3052; notify-send -m "window "
+:: monitor @ : yabai -m config active_window_border_color 0xfffc3052; notify-send -m "monitor "
+:: layout @ : yabai -m config active_window_border_color 0xfffdec5a; notify-send -m "layout "
+:: insertW @ : yabai -m config active_window_border_color 0xff22ee22; notify-send -m "insert "
 
 # switching modes
 default                       < ctrl - q      ; switcher
@@ -44,46 +44,46 @@ switcher < b : yabai -m window --focus prev
 switcher < n : yabai -m window --focus next
 
 # Switch desktop
-switcher < 1 : yabai -m space --focus 1
-switcher < 2 : yabai -m space --focus 2
-switcher < 3 : yabai -m space --focus 3
-switcher < 4 : yabai -m space --focus 4
-switcher < 5 : yabai -m space --focus 5
-switcher < 6 : yabai -m space --focus 6
-switcher < 7 : yabai -m space --focus 7
-switcher < 8 : yabai -m space --focus 8
-switcher < 9 : yabai -m space --focus 9
+#switcher < 1 : yabai -m space --focus 1
+#switcher < 2 : yabai -m space --focus 2
+#switcher < 3 : yabai -m space --focus 3
+#switcher < 4 : yabai -m space --focus 4
+#switcher < 5 : yabai -m space --focus 5
+#switcher < 6 : yabai -m space --focus 6
+#switcher < 7 : yabai -m space --focus 7
+#switcher < 8 : yabai -m space --focus 8
+#switcher < 9 : yabai -m space --focus 9
 
-#switcher < 1 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 1)
-#switcher < 2 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 2)
-#switcher < 3 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 3)
-#switcher < 4 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 4)
-#switcher < 5 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 5)
-#switcher < 6 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 6)
-#switcher < 7 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 7)
-#switcher < 8 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 8)
-#switcher < 9 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 9)
+switcher < 1 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 1)
+switcher < 2 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 2)
+switcher < 3 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 3)
+switcher < 4 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 4)
+switcher < 5 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 5)
+switcher < 6 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 6)
+switcher < 7 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 7)
+switcher < 8 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 8)
+switcher < 9 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 9)
 
 # Move window to desktop
-switcher < shift - 1 : yabai -m window --space 1
-switcher < shift - 2 : yabai -m window --space 2
-switcher < shift - 3 : yabai -m window --space 3
-switcher < shift - 4 : yabai -m window --space 4
-switcher < shift - 5 : yabai -m window --space 5
-switcher < shift - 6 : yabai -m window --space 6
-switcher < shift - 7 : yabai -m window --space 7
-switcher < shift - 8 : yabai -m window --space 8
-switcher < shift - 9 : yabai -m window --space 9
+#switcher < shift - 1 : yabai -m window --space 1
+#switcher < shift - 2 : yabai -m window --space 2
+#switcher < shift - 3 : yabai -m window --space 3
+#switcher < shift - 4 : yabai -m window --space 4
+#switcher < shift - 5 : yabai -m window --space 5
+#switcher < shift - 6 : yabai -m window --space 6
+#switcher < shift - 7 : yabai -m window --space 7
+#switcher < shift - 8 : yabai -m window --space 8
+#switcher < shift - 9 : yabai -m window --space 9
 
-#switcher < shift - 1 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 1)
-#switcher < shift - 2 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 2)
-#switcher < shift - 3 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 3)
-#switcher < shift - 4 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 4)
-#switcher < shift - 5 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 5)
-#switcher < shift - 6 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 6)
-#switcher < shift - 7 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 7)
-#switcher < shift - 8 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 8)
-#switcher < shift - 9 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 9)
+switcher < shift - 1 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 1)
+switcher < shift - 2 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 2)
+switcher < shift - 3 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 3)
+switcher < shift - 4 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 4)
+switcher < shift - 5 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 5)
+switcher < shift - 6 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 6)
+switcher < shift - 7 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 7)
+switcher < shift - 8 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 8)
+switcher < shift - 9 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 9)
 
 # create desktop, move window and follow focus
 switcher < shift - c : yabai -m space --create; id=$(yabai -m query --displays --display | grep "spaces"); yabai -m window --space $(echo ${id:10:${#id}-10}); yabai -m space --focus $(echo ${id:10:${#id}-10})
@@ -96,12 +96,12 @@ switcher < x : yabai -m space --destroy
 
 
 #Quick switch monitor
-switcher < o  : yabai -m display -f next
+switcher < o  : yabai -m display --focus last
 
 # Switch monitor
-monitor < 1  : yabai -m display -f 1
-monitor < 2  : yabai -m display -f 2
-monitor < 3  : yabai -m display -f 3
+monitor < 1  : yabai -m display --focus 1
+monitor < 2  : yabai -m display --focus 2
+monitor < 3  : yabai -m display --focus 3
 
 # Move window to monitor
 monitor < shift - 1  : yabai -m window --display 1
@@ -184,7 +184,7 @@ insertW < l : yabai -m window --insert east; skhd -k 'escape'
 
 
 # Open terminal
-#alt - return : open -na /Applications/iTerm.app
-alt - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
+alt - return : open -na /Applications/iTerm.app
+#alt - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
 
 
