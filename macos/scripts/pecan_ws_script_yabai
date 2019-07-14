@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+ps cax | grep yabai > /dev/null
+if [ $? -eq 0 ]; then
+  #  /usr/local/bin/chunkc tiling::query --desktop id
+  _ID=`/usr/local/bin/yabai -m query --spaces --space | grep "index" | sed 's/[^0-9]*//g'`
+  _ID_ON_DESKTOP=`$HOME/.dotfiles/macos/scripts/cwm_get_monitor_id_from_absolute_id $_ID`
+  MONITOR=`/usr/local/bin/yabai -m query --displays --space | grep "index" | sed 's/[^0-9]*//g'`
+  echo "$MONITOR x $_ID_ON_DESKTOP"
+else
+  echo ""
+fi

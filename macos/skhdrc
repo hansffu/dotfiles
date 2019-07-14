@@ -1,98 +1,143 @@
-:: default : chunkc border::color 0xff6f5bab
-:: switcher @ : chunkc border::color 0xfffc8617
-:: swap @ : chunkc border::color 0xff7dfdee
-:: tree @ : chunkc border::color 0xfffc3052
-:: monitor @ : chunkc border::color 0xfffc3052
-:: layout @ : chunkc border::color 0xfffdec5a
+:: default : yabai -m config active_window_border_color 0xff6f5bab
+:: switcher @ : yabai -m config active_window_border_color 0xfffc8617
+:: swap @ : yabai -m config active_window_border_color 0xff7dfdee
+:: window @ : yabai -m config active_window_border_color 0xfffc3052
+:: monitor @ : yabai -m config active_window_border_color 0xfffc3052
+:: layout @ : yabai -m config active_window_border_color 0xfffdec5a
+:: insertW @ : yabai -m config active_window_border_color 0xff22ee22
 
 # switching modes
 default                       < ctrl - q      ; switcher
-switcher, swap, layout, tree, monitor   < ctrl - q      ; default
-switcher, swap, layout, tree, monitor   < escape        ; default
-switcher, swap, layout, tree, monitor   < return        ; default
+switcher, swap, layout, window, monitor, insertW   < ctrl - q      ; default
+switcher, swap, layout, window, monitor, insertW   < escape        ; default
+switcher, swap, layout, window, monitor, insertW   < return        ; default
+switcher, swap, layout, window, monitor, insertW   < space        ; default
 
 
 # switcher mode
 
 ## switch modes
 switcher < s ; swap
-switcher < a ; layout
-switcher < t ; tree
-switcher < m ; monitor
 swap < s ; switcher
+
+switcher < a ; layout
 layout < a ; switcher
+
+switcher < w ; window
+window < w ; switcher
+
+switcher < m ; monitor
+monitor < m ; switcher
+
+switcher < i ; insertW
+insertW < i ; switcher
+
 
 #switch mode
 
 # Switch window
-switcher < h : chunkc tiling::window --focus west
-switcher < j : chunkc tiling::window --focus south
-switcher < k : chunkc tiling::window --focus north
-switcher < l : chunkc tiling::window --focus east
-switcher < b : chunkc tiling::window --focus prev
-switcher < n : chunkc tiling::window --focus next
+switcher < h : yabai -m window --focus west
+switcher < j : yabai -m window --focus south
+switcher < k : yabai -m window --focus north
+switcher < l : yabai -m window --focus east
+switcher < b : yabai -m window --focus prev
+switcher < n : yabai -m window --focus next
 
 # Switch desktop
-cmd + alt - x : chunkc tiling::desktop --focus $(chunkc get _last_active_desktop)
-ctrl + alt - p : chunkc tiling::desktop --focus prev
-ctrl + alt - n : chunkc tiling::desktop --focus next
-switcher < 1 : chunkc tiling::desktop --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 1) ; skhd -k 'escape'
-switcher < 2 : chunkc tiling::desktop --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 2) ; skhd -k 'escape'
-switcher < 3 : chunkc tiling::desktop --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 3) ; skhd -k 'escape'
-switcher < 4 : chunkc tiling::desktop --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 4) ; skhd -k 'escape'
-switcher < 5 : chunkc tiling::desktop --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 5) ; skhd -k 'escape'
-switcher < 6 : chunkc tiling::desktop --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 6) ; skhd -k 'escape'
-switcher < 7 : chunkc tiling::desktop --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 7) ; skhd -k 'escape'
-switcher < 8 : chunkc tiling::desktop --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 8) ; skhd -k 'escape'
-switcher < 9 : chunkc tiling::desktop --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 9) ; skhd -k 'escape'
+switcher < 1 : yabai -m space --focus 1
+switcher < 2 : yabai -m space --focus 2
+switcher < 3 : yabai -m space --focus 3
+switcher < 4 : yabai -m space --focus 4
+switcher < 5 : yabai -m space --focus 5
+switcher < 6 : yabai -m space --focus 6
+switcher < 7 : yabai -m space --focus 7
+switcher < 8 : yabai -m space --focus 8
+switcher < 9 : yabai -m space --focus 9
+
+#switcher < 1 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 1)
+#switcher < 2 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 2)
+#switcher < 3 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 3)
+#switcher < 4 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 4)
+#switcher < 5 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 5)
+#switcher < 6 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 6)
+#switcher < 7 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 7)
+#switcher < 8 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 8)
+#switcher < 9 : yabai -m space --focus $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 9)
 
 # Move window to desktop
-switcher < shift - 1 : chunkc tiling::window --send-to-desktop $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 1)
-switcher < shift - 2 : chunkc tiling::window --send-to-desktop $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 2)
-switcher < shift - 3 : chunkc tiling::window --send-to-desktop $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 3)
-switcher < shift - 4 : chunkc tiling::window --send-to-desktop $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 4)
-switcher < shift - 5 : chunkc tiling::window --send-to-desktop $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 5)
-switcher < shift - 6 : chunkc tiling::window --send-to-desktop $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 6)
-switcher < shift - 7 : chunkc tiling::window --send-to-desktop $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 7)
-switcher < shift - 8 : chunkc tiling::window --send-to-desktop $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 8)
-switcher < shift - 9 : chunkc tiling::window --send-to-desktop $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 9)
+switcher < shift - 1 : yabai -m window --space 1
+switcher < shift - 2 : yabai -m window --space 2
+switcher < shift - 3 : yabai -m window --space 3
+switcher < shift - 4 : yabai -m window --space 4
+switcher < shift - 5 : yabai -m window --space 5
+switcher < shift - 6 : yabai -m window --space 6
+switcher < shift - 7 : yabai -m window --space 7
+switcher < shift - 8 : yabai -m window --space 8
+switcher < shift - 9 : yabai -m window --space 9
+
+#switcher < shift - 1 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 1)
+#switcher < shift - 2 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 2)
+#switcher < shift - 3 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 3)
+#switcher < shift - 4 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 4)
+#switcher < shift - 5 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 5)
+#switcher < shift - 6 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 6)
+#switcher < shift - 7 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 7)
+#switcher < shift - 8 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 8)
+#switcher < shift - 9 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 9)
+
+# create desktop, move window and follow focus
+switcher < shift - c : yabai -m space --create; id=$(yabai -m query --displays --display | grep "spaces"); yabai -m window --space $(echo ${id:10:${#id}-10}); yabai -m space --focus $(echo ${id:10:${#id}-10})
+
+# create desktop and follow focus
+switcher < c : yabai -m space --create; id=$(yabai -m query --displays --display | grep "spaces"); yabai -m space --focus $(echo ${id:10:${#id}-10}); skhd -k 'escape'
+
+#destroy desktop
+switcher < x : yabai -m space --destroy
+
+
+#Quick switch monitor
+switcher < o  : yabai -m display -f next
 
 # Switch monitor
-monitor < 1  : chunkc tiling::monitor -f 1 ; skhd -k 'escape'
-monitor < 2  : chunkc tiling::monitor -f 2 ; skhd -k 'escape'
-monitor < 3  : chunkc tiling::monitor -f 3 ; skhd -k 'escape'
+monitor < 1  : yabai -m display -f 1
+monitor < 2  : yabai -m display -f 2
+monitor < 3  : yabai -m display -f 3
 
 # Move window to monitor
-monitor < shift - 1  : chunkc tiling::window --send-to-monitor 1
-monitor < shift - 2  : chunkc tiling::window --send-to-monitor 2
-monitor < shift - 3  : chunkc tiling::window --send-to-monitor 3
+monitor < shift - 1  : yabai -m window --display 1
+monitor < shift - 2  : yabai -m window --display 2
+monitor < shift - 3  : yabai -m window --display 3
 
 
 ## Swap mode
 
 # move window
-swap < h : chunkc tiling::window --warp west
-swap < j : chunkc tiling::window --warp south
-swap < k : chunkc tiling::window --warp north
-swap < l : chunkc tiling::window --warp east
+swap < h : yabai -m window --warp west
+swap < j : yabai -m window --warp south
+swap < k : yabai -m window --warp north
+swap < l : yabai -m window --warp east
 
 # swap window positions
-swap < shift - h : chunkc tiling::window --swap west
-swap < shift - j : chunkc tiling::window --swap south
-swap < shift - k : chunkc tiling::window --swap north
-swap < shift - l : chunkc tiling::window --swap east
+swap < shift - h : yabai -m window --swap west
+swap < shift - j : yabai -m window --swap south
+swap < shift - k : yabai -m window --swap north
+swap < shift - l : yabai -m window --swap east
 
-# mirror tree y-axis
-swap < y : chunkc tiling::desktop --mirror vertical
+# mirror window y-axis
+swap < y : yabai -m space --mirror y-axis
 
-# mirror tree x-axis
-swap < x : chunkc tiling::desktop --mirror horizontal
+# mirror window x-axis
+swap < x : yabai -m space --mirror y-axis
+
+#rotate
+swap < r : yabai -m space --rotate 270
 
 
 # layout mode
 ## change desktop layout
-layout < t : chunkc tiling::desktop --layout bsp
-layout < m : chunkc tiling::desktop --layout monocle
+layout < s : yabai -m space --layout bsp
+#layout < m : chunkc tiling::desktop --layout monocle
+layout < w : yabai -m space --layout float
 
 ## toggle desktop offset
 layout < o : chunkc tiling::desktop --toggle offset
@@ -106,49 +151,40 @@ layout < g         : chunkc tiling::desktop --gap inc
 layout < shift - g : chunkc tiling::desktop --gap dec
 
 
-# tree mode
-tree < f                :   chunkc tiling::window --toggle fullscreen
-tree < shift - f        :   chunkc tiling::window --toggle native-fullscreen
-tree < d                :   chunkc tiling::window --toggle parent
-tree < w                :   chunkc tiling::window --toggle float
-tree < r                :   chunkc tiling::desktop --rotate 270
-tree < s                :   chunkc tiling::window --toggle split
+# window mode
+window < f                :   yabai -m window --toggle zoom-fullscreen
+window < shift - f        :   yabai -m window --toggle native-fullscreen
+window < d                :   yabai -m window --toggle zoom-parent
+window < a                :   yabai -m window --toggle float
+window < s                :   chunkc tiling::window --toggle split
 
 ## adjust window size
-tree < h                :   chunkc tiling::window --use-temporary-ratio 0.02 --adjust-window-edge west
-tree < j                :   chunkc tiling::window --use-temporary-ratio 0.02 --adjust-window-edge south
-tree < k                :   chunkc tiling::window --use-temporary-ratio 0.02 --adjust-window-edge north
-tree < l                :   chunkc tiling::window --use-temporary-ratio 0.02 --adjust-window-edge east
+window < h                :   yabai -m window --resize left:-20:0
+window < j                :   yabai -m window --resize bottom:0:20
+window < k                :   yabai -m window --resize top:0:-20
+window < l                :   yabai -m window --resize right:20:0
 
-tree < shift - h        :   chunkc tiling::window --use-temporary-ratio -0.02 --adjust-window-edge west
-tree < shift - j        :   chunkc tiling::window --use-temporary-ratio -0.02 --adjust-window-edge south
-tree < shift - k        :   chunkc tiling::window --use-temporary-ratio -0.02 --adjust-window-edge north
-tree < shift - l        :   chunkc tiling::window --use-temporary-ratio -0.02 --adjust-window-edge east
+window < shift - h        :   yabai -m window --resize left:20:0
+window < shift - j        :   yabai -m window --resize bottom:0:-20
+window < shift - k        :   yabai -m window --resize top:20:0
+window < shift - l        :   yabai -m window --resize right:-20:0
 
 ## equalize window size
-tree < e                :   chunkc tiling::desktop --equalize
+window < e                :   yabai -m space --balance
 
-
-# change layout of desktop
-alt - e : chunkc tiling::desktop --layout bsp
-alt - s : chunkc tiling::desktop --layout float
-alt - m : chunkc tiling::desktop --layout monocle
 
 # kill focused window
-shift + alt - q : chunkc tiling::window --close
+window < q : chunkc tiling::window --close
 
-
-# make floating window fill screen
-shift + alt - w : chunkc tiling::window --grid-layout 1:1:0:0:1:1
-
-# make floating window fill left-half of screen
-shift + alt - a : chunkc tiling::window --grid-layout 1:2:0:0:1:1
-
-# make floating window fill right-half of screen
-shift + alt - d : chunkc tiling::window --grid-layout 1:2:1:0:1:1
+#insert direction
+insertW < h : yabai -m window --insert west; skhd -k 'escape'
+insertW < j : yabai -m window --insert south; skhd -k 'escape'
+insertW < k : yabai -m window --insert north; skhd -k 'escape'
+insertW < l : yabai -m window --insert east; skhd -k 'escape'
 
 
 # Open terminal
-alt - return : open -na /Applications/iTerm.app
+#alt - return : open -na /Applications/iTerm.app
+alt - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
 
 
