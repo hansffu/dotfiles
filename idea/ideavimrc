@@ -1,28 +1,37 @@
+let mapleader = " "
+
 inoremap jk <ESC>
 set surround
 set multiple-cursors
+set commentary
+set easymotion
 
-let mapleader = " "
+set nu
+set rnu
+
 
 " intellij commands
 nmap <leader>pp :action ManageRecentProjects<CR>
 
 nmap <leader>pf :action GotoFile<cr>
 nmap <leader>pc :action GotoClass<cr>
+nmap <leader>bl :action RecentFiles<cr>
 nmap <leader>ns :action GotoSymbol<cr>
-nmap <leader>nm :action FileStructurePopup<cr>
-nmap <leader>d :action ShowErrorDescription<cr>
+nmap <leader>fs :action FileStructurePopup<cr>
+nmap <leader>se :action ShowErrorDescription<cr>
 "nmap gw :action AceWordAction<cr>
 "nmap gc :action AceAction<cr>
-"nmap gb :action Back<cr>
-nmap <leader>gw :action KJumpAction.Word1<cr>
-nmap <leader>gg :action KJumpAction<cr>
 nmap gb :action Back<cr>
+" nmap <leader>gw :action KJumpAction.Word1<cr>
+" nmap <leader>gg :action KJumpAction<cr>
+" nmap gb :action Back<cr>
 
 " refactoring
 nmap <leader>rn :action RenameElement<CR>
 nmap <leader>rev :action IntroduceVariable<CR>
 nmap <leader>rs :action ChangeSignature<CR>
+nnoremap <leader>rf :action RenameFile<cr>
+set idearefactormode=visual
 
 
 " key bindings for quickly moving between windows
@@ -34,25 +43,26 @@ nmap <leader>wj <c-w>j
 
 nnoremap gi :action GotoImplementation<cr>
 
-nnoremap gcc :action CommentByLineComment<cr>
+"nnoremap gcc :action CommentByLineComment<cr>
 
-nnoremap <leader>ff :action FindInPath<cr>
+" run
+nnoremap <leader>dd :action Debug<cr>
+nnoremap <leader>dc :action ChooseDebugConfiguration<cr>
+nnoremap <leader>rr :action Run<cr>
+nnoremap <leader>rc :action ChooseRunConfiguration<cr>
+
+
+
+nnoremap <leader>ps :action FindInPath<cr>
 nnoremap <leader>fu :action FindUsages<cr>
 nnoremap <leader>su :action ShowUsages<cr>
 nnoremap <leader>cv :action ChangeView<cr>
 nnoremap <leader>bb :action ToggleLineBreakpoint<cr>
 nnoremap <leader>br :action ViewBreakpoints<cr>
 nnoremap <leader>ic :action InspectCode<cr>
-nnoremap <leader>oi :action OptimizeImports<cr>
-nnoremap <leader>re :action RenameElement<cr>
-nnoremap <leader>rf :action RenameFile<cr>
-nnoremap <leader>gq :action ReformatCode<cr>
 nnoremap <leader>mv :action ActivateMavenProjectsToolWindow<cr>
-nnoremap <leader>dd :action Debug<cr>
-nnoremap <leader>dc :action ChooseDebugConfiguration<cr>
-nnoremap <leader>rr :action Run<cr>
-nnoremap <leader>rc :action ChooseRunConfiguration<cr>
-nnoremap <leader>q  :action CloseActiveTab<cr>
+nnoremap <leader>qq :action CloseEditor<cr>
+nnoremap <leader>qo :action CloseAllEditorsButActive<cr>
 nnoremap <leader>ga :action GotoAction<cr>
 nnoremap <leader>gi :action GotoImplementation<cr>
 nnoremap <leader>gs :action GotoSuperMethod<cr>
@@ -62,18 +72,22 @@ nnoremap <leader>gr :action GotoRelated<cr>
 nnoremap <leader>gb :action Annotate<cr>
 nnoremap <leader>tl Vy<cr>:action ActivateTerminalToolWindow<cr>
 vnoremap <leader>tl y<cr>:action ActivateTerminalToolWindow<cr>
-nnoremap ]e :action GotoNextError<cr>
-nnoremap [e :action GotoPreviousError<cr>
+nnoremap <leader>ft :action SelectInProjectView<cr>
 
 nnoremap <leader>flf :action Javascript.Linters.EsLint.Fix<cr>
 nnoremap <leader>fp :action ReformatWithPrettierAction<cr>
+" nnoremap <leader>fi :action OptimizeImports<cr>
+nnoremap <leader>ff :action ReformatCode<cr>
 
 map <leader>gs :action EditorCodeBlockStart<CR>
 map <leader>ge :action EditorCodeBlockEnd<CR>
-nnoremap gn :action GotoNextError<CR>
-nnoremap gp :action GotoPreviousError<CR>
+nnoremap <leader>gn :action GotoNextError<CR>
+nnoremap <leader>gp :action GotoPreviousError<CR>
+nnoremap <leader>gN :action NextOccurence<CR>
+nnoremap <leader>gP :action PreviousOccurence<CR>
 
-#multiple cursors mac
+
+"multiple cursors mac
 map <C-N>  <A-N>
 map <C-P>  <A-P>
 map <C-X>  <A-X>
