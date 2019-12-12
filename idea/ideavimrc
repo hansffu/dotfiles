@@ -1,5 +1,4 @@
 let mapleader = " "
-
 inoremap jk <ESC>
 set surround
 set multiple-cursors
@@ -8,10 +7,12 @@ set easymotion
 
 set nu
 set rnu
-
+set clipboard+=ideaput
+set idearefactormode=visual
+set showmode
 
 " intellij commands
-nmap <leader>pp :action ManageRecentProjects<CR>
+nmap <leader>pp :action ManageRecentProjects<cr>
 
 nmap <leader>pf :action GotoFile<cr>
 nmap <leader>pc :action GotoClass<cr>
@@ -19,8 +20,7 @@ nmap <leader>bl :action RecentFiles<cr>
 nmap <leader>ns :action GotoSymbol<cr>
 nmap <leader>fs :action FileStructurePopup<cr>
 nmap <leader>se :action ShowErrorDescription<cr>
-"nmap gw :action AceWordAction<cr>
-"nmap gc :action AceAction<cr>
+
 nmap gb :action Back<cr>
 " nmap <leader>gw :action KJumpAction.Word1<cr>
 " nmap <leader>gg :action KJumpAction<cr>
@@ -81,11 +81,10 @@ nnoremap <leader>ff :action ReformatCode<cr>
 
 map <leader>gs :action EditorCodeBlockStart<CR>
 map <leader>ge :action EditorCodeBlockEnd<CR>
-nnoremap <leader>gn :action GotoNextError<CR>
-nnoremap <leader>gp :action GotoPreviousError<CR>
-nnoremap <leader>gN :action NextOccurence<CR>
-nnoremap <leader>gP :action PreviousOccurence<CR>
-
+map <leader>gn :action GotoNextError<CR>
+map <leader>gp :action GotoPreviousError<CR>
+map <leader>gN :action NextOccurence
+map <leader>gP :action PreviousOccurence
 
 "multiple cursors mac
 map <C-N>  <A-N>

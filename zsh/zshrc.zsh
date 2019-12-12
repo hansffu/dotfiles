@@ -77,6 +77,7 @@ colored-man-pages
 colorize
 docker
 npm
+stack
 tmux
 yarn
 web-search
