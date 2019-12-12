@@ -96,7 +96,7 @@ switcher < x : yabai -m space --destroy
 
 
 #Quick switch monitor
-switcher < o  : yabai -m display --focus last
+switcher < o  : yabai -m display --focus recent
 
 # Switch monitor
 monitor < 1  : yabai -m display --focus 1
@@ -184,7 +184,8 @@ insertW < l : yabai -m window --insert east; skhd -k 'escape'
 
 
 # Open terminal
-alt - return : open -na /Applications/iTerm.app
+alt - return : /Users/hansff/.dotfiles/macos/scripts/open_iterm2.sh
+#alt - return : open -na /Applications/iTerm.app
 #alt - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
 
 
