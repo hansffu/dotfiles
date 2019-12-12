@@ -1,17 +1,24 @@
 * Setup
 ** Package management
 #+BEGIN_SRC emacs-lisp
-(package-initialize)
+  (package-initialize)
 
-;;Install packages automatically
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(setq package-enable-at-startup nil)
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-(add-to-list 'load-path "~/.emacs.d/lisp/")
-;;move custom variables out of the way
-(setq custom-file "~/.emacs.d/custom.el")
+  ;;Install packages automatically
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+  (setq package-enable-at-startup nil)
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (add-to-list 'load-path "~/.emacs.d/lisp/")
+  ;;move custom variables out of the way
+  (setq custom-file "~/.emacs.d/custom.el")
+
+  (use-package auto-package-update
+     :ensure t
+     :config
+     (setq auto-package-update-delete-old-versions t
+	   auto-package-update-interval 4)
+     (auto-package-update-maybe))
 #+END_SRC
 
 ** System packages
@@ -58,6 +65,11 @@
 	)
 #+END_SRC
 
+** Emacsclient
+#+BEGIN_SRC emacs-lisp
+  (server-start)
+#+END_SRC
+
 * Appearance
 ** Theme
 #+BEGIN_SRC emacs-lisp
@@ -99,8 +111,9 @@
     (set-frame-font "DejaVu Sans Mono-12"))
    ((find-font (font-spec :name "courier"))
     (set-frame-font "courier-12")))
- 
 
+
+  (setq default-frame-alist '((font . "Hack-12")))
 #+END_SRC
 * Evil keybindings
 ** Pure evil
@@ -124,6 +137,7 @@
   (use-package evil-collection
     :ensure t
     :after evil
+    :custom (evil-collection-setup-minibuffer t)
     :config
     (evil-collection-init))
 
@@ -220,6 +234,13 @@
 	"pg" '(projectile-vc :wk "Git"))
     #+END_SRC
 * Plugins
+** Pinentry 
+#+BEGIN_SRC emacs-lisp
+  (use-package pinentry
+    :ensure t
+    :config
+    (setq epa-pinentry-mode 'loopback))
+#+END_SRC
 ** Utilities
 #+BEGIN_SRC emacs-lisp
   (use-package ag
@@ -247,7 +268,10 @@
 
   (use-package evil-magit
     :ensure t
-    :requires (evil magit magit-popup))
+    :requires (evil magit magit-popup)
+    :init (evil-magit-init))
+
+  (setq global-git-commit-mode t)
 #+END_SRC
 
 ** Parentheses
@@ -716,6 +740,16 @@ Uses prettier. Install with npm install -g prettier
     :config
     (add-hook 'org-mode-hook 'org-bullets-mode))
 
+  (use-package evil-org
+    :ensure t
+    :after org
+    :config
+    (add-hook 'org-mode-hook 'evil-org-mode)
+    (add-hook 'evil-org-mode-hook
+	      (lambda ()
+		(evil-org-set-key-theme)))
+    (require 'evil-org-agenda)
+    (evil-org-agenda-set-keys))
 #+END_SRC
 
 ** COMMENT EXWM - Emacs window manager (Disabled)
@@ -801,4 +835,10 @@ Uses prettier. Install with npm install -g prettier
     (yas-reload-all))
 
 
+#+END_SRC
+** Vimrc
+#+BEGIN_SRC emacs-lisp
+  (use-package vimrc-mode
+    :ensure t
+    :mode ( "\\(?:\\.ideavimrc\\|init\\.vim\\)" . vimrc-mode ))
 #+END_SRC
