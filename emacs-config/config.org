@@ -174,8 +174,8 @@
 
       (space-binding 
 	"TAB" '(switch-to-prev-buffer :wk "previous buffer")
-	"SPC" '(helm-M-x :wk "M-x")
-	"bl"  '(helm-mini :wk "buffers list"))
+	"bl"  '(helm-mini :wk "buffers list")
+	"SPC" '(:keymap evilem-map :wk "easymotion" :package evil-easymotion))
     #+END_SRC
 *** Files 
     #+BEGIN_SRC emacs-lisp
@@ -208,7 +208,12 @@
        "gd" '(xref-find-definitions :wk "find definitions")
        "gb" '(xref-pop-marker-stack :wk "go back"))
     #+END_SRC
-*** Avy
+*** Eeasymotion
+    #+BEGIN_SRC emacs-lisp
+      (use-package evil-easymotion
+	:ensure t)
+    #+END_SRC
+*** COMMENT Avy
     #+BEGIN_SRC emacs-lisp
       (general-nmap
 	:prefix "g"
@@ -234,6 +239,12 @@
 	"pg" '(projectile-vc :wk "Git"))
     #+END_SRC
 * Plugins
+** Lisp
+#+BEGIN_SRC emacs-lisp
+  (use-package lispy
+    :ensure t
+    :hook (emacs-lisp-mode . lispy-mode))
+#+END_SRC
 ** Pinentry 
 #+BEGIN_SRC emacs-lisp
   (use-package pinentry
@@ -437,15 +448,13 @@ Multiple cursors
   (use-package company
     :ensure t
     :diminish ""
-    :bind (("C-å" . company-complete))
+  ;;  :bind (("C-å" . company-complete))
     :init
     (add-hook 'prog-mode-hook 'company-mode)
     ;; (add-hook 'comint-mode-hook 'company-mode)
     :config
     (global-company-mode)
-    (setq company-tooltip-limit 10)
-    (setq company-dabbrev-downcase 0)
-    (setq company-idle-delay 0)
+    (setq company-idle-delay nil)
     (setq company-echo-delay 0)
     (setq company-minimum-prefix-length 2)
     (setq company-require-match nil)
@@ -453,16 +462,23 @@ Multiple cursors
     (setq company-tooltip-align-annotations t)
     ;; (setq company-tooltip-flip-when-above t)
     (setq company-transformers '(company-sort-by-occurrence)) ; weight by frequency
-    (define-key company-active-map (kbd "M-n") nil)
-    (define-key company-active-map (kbd "M-p") nil)
-    (define-key company-active-map (kbd "C-å") 'company-complete)
-    (define-key company-active-map (kbd "C-j") 'company-select-next)
-    (define-key company-active-map (kbd "C-k") 'company-select-previous)
-    (define-key company-active-map (kbd "TAB") 'company-complete--or-cycle)
-    (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
-    (define-key company-active-map (kbd "RET") 'company-complete-selection)
-    (define-key company-active-map (kbd "S-TAB") 'company-select-previous)
-    (define-key company-active-map (kbd "<backtab>") 'company-select-previous))
+    ;; (define-key company-active-map (kbd "M-n") nil)
+    ;; (define-key company-active-map (kbd "M-p") nil)
+    ;; (define-key company-active-map (kbd "C-å") 'company-complete)
+    ;; (define-key company-active-map (kbd "C-j") 'company-select-next)
+    ;; (define-key company-active-map (kbd "C-k") 'company-select-previous)
+    ;; (define-key company-active-map (kbd "TAB") 'company-complete--or-cycle)
+    ;; (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
+    ;; (define-key company-active-map (kbd "RET") 'company-complete-selection)
+    ;; (define-key company-active-map (kbd "S-TAB") 'company-select-previous)
+    ;; (define-key company-active-map (kbd "<backtab>") 'company-select-previous)
+    )
+
+
+  (use-package helm-company
+    :ensure t
+    :config
+    (define-key company-mode-map (kbd "C-SPC") 'helm-company))
 
   (use-package company-lsp
     :ensure t
@@ -470,9 +486,9 @@ Multiple cursors
     (push 'company-lsp company-backends)
     :after (company lsp))
 
-  (use-package company-box
-    :ensure t
-    :hook (company-mode . company-box-mode))
+  ;; (use-package company-box
+  ;;   :ensure t
+  ;;   :hook (company-mode . company-box-mode))
 #+END_SRC
 
 ** Flycheck for lint
@@ -750,6 +766,9 @@ Uses prettier. Install with npm install -g prettier
 		(evil-org-set-key-theme)))
     (require 'evil-org-agenda)
     (evil-org-agenda-set-keys))
+
+  (use-package org-preview-html
+    :ensure t)
 #+END_SRC
 
 ** COMMENT EXWM - Emacs window manager (Disabled)
@@ -782,30 +801,47 @@ Uses prettier. Install with npm install -g prettier
 #+BEGIN_SRC emacs-lisp
   (use-package haskell-mode
     :ensure t
-    :mode "\\.hs\\'"
-    :commands haskell-mode
-    :bind ("C-c C-s" . fix-imports)
-    :config
-    (custom-set-variables
-     '(haskell-ask-also-kill-buffers nil)
-     '(haskell-process-type (quote stack-ghci))
-     '(haskell-interactive-popup-errors nil))
+    :mode "\\.hs\\'")
 
-    (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
-    (add-hook 'haskell-mode-hook 'flycheck-mode)
-    (add-hook 'haskell-mode-hook (lambda ()
-				   (add-hook 'before-save-hook 'haskell-mode-format-imports nil 'local))))
-
-  (use-package company-ghc
+  (use-package lsp-haskell
     :ensure t
-    :config
-    (add-to-list 'company-backends 'company-ghc)
-    (custom-set-variables '(company-ghc-show-info t)))
+    :hook (haskell-mode . lsp)
+    :after (lsp)
+    :init
+    (setq lsp-haskell-process-path-hie "hie-wrapper"))
+  ;; (use-package haskell-mode
+  ;;   :ensure t
+  ;;   :mode "\\.hs\\'"
+  ;;   :commands haskell-mode
+  ;;   :bind ("C-c C-s" . fix-imports)
+  ;;   :config
+  ;;   (custom-set-variables
+  ;;    '(haskell-ask-also-kill-buffers nil)
+  ;;    '(haskell-process-type (quote stack-ghci))
+  ;;    '(haskell-interactive-popup-errors nil))
 
-  (use-package intero
-    :ensure t
-    :config
-    (add-hook 'haskell-mode-hook 'intero-mode))
+  ;;   (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+  ;;   ;;(add-hook 'haskell-mode-hook 'flycheck-mode)
+  ;;   (add-hook 'haskell-mode-hook (lambda ()
+  ;; 				 (add-hook 'before-save-hook 'haskell-mode-format-imports nil 'local))))
+
+  ;; (use-package company-ghc
+  ;;   :disabled
+  ;;   :ensure t
+  ;;   :config
+  ;;   (add-to-list 'company-backends 'company-ghc)
+  ;;   (custom-set-variables '(company-ghc-show-info t)))
+
+  ;; (use-package lsp-haskell
+  ;;   :ensure t
+  ;;   :config
+  ;;   (add-hook 'haskell-mode-hook 'lsp)
+  ;;   (setq lsp-haskell-process-path-hie "hie-wrapper"))
+
+  ;;   ;; Nope, I want my copies in the system temp dir.
+  ;;   (setq flymake-run-in-place nil)
+  ;;   ;; This lets me say where my temp dir is.
+  ;;   (setq temporary-file-directory "~/.emacs.d/tmp/")
 #+END_SRC
 ** Rust
 #+BEGIN_SRC emacs-lisp
@@ -835,6 +871,28 @@ Uses prettier. Install with npm install -g prettier
     (yas-reload-all))
 
 
+#+END_SRC
+** ReasonML
+#+BEGIN_SRC emacs-lisp
+  (use-package reason-mode
+    :ensure t
+    :config
+    (require 'lsp)
+    (add-hook 'reason-mode-hook 'lsp)
+    (lsp-register-client
+     (make-lsp-client
+      :new-connection (lsp-stdio-connection "/Users/hansff/.local/bin/reason-language-server")
+      :major-modes '(reason-mode)
+      :notification-handlers (ht ("client/registerCapability" 'ignore))
+      :priority 1
+      :server-id 'reason-ls)))
+
+#+END_SRC
+** Pinentry
+#+BEGIN_SRC emacs-lisp
+  (use-package pinentry
+    :ensure t)
+  (setq epa-pinentry-mode 'loopback)
 #+END_SRC
 ** Vimrc
 #+BEGIN_SRC emacs-lisp

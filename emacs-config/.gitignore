@@ -30,3 +30,7 @@ config.el
 emojis/
 recentf
 transient/
+.last-package-update-day
+.lsp-session-v1
+request/
+tmp/

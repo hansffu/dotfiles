@@ -188,6 +188,7 @@ run < e : emacsclient -n -c -a "emacs"; skhd -k 'escape'
 
 
 # Open terminal
+#alt - return : /Users/hansff/.dotfiles/macos/scripts/open_iterm2.sh
 #alt - return : open -na /Applications/iTerm.app
 #alt - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
 
