@@ -495,6 +495,8 @@ Multiple cursors
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :ensure t
+    :init
+    (global-flycheck-mode t)
     :config
     (add-hook 'after-init-hook 'global-flycheck-mode)
     (add-hook 'flycheck-mode-hook 'jc/use-eslint-from-node-modules)
@@ -544,7 +546,9 @@ Multiple cursors
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :ensure t
-    :defer t
+  ;  :defer t
+    :hook (haskell-mode . lsp)
+    :commands lsp
     :config
     (require 'lsp-clients)
     (add-hook 'web-mode-hook 'lsp))
@@ -801,15 +805,27 @@ Uses prettier. Install with npm install -g prettier
 #+BEGIN_SRC emacs-lisp
   (use-package haskell-mode
     :ensure t
-    :mode "\\.hs\\'")
+    :mode "\\.hs\\'"
+    :config
+    (flycheck-mode 0))
 
   (use-package lsp-haskell
-    :ensure t
-    :hook (haskell-mode . lsp)
-    :after (lsp)
-    :init
-    (setq lsp-haskell-process-path-hie "hie-wrapper"))
-  ;; (use-package haskell-mode
+   :ensure t
+   :config
+   (setq lsp-haskell-process-path-hie "ghcide")
+   (setq lsp-haskell-process-args-hie '())
+   ;; Comment/uncomment this line to see interactions between lsp client/server.
+   ;;(setq lsp-log-io t)
+  )
+  (flymake-mode 0)
+
+  ;; (use-package lsp-haskell
+  ;;   :ensure t
+  ;;   :hook (haskell-mode . lsp)
+  ;;   :config
+  ;;   (setq lsp-haskell-process-path-hie "/Users/hansff/.local/bin/hie-wrapper"))
+
+  ;; ;; (use-package haskell-mode
   ;;   :ensure t
   ;;   :mode "\\.hs\\'"
   ;;   :commands haskell-mode
@@ -899,4 +915,9 @@ Uses prettier. Install with npm install -g prettier
   (use-package vimrc-mode
     :ensure t
     :mode ( "\\(?:\\.ideavimrc\\|init\\.vim\\)" . vimrc-mode ))
+#+END_SRC
+** Graphql
+#+BEGIN_SRC emacs-lisp
+  (use-package graphql-mode
+    :ensure t)
 #+END_SRC
