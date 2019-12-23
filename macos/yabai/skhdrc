@@ -5,13 +5,14 @@
 :: monitor @ : yabai -m config active_window_border_color 0xfffc3052; notify-send -m "monitor "
 :: layout @ : yabai -m config active_window_border_color 0xfffdec5a; notify-send -m "layout "
 :: insertW @ : yabai -m config active_window_border_color 0xff22ee22; notify-send -m "insert "
+:: run @ : yabai -m config active_window_border_color 0xffee3622; notify-send -m "run "
 
 # switching modes
 default                       < ctrl - q      ; switcher
-switcher, swap, layout, window, monitor, insertW   < ctrl - q      ; default
-switcher, swap, layout, window, monitor, insertW   < escape        ; default
-switcher, swap, layout, window, monitor, insertW   < return        ; default
-switcher, swap, layout, window, monitor, insertW   < space        ; default
+switcher, swap, layout, window, monitor, insertW, run   < ctrl - q      ; default
+switcher, swap, layout, window, monitor, insertW, run   < escape        ; default
+switcher, swap, layout, window, monitor, insertW, run   < return        ; default
+switcher, swap, layout, window, monitor, insertW, run   < space        ; default
 
 
 # switcher mode
@@ -31,6 +32,9 @@ monitor < m ; switcher
 
 switcher < i ; insertW
 insertW < i ; switcher
+
+switcher < r ; run
+run < r ; switcher
 
 
 #switch mode
@@ -85,11 +89,8 @@ switcher < shift - 7 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/c
 switcher < shift - 8 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 8)
 switcher < shift - 9 : yabai -m window --space $($HOME/.dotfiles/macos/scripts/cwm_get_absolute_desktop_id_from_monitor_id 9)
 
-# create desktop, move window and follow focus
-switcher < shift - c : yabai -m space --create; id=$(yabai -m query --displays --display | grep "spaces"); yabai -m window --space $(echo ${id:10:${#id}-10}); yabai -m space --focus $(echo ${id:10:${#id}-10})
-
-# create desktop and follow focus
-switcher < c : yabai -m space --create; id=$(yabai -m query --displays --display | grep "spaces"); yabai -m space --focus $(echo ${id:10:${#id}-10}); skhd -k 'escape'
+# create desktop
+switcher < c : yabai -m space --create
 
 #destroy desktop
 switcher < x : yabai -m space --destroy
@@ -182,10 +183,13 @@ insertW < j : yabai -m window --insert south; skhd -k 'escape'
 insertW < k : yabai -m window --insert north; skhd -k 'escape'
 insertW < l : yabai -m window --insert east; skhd -k 'escape'
 
+#run application
+run < e : emacsclient -n -c -a "emacs"; skhd -k 'escape'
+
 
 # Open terminal
-alt - return : /Users/hansff/.dotfiles/macos/scripts/open_iterm2.sh
+#alt - return : /Users/hansff/.dotfiles/macos/scripts/open_iterm2.sh
 #alt - return : open -na /Applications/iTerm.app
 #alt - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
 
-
+alt - return : $HOME/.dotfiles/macos/scripts/open_iterm2.sh
