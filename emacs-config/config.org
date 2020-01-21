@@ -1,9 +1,8 @@
 * Setup
 ** Package management
 #+BEGIN_SRC emacs-lisp
-  (package-initialize)
-
   ;;Install packages automatically
+  (package-initialize)
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
   (setq package-enable-at-startup nil)
   (unless (package-installed-p 'use-package)
@@ -260,10 +259,11 @@
 
   (use-package helm-ag
     :ensure t
-    :after '(helm ag))
+    :after (helm ag))
 
   (use-package helm-xref
     :ensure t
+    :after helm
     :init
     (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
 #+END_SRC
@@ -297,7 +297,7 @@ To keep control of parantheses
 
   (use-package evil-cleverparens
     :ensure t
-    :init   (add-hook 'paredit-mode-hook 'evil-cleverparens-mode)
+    :hook (paredit-mode . evil-cleverparens-mode)
     :config (setq evil-cleverparens-swap-move-by-word-and-symbol t))
 
   (use-package evil-surround
@@ -579,17 +579,20 @@ Multiple cursors
 
   (use-package js2-refactor
     :ensure t
+    :hook js2-mode
     :config
-    (js2r-add-keybindings-with-prefix "C-c C-m")
-    (add-hook 'js2-mode-hook 'js2-refactor-mode))
+    (js2r-add-keybindings-with-prefix "C-c C-m"))
 
-  (use-package xref-js2
+
+  (use-package xref-js2                   ; Navigate JS with ag & js2-mode's AST
     :ensure t
-    :init (add-hook
-	   'js2-mode-hook
-	   (lambda ()
-	     (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
+    :after js2-mode
+    :init
+    (defun add-xref-js2-backend ()
+      (add-hook 'xref-backend-functions
+		#'xref-js2-xref-backend nil t))
 
+    (add-hook 'js2-mode-hook #'add-xref-js2-backend))
   ;; (use-package rjsx-mode
   ;;   :ensure t
   ;;   :config
@@ -607,7 +610,7 @@ Multiple cursors
 	  web-mode-code-indent-offset 2
 	  web-mode-block-padding 2
 	  web-mode-comment-style 2
-	
+
 	  web-mode-enable-css-colorization t
 	  web-mode-enable-auto-pairing t
 	  web-mode-enable-comment-keywords t
@@ -730,10 +733,12 @@ Uses prettier. Install with npm install -g prettier
 ** REST
 #+BEGIN_SRC emacs-lisp
   (use-package restclient
-    :ensure t)
+    :ensure t
+    :defer t)
 
   (use-package company-restclient
     :ensure t
+    :hook restclient-mode
     :config
     (add-to-list 'company-backends 'company-restclient))
 #+END_SRC
@@ -741,6 +746,7 @@ Uses prettier. Install with npm install -g prettier
 #+BEGIN_SRC emacs-lisp
 (use-package elm-mode
   :ensure t
+  :mode "\\.elm\\'"
   :config
   (setq elm-format-on-save t)
   (add-hook 'elm-mode-hook #'elm-oracle-setup-completion)
@@ -754,11 +760,34 @@ Uses prettier. Install with npm install -g prettier
 
 ** Org mode
 #+BEGIN_SRC emacs-lisp
+  (use-package org
+    :defer 2
+    :config
+    (defvar *config-file* "~/.emacs.d/config.org"
+      "The configuration file.")
+
+    (defvar *config-last-change* (nth 5 (file-attributes *config-file*))
+      "Last modification time of the configuration file.")
+
+    (defun my/config-updated-p ()
+      "Check if the configuration file has been updated since the last time."
+      (time-less-p *config-last-change*
+		   (nth 5 (file-attributes *config-file*))))
+
+    (defun my/config-update ()
+      "Compile the configuration file."
+      (when (my/config-updated-p)
+	(setq *config-last-change*
+	      (nth 5 (file-attributes *config-file*)))
+	(org-babel-tangle)))
+
+    (add-hook 'kill-emacs-hook 'my/config-update))
+
+
   ;prettier bullets
   (use-package org-bullets
     :ensure t
-    :config
-    (add-hook 'org-mode-hook 'org-bullets-mode))
+    :hook (org-mode . org-bullets-mode))
 
   (use-package evil-org
     :ensure t
@@ -772,34 +801,23 @@ Uses prettier. Install with npm install -g prettier
     (evil-org-agenda-set-keys))
 
   (use-package org-preview-html
-    :ensure t)
-#+END_SRC
-
-** COMMENT EXWM - Emacs window manager (Disabled)
-#+BEGIN_SRC emacs-lisp
-  (use-package exwm
     :ensure t
-    :bind
-    (("s-a" . async-shell-command))
-    :config
-    (require 'exwm-config)
-    (exwm-config-default))
-
+    :defer t)
 #+END_SRC
 
 ** Docker
 #+BEGIN_SRC emacs-lisp
-  (use-package dockerfile-mode
-    :ensure t
-    :config
-    (require 'dockerfile-mode)
-    (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
+    (use-package dockerfile-mode
+      :ensure t
+      :mode "Dockerfile\\'")
 
-  (use-package docker
-    :ensure t)
+    (use-package docker
+      :ensure t
+      :defer t)
 
-  (use-package docker-compose-mode
-    :ensure t)
+    (use-package docker-compose-mode
+      :ensure t
+      :defer t)
 #+END_SRC
 ** Haskell
 #+BEGIN_SRC emacs-lisp
@@ -811,6 +829,7 @@ Uses prettier. Install with npm install -g prettier
 
   (use-package lsp-haskell
    :ensure t
+   :hook haskell-mode
    :config
    (setq lsp-haskell-process-path-hie "ghcide")
    (setq lsp-haskell-process-args-hie '())
@@ -859,20 +878,6 @@ Uses prettier. Install with npm install -g prettier
   ;;   ;; This lets me say where my temp dir is.
   ;;   (setq temporary-file-directory "~/.emacs.d/tmp/")
 #+END_SRC
-** Rust
-#+BEGIN_SRC emacs-lisp
-  (use-package rust-mode
-    :ensure t
-    :config
-    (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
-
-    (use-package flycheck-rust
-      :ensure t
-      :config
-      (add-hook 'flycheck-mode-hook 'flycheck-rust-setup)
-      (add-hook 'rust-mode-hook #'flycheck-mode)))
-
-#+END_SRC
 ** Snippets
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
@@ -881,20 +886,19 @@ Uses prettier. Install with npm install -g prettier
 
   (use-package yasnippet-snippets
     :ensure t
+    :disabled
     :after yasnippet
     :requires yasnippet
     :config
     (yas-reload-all))
-
-
 #+END_SRC
 ** ReasonML
 #+BEGIN_SRC emacs-lisp
   (use-package reason-mode
     :ensure t
+    :defer t
     :config
     (require 'lsp)
-    (add-hook 'reason-mode-hook 'lsp)
     (lsp-register-client
      (make-lsp-client
       :new-connection (lsp-stdio-connection "/Users/hansff/.local/bin/reason-language-server")
@@ -919,5 +923,15 @@ Uses prettier. Install with npm install -g prettier
 ** Graphql
 #+BEGIN_SRC emacs-lisp
   (use-package graphql-mode
-    :ensure t)
+    :ensure t
+    :mode ("//.graphql//'" "//.graphqls//'"))
+#+END_SRC
+** Processing
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package processing
+  ;;   :ensure t
+  ;;   :init
+  ;;   (setq processing-location "/path/to/processing-java")
+  ;;   (setq processing-application-dir "/path/to/processing-application-dir")
+  ;;   (setq processing-sketchbook-dir "~/Documents/Processing/"))
 #+END_SRC
