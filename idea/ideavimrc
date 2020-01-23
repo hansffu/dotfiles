@@ -10,6 +10,8 @@ set rnu
 set clipboard+=ideaput
 set idearefactormode=visual
 set showmode
+set incsearch
+set hlsearch
 
 " intellij commands
 nmap <leader>pp :action ManageRecentProjects<cr>
