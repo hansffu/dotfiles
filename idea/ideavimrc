@@ -85,8 +85,8 @@ map <leader>gs :action EditorCodeBlockStart<CR>
 map <leader>ge :action EditorCodeBlockEnd<CR>
 map <leader>gn :action GotoNextError<CR>
 map <leader>gp :action GotoPreviousError<CR>
-map <leader>gN :action NextOccurence
-map <leader>gP :action PreviousOccurence
+map <leader>gN :action NextOccurence<CR>
+map <leader>gP :action PreviousOccurence<CR>
 
 "multiple cursors mac
 map <C-N>  <A-N>
