@@ -781,7 +781,9 @@ Uses prettier. Install with npm install -g prettier
 	      (nth 5 (file-attributes *config-file*)))
 	(org-babel-tangle)))
 
-    (add-hook 'kill-emacs-hook 'my/config-update))
+    (add-hook 'kill-emacs-hook 'my/config-update)
+
+    (setq org-agenda-files '("~/Dropbox/org/agenda")))
 
 
   ;prettier bullets
@@ -803,6 +805,27 @@ Uses prettier. Install with npm install -g prettier
   (use-package org-preview-html
     :ensure t
     :defer t)
+
+  (use-package org-capture-pop-frame
+   :ensure t)
+
+  ;;   :config
+  (use-package org-gcal
+    :ensure t
+    :config
+    (let* ((api (auth-source-user-and-password "gcal.api"))
+	   (clientId (car api))
+	   (secret (cadr api))
+	   (calAuth (auth-source-user-and-password "gcal.calendar")))
+      (setq org-gcal-client-id clientId
+	    org-gcal-client-secret secret
+	    org-gcal-file-alist (list (cons (car calAuth) "~/Dropbox/org/agenda/private.org")))))
+
+  (setq org-capture-templates
+	'(("p" "Private TODO" entry (file+headline "~/Dropbox/org/agenda/private.org" "Tasks")
+	   "* TODO %?\n  %i\n  %a")
+	  ("j" "Journal" entry (file+datetree "~/Dropbox/org/notes/journal.org")
+	   "* %?\nEntered on %U\n  %i\n  %a")))
 #+END_SRC
 
 ** Docker
