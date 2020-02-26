@@ -1,3 +1,9 @@
+#+TITLE: Personal emacs config
+
+* Setup
+** Doom setup
+#+BEGIN_SRC emacs-lisp
+
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
@@ -56,3 +62,8 @@
 (setq mac-command-key-is-meta t)
 (setq mac-command-modifier 'meta)
 (setq mac-option-modifier nil)
+#+END_SRC
+* Keybindings
+** Easymotion
+#+BEGIN_SRC emacs-lisp
+#+END_SRC
