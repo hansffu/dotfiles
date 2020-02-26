@@ -10,6 +10,8 @@
 	<false/>
 	<key>AppleAntiAliasingThreshold</key>
 	<integer>1</integer>
+	<key>ApplePressAndHoldEnabled</key>
+	<false/>
 	<key>AppleScrollAnimationEnabled</key>
 	<integer>0</integer>
 	<key>AppleSmoothFixedFontsSizeThreshold</key>
@@ -487,7 +489,7 @@
 	dWxs0g0ODxJaTlMub2JqZWN0c1YkY2xhc3OiEBGAAoAKgA3TFA0OFRkdV05TLmtleXOj
 	FhcYgAOABIAFoxobHIAGgAeACIAJWklkZW50aWZpZXJVV2lkdGhWSGlkZGVuUTAjQGjA
 	AAAAAAAI0iUmJyhaJGNsYXNzbmFtZVgkY2xhc3Nlc1xOU0RpY3Rpb25hcnmiJylYTlNP
-	YmplY3TTFA0OKy8doxYXGIADgASABaMwMRyAC4AMgAiACVExI0BzsZ2yLQ5W0iUmNzhe
+	YmplY3TTFA0OKy8doxYXGIADgASABaMwMRyAC4AMgAiACVExI0B0oZ2yLQ5W0iUmNzhe
 	TlNNdXRhYmxlQXJyYXmjNzkpV05TQXJyYXkACAARABoAJAApADIANwBJAEwAUgBUAGMA
 	aQBuAHkAgACDAIUAhwCJAJAAmACcAJ4AoACiAKYAqACqAKwArgC5AL8AxgDIANEA0gDX
 	AOIA6wD4APsBBAELAQ8BEQETARUBGQEbAR0BHwEhASMBLAExAUABRAAAAAAAAAIBAAAA
@@ -542,15 +544,29 @@
 	<key>NSWindow Frame SharedPreferences</key>
 	<string>2913 916 918 494 2560 0 2560 1440 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>1285 712 1257 690 0 0 2560 1440 </string>
+	<string>9 15 1655 998 0 0 1680 1050 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>3 1015 73 32 0 0 1680 1050 </string>
+	<string>844 15 822 998 0 0 1680 1050 </string>
+	<key>NSWindow Frame iTerm Window 10</key>
+	<string>1469 10 201 118 0 0 1680 1050 </string>
+	<key>NSWindow Frame iTerm Window 11</key>
+	<string>1652 9 73 55 0 0 1680 1050 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
-	<string>0 4 1680 1007 0 0 1680 1050 </string>
+	<string>844 9 826 1004 0 0 1680 1050 </string>
 	<key>NSWindow Frame iTerm Window 3</key>
-	<string>0 4 836 1007 0 0 1680 1050 </string>
+	<string>9 9 826 1004 0 0 1680 1050 </string>
 	<key>NSWindow Frame iTerm Window 4</key>
-	<string>5 517 416 503 0 0 1680 1050 </string>
+	<string>9 9 1661 1004 0 0 1680 1050 </string>
+	<key>NSWindow Frame iTerm Window 5</key>
+	<string>844 9 826 1004 0 0 1680 1050 </string>
+	<key>NSWindow Frame iTerm Window 6</key>
+	<string>844 9 826 498 0 0 1680 1050 </string>
+	<key>NSWindow Frame iTerm Window 7</key>
+	<string>1261 9 409 498 0 0 1680 1050 </string>
+	<key>NSWindow Frame iTerm Window 8</key>
+	<string>1261 9 409 245 0 0 1680 1050 </string>
+	<key>NSWindow Frame iTerm Window 9</key>
+	<string>1469 9 201 245 0 0 1680 1050 </string>
 	<key>NeverWarnAboutShortLivedSessions_78FC7BA1-43B7-4704-A01E-C50F848B2155</key>
 	<true/>
 	<key>NeverWarnAboutShortLivedSessions_78FC7BA1-43B7-4704-A01E-C50F848B2155_selection</key>
@@ -1246,12 +1262,15 @@
 	</array>
 	<key>NoSyncAllAppVersions</key>
 	<array>
-		<string>3.3.2</string>
-		<string>3.2.9</string>
+		<string>3.3.6</string>
+		<string>3.3.8</string>
 		<string>3.3.1</string>
-		<string>3.3.4</string>
-		<string>3.3.5</string>
 		<string>3.3.3</string>
+		<string>3.3.5</string>
+		<string>3.3.7</string>
+		<string>3.2.9</string>
+		<string>3.3.2</string>
+		<string>3.3.4</string>
 	</array>
 	<key>NoSyncAutoBurialReveal</key>
 	<true/>
@@ -1260,9 +1279,9 @@
 	<key>NoSyncFrame_SharedPreferences</key>
 	<dict>
 		<key>screenFrame</key>
-		<string>{{0, 0}, {2560, 1440}}</string>
+		<string>{{0, 0}, {1680, 1050}}</string>
 		<key>topLeft</key>
-		<string>{183, 1181}</string>
+		<string>{269, 595}</string>
 	</dict>
 	<key>NoSyncHaveRequestedFullDiskAccess</key>
 	<true/>
@@ -1275,7 +1294,11 @@
 	<key>NoSyncInstallationId</key>
 	<string>C02D1FA4-911D-4D42-A8B9-12CFE81F33D9</string>
 	<key>NoSyncLaunchExperienceControllerRunCount</key>
-	<integer>46</integer>
+	<integer>104</integer>
+	<key>NoSyncNeverRemindPrefsChangesLostForFile</key>
+	<true/>
+	<key>NoSyncNeverRemindPrefsChangesLostForFile_selection</key>
+	<integer>0</integer>
 	<key>NoSyncNextAnnoyanceTime</key>
 	<real>587461982.360708</real>
 	<key>NoSyncOnboardingWindowHasBeenShown</key>
@@ -2033,11 +2056,6 @@
 		<key>Initial Directory</key>
 		<string>/Users/hansff</string>
 	</dict>
-	<key>NoSyncSearchHistory2</key>
-	<array>
-		<string>fastcapaci</string>
-		<string>fastCap</string>
-	</array>
 	<key>NoSyncTimeOfFirstLaunchOfVersionWithTip</key>
 	<real>572225004.21456099</real>
 	<key>NoSyncTipsDisabled</key>
@@ -2107,7 +2125,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2019-10-09T10:33:03Z</date>
+	<date>2020-02-09T21:04:03Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SUUpdateRelaunchingMarker</key>
@@ -2141,7 +2159,7 @@
 	<key>findMode_iTerm</key>
 	<integer>0</integer>
 	<key>iTerm Version</key>
-	<string>3.3.5</string>
+	<string>3.3.8</string>
 	<key>kCPKSelectionViewPreferredModeKey</key>
 	<integer>0</integer>
 	<key>kCPKSelectionViewShowHSBTextFieldsKey</key>

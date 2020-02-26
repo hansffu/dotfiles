@@ -185,6 +185,7 @@ insertW < l : yabai -m window --insert east; skhd -k 'escape'
 
 #run application
 run < e : emacsclient -n -c -a "emacs"; skhd -k 'escape'
+run < o : emacsclient -c -e '(org-capture)'; skhd -k 'escape'
 run < y : launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai"
 
 
