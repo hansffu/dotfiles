@@ -3,8 +3,8 @@
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
 (("org-capture-last-stored"
- (filename . "~/.notes")
- (front-context-string . "** TODO test\n   ")
- (rear-context-string . "pbox/org/.git]]\n")
- (position . 142))
+ (filename . "~/Dropbox/org/agenda/private.org")
+ (front-context-string . "** TODO Bursdag!")
+ (rear-context-string . ">\n:END:\n* Tasks\n")
+ (position . 418))
 )

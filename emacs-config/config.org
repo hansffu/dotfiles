@@ -809,17 +809,25 @@ Uses prettier. Install with npm install -g prettier
   (use-package org-capture-pop-frame
    :ensure t)
 
+  ;; (use-package org-caldav
+  ;;   :ensure t
   ;;   :config
-  (use-package org-gcal
-    :ensure t
-    :config
-    (let* ((api (auth-source-user-and-password "gcal.api"))
-	   (clientId (car api))
-	   (secret (cadr api))
-	   (calAuth (auth-source-user-and-password "gcal.calendar")))
-      (setq org-gcal-client-id clientId
-	    org-gcal-client-secret secret
-	    org-gcal-file-alist (list (cons (car calAuth) "~/Dropbox/org/agenda/private.org")))))
+  ;;   (let* ((api (auth-source-user-and-password "gcal.api"))
+  ;; 	 (clientId (car api))
+  ;;  	 (secret (cadr api))
+  ;;  	 (calAuth (auth-source-user-and-password "gcal.calendar")))
+  ;; (setq )
+  ;;     ))
+  ;; (use-package org-gcal
+  ;;   :ensure t
+  ;;   :config
+  ;;   (let* ((api (auth-source-user-and-password "gcal.api"))
+  ;; 	 (clientId (car api))
+  ;; 	 (secret (cadr api))
+  ;; 	 (calAuth (auth-source-user-and-password "gcal.calendar")))
+  ;;     (setq org-gcal-client-id clientId
+  ;; 	  org-gcal-client-secret secret
+  ;; 	  org-gcal-file-alist (list (cons (car calAuth) "~/Dropbox/org/agenda/private.org")))))
 
   (setq org-capture-templates
 	'(("p" "Private TODO" entry (file+headline "~/Dropbox/org/agenda/private.org" "Tasks")
