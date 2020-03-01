@@ -67,3 +67,37 @@
 ** Easymotion
 #+BEGIN_SRC emacs-lisp
 #+END_SRC
+* Plugin configuration
+** Org mode
+*** org-capture templates
+#+BEGIN_SRC emacs-lisp
+(defvar +org-capture-inbox-file "inbox.org")
+
+(after! org-capture
+  (setq org-default-notes-file
+        (expand-file-name +org-capture-notes-file org-directory)
+        +org-capture-journal-file
+        (expand-file-name +org-capture-journal-file org-directory)
+        org-capture-templates
+        '(("t" "Personal todo" entry
+           (file+headline +org-capture-todo-file "Inbox")
+           "** TODO %?\n%i\n%a" :prepend t)
+
+          ("i" "GTD Inbox" entry
+           (file+headline +org-capture-inbox-file "Inbox")
+           "** TODO %?\n%i\n%a" :prepend t)
+
+          ("p" "Centralized templates for projects")
+          ("pt" "Project todo" entry
+           (function +org-capture-central-project-todo-file)
+           "* TODO %?\n %i\n %a"
+           :heading "Tasks"
+           :prepend nil)
+          ("pn" "Project notes" entry
+           (function +org-capture-central-project-notes-file)
+           "* %U %?\n %i\n %a"
+           :heading "Notes"
+           :prepend t)
+          )))
+#+END_SRC
+
