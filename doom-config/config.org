@@ -69,6 +69,20 @@
 #+END_SRC
 * Plugin configuration
 ** Org mode
+*** org-agenda
+#+BEGIN_SRC emacs-lisp
+(defun refresh-org-agenda-files ()
+  (setq org-agenda-files (directory-files-recursively org-directory "\.org$")))
+
+(defun refresh-org-agenda-advice (orig-fun &rest args)
+  (message "Refresh org-agenda files")
+  (refresh-org-agenda-files)
+  (apply orig-fun args))
+
+(after! org-agenda
+  (advice-add  'org-agenda-redo :around #'refresh-org-agenda-advice)
+  (refresh-org-agenda-files))
+#+END_SRC
 *** org-capture templates
 #+BEGIN_SRC emacs-lisp
 (defvar +org-capture-inbox-file "inbox.org")
@@ -100,4 +114,8 @@
            :prepend t)
           )))
 #+END_SRC
-
+*** org-depend
+#+BEGIN_SRC emacs-lisp
+(after! org
+  (require 'org-depend))
+#+END_SRC
