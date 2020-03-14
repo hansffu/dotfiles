@@ -455,6 +455,7 @@ mode "$switcher" {
     bindsym o workspace back_and_forth
 
     bindsym w mode "$window"
+    bindsym m mode "$monitor"
 
     bindsym Return mode "default"
     bindsym Escape mode "default"
@@ -477,9 +478,13 @@ mode "$window" {
     bindsym space mode "default"
 }
 
+set $monitor Monitor
 mode "$monitor" {
     bindsym h focus output left
     bindsym l focus output right
+
+    bindsym Shift+h move workspace to output left
+    bindsym Shift+l move workspace to output right
 
     bindsym Return mode "default"
     bindsym Escape mode "default"
