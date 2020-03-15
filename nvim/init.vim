@@ -30,7 +30,9 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 "" color
 
-Plug 'cocopon/iceberg.vim'
+"" Plug 'cocopon/iceberg.vim'
+Plug 'joshdick/onedark.vim'
+Plug 'rakr/vim-one'
 
 call plug#end()
 
@@ -144,12 +146,20 @@ let g:auto_save_silent = 1
 
 "" lightline
 
-let g:lightline = { 'colorscheme': 'iceberg' }
+let g:lightline = { 'colorscheme': 'onedark' }
 
 
 "" colorscheme
+if (has("autocmd") && !has("gui_running"))
+	augroup colorset
+		autocmd!
+		let s:white = { "gui": "#ABB2BF", "cterm": "145", "cterm16" : "7" }
+		autocmd ColorScheme * call onedark#set_highlight("Normal", { "fg": s:white }) " `bg` will not be styled since there is no `bg` etting
+	augroup END
+endif
 
-colorscheme iceberg
+colorscheme onedark
+set background=dark
 
 highlight Normal      ctermbg=none
 highlight NonText     ctermbg=none
