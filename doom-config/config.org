@@ -119,3 +119,9 @@
 (after! org
   (require 'org-depend))
 #+END_SRC
+* Languages
+** typescript
+#+BEGIN_SRC emacs-lisp
+(after! typescript
+  (setq typescript-indent-level 2))
+#+END_SRC
