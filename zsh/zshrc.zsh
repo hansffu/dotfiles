@@ -87,6 +87,7 @@ plugins=(
   vscode
   mvn
   vi-mode
+  zsh-autosuggestions
 )
 
 source $ZSH/oh-my-zsh.sh
