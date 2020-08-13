@@ -1,9 +1,12 @@
 let mapleader = " "
 inoremap jk <ESC>
+inoremap hh <ESC>
 set surround
 set multiple-cursors
 set commentary
 set easymotion
+set argtextobj
+set ReplaceWithRegister
 
 set nu
 set rnu
@@ -12,6 +15,8 @@ set idearefactormode=visual
 set showmode
 set incsearch
 set hlsearch
+set ignorecase
+set smartcase
 
 " intellij commands
 nmap <leader>pp :action ManageRecentProjects<cr>
@@ -45,7 +50,6 @@ nmap <leader>wj <c-w>j
 
 nnoremap gi :action GotoImplementation<cr>
 
-"nnoremap gcc :action CommentByLineComment<cr>
 
 " run
 nnoremap <leader>dd :action Debug<cr>
@@ -89,8 +93,13 @@ map <leader>gN :action NextOccurence<CR>
 map <leader>gP :action PreviousOccurence<CR>
 
 "multiple cursors mac
-map <C-N>  <A-N>
+map <C-N>  <A-N
+>
 map <C-P>  <A-P>
 map <C-X>  <A-X>
 map g<C-N> g<A-N>
 
+"easymotion
+map gs <Plug>(easymotion-prefix)
+map gs<Down> <Plug>(easymotion-j)
+map gs<Up> <Plug>(easymotion-k)
