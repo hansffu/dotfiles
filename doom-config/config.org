@@ -125,3 +125,8 @@
 (after! typescript
   (setq typescript-indent-level 2))
 #+END_SRC
+* Fun
+** Speed types
+#+BEGIN_SRC
+(use-package! speed-type)
+#+END_SRC
