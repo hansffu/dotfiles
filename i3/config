@@ -80,7 +80,7 @@ bindsym $mod+Shift+Print --release exec --no-startup-id i3-scrot -s
 bindsym $mod+Shift+h exec xdg-open /usr/share/doc/manjaro/i3_help.pdf
 bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 
-# focus_follows_mouse no
+focus_follows_mouse no
 
 # change focus
 bindsym $mod+j focus left
@@ -224,6 +224,7 @@ for_window [class="Skype"] floating enable border normal
 for_window [class="Timeset-gui"] floating enable border normal
 for_window [class="(?i)virtualbox"] floating enable border normal
 for_window [class="Xfburn"] floating enable
+for_window [title="Microsoft Teams Notification"] floating enable
 
 # switch to workspace with urgent window automatically
 for_window [urgent=latest] focus
@@ -293,7 +294,7 @@ exec --no-startup-id clipit
 # exec_always --no-startup-id sbxkb
 exec --no-startup-id start_conky_maia
 # exec --no-startup-id start_conky_green
-exec --no-startup-id xautolock -time 10 -locker blurlock -bell 0
+# exec --no-startup-id xautolock -time 10 -locker blurlock -bell 0
 exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
 
@@ -434,15 +435,15 @@ exec setxkbmap -layout no -option ctrl:nocaps       # Make Caps Lock a Control k
 set $switcher Switcher [hjkl] focus direction, [w] window mode
 bindsym Ctrl+q mode "$switcher"
 mode "$switcher" {
-  bindsym h focus left
-    bindsym j focus down
-    bindsym k focus up
-    bindsym l focus right
+  bindsym k focus left
+    bindsym n focus down
+    bindsym e focus up
+    bindsym i focus right
 
-    bindsym Shift+h move left
-    bindsym Shift+j move down
-    bindsym Shift+k move up
-    bindsym Shift+l move right
+    bindsym Shift+k move left
+    bindsym Shift+n move down
+    bindsym Shift+e move up
+    bindsym Shift+i move right
 
     bindsym 1 workspace $ws1
     bindsym 2 workspace $ws2
@@ -466,6 +467,7 @@ mode "$switcher" {
 
     bindsym w mode "$window"
     bindsym m mode "$monitor"
+    bindsym s mode "$split"
 
     bindsym Return mode "default"
     bindsym Escape mode "default"
@@ -476,9 +478,9 @@ mode "$switcher" {
 set $window Window [hjkl] resize, [f] fullscreen, [a] tiling/float
 mode "$window" {
   bindsym h resize shrink width 5 px or 5 ppt
-    bindsym j resize grow height 5 px or 5 ppt
-    bindsym k resize shrink height 5 px or 5 ppt
-    bindsym l resize grow width 5 px or 5 ppt
+    bindsym n resize grow height 5 px or 5 ppt
+    bindsym e resize shrink height 5 px or 5 ppt
+    bindsym i resize grow width 5 px or 5 ppt
 
     bindsym f fullscreen toggle
     bindsym a floating toggle
@@ -490,13 +492,25 @@ mode "$window" {
 
 set $monitor Monitor
 mode "$monitor" {
-  bindsym h focus output left
-    bindsym l focus output right
+  bindsym k focus output left
+    bindsym i focus output right
 
-    bindsym Shift+h move workspace to output left
-    bindsym Shift+l move workspace to output right
+    bindsym Shift+k move workspace to output left
+    bindsym Shift+i move workspace to output right
 
     bindsym Return mode "default"
     bindsym Escape mode "default"
     bindsym space mode "default"
+}
+
+set $split Split [v] vertical, [h] horizontal, [q] toggle
+mode "$split" {
+    bindsym h split h;exec notify-send 'tile horizontally'
+    bindsym v split v;exec notify-send 'tile vertically'
+    bindsym q split toggle
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym space mode "default"
+    bindsym s mode "$switcher"
 }
