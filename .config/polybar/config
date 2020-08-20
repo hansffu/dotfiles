@@ -60,7 +60,7 @@ font-3 = TerminessTTF Nerd Font:style=Medium:size=10;1
 
 modules-left = i3
 ; modules-center = date
-modules-right = filesystem pulseaudio spotify xkeyboard memory cpu eth temperature powermenu date
+modules-right = pomodoro filesystem pulseaudio spotify xkeyboard memory cpu eth temperature powermenu date
 
 tray-position = right
 tray-padding = 2
@@ -382,6 +382,12 @@ format-prefix = "  "
 format = <label>
 exec = python $HOME/.config/polybar/plugins/polybar-spotify/spotify_status.py -p ',' --playpause-font=3 -f '{play_pause}  {artist}: {song}'
 format-underline = #1db954
+
+[module/pomodoro]
+type = custom/script
+exec = bash $HOME/.config/polybar/plugins/org-pomodoro/org-pomodoro.sh
+interval = 5
+click-left = bash $HOME/.config/polybar/plugins/org-pomodoro/org-pomodoro.sh toggle
 
 [settings]
 screenchange-reload = true
