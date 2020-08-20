@@ -136,7 +136,6 @@ PATH=$LOCAL_PATH:$HOME/.dotfiles/utils/bin:$HOME/.dotfiles/macos/scripts:$PATH
 
 #export ZSH_TMUX_AUTOSTART=true
 
-export DOOMDIR='~/.dotfiles/doom-config'
 
 #VI-MODE
 bindkey -M viins 'jk' vi-cmd-mode
