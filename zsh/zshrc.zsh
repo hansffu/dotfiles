@@ -86,7 +86,7 @@ plugins=(
   osx
   vscode
   mvn
-  vi-mode
+  # vi-mode
   zsh-autosuggestions
 )
 
