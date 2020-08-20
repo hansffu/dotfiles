@@ -469,6 +469,7 @@ mode "$switcher" {
     bindsym w mode "$window"
     bindsym m mode "$monitor"
     bindsym s mode "$split"
+    bindsym a mode "$apps"
 
     bindsym Return mode "default"
     bindsym Escape mode "default"
@@ -514,4 +515,27 @@ mode "$split" {
     bindsym Escape mode "default"
     bindsym space mode "default"
     bindsym s mode "$switcher"
+}
+
+set $apps Applications [e] Emacs, [i] IDEA, [f] Firefox, [s] Slack
+mode "$apps" {
+    bindsym e mode "$startemacs"
+    bindsym i exec zsh -c "source ~/.zshrc && idea"; mode "default"
+    bindsym f exec zsh -c "source ~/.zshrc && firefox"; mode "default"
+    bindsym s exec zsh -c "source ~/.zshrc && slack"; mode "default"
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym space mode "default"
+}
+
+set $startemacs Emacs [e] Client, [u] Full, [c] Capture
+mode "$startemacs" {
+    bindsym e exec zsh -c "source ~/.zshrc && emacsclient -a emacs -c"; mode "default"
+    bindsym u exec zsh -c "source ~/.zshrc && emacs"; mode "default"
+    bindsym c exec zsh -c "source ~/.zshrc && org-capture"; mode "default"
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym space mode "default"
 }
