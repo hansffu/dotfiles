@@ -83,7 +83,7 @@
   (advice-add  'org-agenda-redo :around #'refresh-org-agenda-advice)
   (refresh-org-agenda-files))
 #+END_SRC
-*** org-capture templates
+*** org-capture
 #+BEGIN_SRC emacs-lisp
 (defvar +org-capture-inbox-file "inbox.org")
 
@@ -91,28 +91,68 @@
   (setq org-default-notes-file
         (expand-file-name +org-capture-notes-file org-directory)
         +org-capture-journal-file
-        (expand-file-name +org-capture-journal-file org-directory)
-        org-capture-templates
-        '(("t" "Personal todo" entry
-           (file+headline +org-capture-todo-file "Inbox")
-           "** TODO %?\n%i\n%a" :prepend t)
+        (expand-file-name +org-capture-journal-file org-directory)))
+#+END_SRC
+**** Templates
+***** Template strings
+#+BEGIN_SRC emacs-lisp
+(defvar my/org-template-todo-string "** TODO %?\n%i\n%a")
+(defvar my/org-template-note-string "* %U %?\n %i\n %a")
+#+END_SRC
 
-          ("i" "GTD Inbox" entry
-           (file+headline +org-capture-inbox-file "Inbox")
-           "** TODO %?\n%i\n%a" :prepend t)
+***** Personal
+****** todo
+#+BEGIN_SRC emacs-lisp
+(defvar my/org-template-personal-todo
+  '("Personal todo"
+    entry (file+headline +org-capture-todo-file "Inbox")
+    "** TODO %?\n%i\n%a"
+    :prepend t))
+#+END_SRC
+****** note
+#+BEGIN_SRC emacs-lisp
+(defvar my/org-template-personal-note
+  '("Personal notes"
+    entry (file org-default-notes-file)
+    "* %U %?\n %i\n %a"))
+#+END_SRC
+***** Work
+#+BEGIN_SRC emacs-lisp
+(defun +org-capture-central-work-file ()
+  "File for project notes and tasks"
+  (+org--capture-central-file
+   "work.org" (projectile-project-name)))
+#+END_SRC
+****** todo
+#+BEGIN_SRC emacs-lisp
+(defvar my/org-template-work-todo
+  '("Project todo"
+    entry (function +org-capture-central-work-file)
+    "** TODO %?\n%i\n%a"
+    :heading "Tasks" :prepend nil)
+  )
+#+END_SRC
+****** note
+#+BEGIN_SRC emacs-lisp
+(defvar my/org-template-work-note
+  '("Project notes"
+    entry (function +org-capture-central-work-file)
+    "* %U %?\n %i\n %a"
+    :heading "Notes" :prepend t)
+  )
+#+END_SRC
+***** Update list
+#+BEGIN_SRC emacs-lisp
+(after! org-capture
+  (setq org-capture-templates
+        (list
+         (cons "t" my/org-template-personal-todo )
+         (cons "n" my/org-template-personal-note)
 
-          ("p" "Centralized templates for projects")
-          ("pt" "Project todo" entry
-           (function +org-capture-central-project-todo-file)
-           "* TODO %?\n %i\n %a"
-           :heading "Tasks"
-           :prepend nil)
-          ("pn" "Project notes" entry
-           (function +org-capture-central-project-notes-file)
-           "* %U %?\n %i\n %a"
-           :heading "Notes"
-           :prepend t)
-          )))
+         '("w" "Work")
+         (cons "wt" my/org-template-work-todo)
+         (cons "wn" my/org-template-work-note)
+         )))
 #+END_SRC
 *** org-depend
 #+BEGIN_SRC emacs-lisp
