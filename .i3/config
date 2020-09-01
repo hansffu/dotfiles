@@ -5,6 +5,7 @@
 set $mod Mod4
 
 #exec "xrandr --output DP-2 --auto --left-of DP-4 --primary"
+exec [ -x $HOME/.i3/setup_displays.sh ] && $HOME/.i3/setup_displays.sh
 
 # set default desktop layout (default is tiling)
 # workspace_layout tabbed <stacking|tabbed>
@@ -540,3 +541,6 @@ mode "$startemacs" {
     bindsym Escape mode "default"
     bindsym space mode "default"
 }
+
+## Auto start applications
+exec --no-startup-id /usr/bin/dropbox
