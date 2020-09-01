@@ -167,6 +167,26 @@
 (after! typescript
   (setq typescript-indent-level 2))
 #+END_SRC
+** Rescript (ReasonML)
+#+BEGIN_SRC emacs-lisp
+(use-package! reason-mode
+  :mode ("\\.re?s\\'" . reason-mode)
+  :config
+  (after! lsp-mode
+    (lsp-register-client
+     (make-lsp-client :new-connection (lsp-stdio-connection "/usr/bin/reason-language-server")
+                      :major-modes '(reason-mode)
+                      :notification-handlers (ht ("client/registerCapability" 'ignore))
+                      :priority 1
+                      :server-id 'reason-ls)))
+
+  (add-hook 'reason-mode-local-vars-hook #'lsp!)
+  )
+#+END_SRC
+** GraphQL
+#+BEGIN_SRC emacs-lisp
+(use-package! graphql-mode)
+#+END_SRC
 * Fun
 ** Speed types
 #+BEGIN_SRC
