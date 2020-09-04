@@ -29,3 +29,32 @@
   (cond ((fboundp 'slack-change-current-team)
          (call-interactively 'slack-change-current-team))
         (t (call-interactively 'slack-start))))
+
+;;;###autoload
+(defun +slack/register-hydra ()
+  (defhydra +slack/hydra (:hint nil :exit t)
+    "
+^Browse^       ^Select^       ^Other^
+------------------------------------
+_i_: im        _T_: team      _R_ restart
+_c_: channel
+_g_: group
+_t_: threads
+_u_: unread
+"
+    ("i" slack-im-select)
+    ("c" slack-channel-select)
+    ("g" slack-group-select)
+    ("t" slack-all-threads)
+    ("u" slack-all-unreads)
+    ("T" slack-team-select)
+    ("R" +slack/start)))
+
+;;;###autoload
+(defun +slack/start ()
+  (interactive)
+  (slack-start)
+  (+slack/register-hydra)
+
+  (global-set-key [remap +slack/start] #'+slack/hydra/body)
+  (+slack/hydra/body))

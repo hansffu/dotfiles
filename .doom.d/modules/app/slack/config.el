@@ -8,10 +8,8 @@
 
   (map! :leader
         :prefix ("a" . "Applications")
-        (:prefix ("s" . "Slack")
-          :desc "select im" "i" #'+slack/im-select
-          "t" #'+slack/team-select
-          ))
+        :desc "Slack" "s" #'+slack/start)
+
   (map! :after slack
         :map slack-mode-map
         :localleader
@@ -41,3 +39,43 @@
 ;; "3" 'slack-message-embed-channel
 ;; "\C-n" 'slack-buffer-goto-next-message
 ;; "\C-p" 'slack-buffer-goto-prev-message
+(after! slack
+  (defun +slack/im-user-name (team im)
+    (funcall (-compose
+              (-rpartial 'slack-user--name team)
+              (-rpartial 'slack-user--find team))
+             (oref im user)))
+
+  (defun +slack/channel-name (channel)
+    (oref channel name))
+
+  (defun +slack/group-name (group)
+    (oref group name))
+
+  (let* ((team (slack-team-select))
+         (channels (slack-team-channels team))
+         (groups (slack-team-groups team))
+         (ims (slack-team-ims team))
+         )
+    (append
+     (--map (+slack/im-user-name team it) ims)
+     (--map (+slack/channel-name it) channels)
+     (--map (+slack/group-name it) groups)
+     )
+    )
+
+  (when (featurep! hydra)
+
+    )
+)
+
+(after! alert
+    ;; configure pomodoro alerts to use growl or libnotify
+  (alert-add-rule :category "slack"
+                  :style (cond (alert-growl-command
+                                'growl)
+                               (alert-notifier-command
+                                'notifier)
+                               (alert-libnotify-command
+                                'libnotify)
+                               (alert-default-style))))
