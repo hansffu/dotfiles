@@ -161,6 +161,11 @@
 #+END_SRC
 ** Mail (mu4e)
 #+INCLUDE: "./email.el" src emacs-lisp
+** Calendar
+Monday is first day of the week
+#+BEGIN_SRC emacs-lisp
+(setq calendar-week-start-day 1)
+#+END_SRC
 * Languages
 ** typescript
 #+BEGIN_SRC emacs-lisp
