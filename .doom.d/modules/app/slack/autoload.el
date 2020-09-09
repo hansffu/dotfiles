@@ -4,7 +4,7 @@
 (defun +slack/register-authinfo-teams nil
   "Register teams for all entries in authinfo with :host slack"
   (defun register-team (entry)
-    (print (plist-get entry :secret))
+    (message (plist-get entry :user))
     (slack-register-team
      :name (plist-get entry :user)
      :default t
@@ -12,7 +12,7 @@
      :full-and-display-names t))
 
 
-  (mapcar 'register-team (auth-source-search :host "slack")))
+  (mapcar 'register-team (auth-source-search :host "slack" :max 5)))
 
 
 ;;;###autoload
@@ -47,7 +47,7 @@ _u_: unread
     ("g" slack-group-select)
     ("t" slack-all-threads)
     ("u" slack-all-unreads)
-    ("T" slack-team-select)
+    ("T" slack-change-current-team)
     ("R" +slack/start)))
 
 ;;;###autoload
