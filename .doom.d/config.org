@@ -84,14 +84,44 @@
   (refresh-org-agenda-files))
 #+END_SRC
 *** org-capture
+Just call this to get the functions in dooms autoload file into context
 #+BEGIN_SRC emacs-lisp
-(defvar +org-capture-inbox-file "inbox.org")
-
 (after! org-capture
-  (setq org-default-notes-file
-        (expand-file-name +org-capture-notes-file org-directory)
-        +org-capture-journal-file
-        (expand-file-name +org-capture-journal-file org-directory)))
+(defun +org--capture-ensure-heading (headings &optional initial-level)
+  (if (not headings)
+      (widen)
+    (let ((initial-level (or initial-level 1)))
+      (if (and (re-search-forward (format org-complex-heading-regexp-format
+                                          (regexp-quote (car headings)))
+                                  nil t)
+               (= (org-current-level) initial-level))
+          (progn
+            (beginning-of-line)
+            (org-narrow-to-subtree))
+        (goto-char (point-max))
+        (unless (and (bolp) (eolp)) (insert "\n"))
+        (insert (make-string initial-level ?*)
+                " " (car headings) "\n")
+        (beginning-of-line 0))
+      (+org--capture-ensure-heading (cdr headings) (1+ initial-level)))))
+
+(defun +org--capture-central-file (file project)
+  (let ((file (expand-file-name file org-directory)))
+    (set-buffer (org-capture-target-buffer file))
+    (org-capture-put-target-region-and-position)
+    (widen)
+    (goto-char (point-min))
+    ;; Find or create the project headling
+    (+org--capture-ensure-heading
+     (append (org-capture-get :parents)
+             (list project (org-capture-get :heading))))))
+  )
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;;;###autoload
+(defun org-central (file-name)
+  (expand-file-name file-name org-directory))
 #+END_SRC
 **** Templates
 ***** Template strings
@@ -100,59 +130,95 @@
 (defvar my/org-template-note-string "* %U %?\n %i\n %a")
 #+END_SRC
 
-***** Personal
-****** todo
+***** Centralized projects
+Project entries should go in projects.org file under ~projectile-project-name~ headline
 #+BEGIN_SRC emacs-lisp
-(defvar my/org-template-personal-todo
-  '("Personal todo"
-    entry (file+headline +org-capture-todo-file "Inbox")
-    "** TODO %?\n%i\n%a"
-    :prepend t))
-#+END_SRC
-****** note
-#+BEGIN_SRC emacs-lisp
-(defvar my/org-template-personal-note
-  '("Personal notes"
-    entry (file org-default-notes-file)
-    "* %U %?\n %i\n %a"))
-#+END_SRC
-***** Work
-#+BEGIN_SRC emacs-lisp
-(defun +org-capture-central-work-file ()
+(defun +org-capture-central-project-file ()
   "File for project notes and tasks"
-  (+org--capture-central-file
-   "work.org" (projectile-project-name)))
+  (+org--capture-central-file "projects.org" (projectile-project-name)))
 #+END_SRC
 ****** todo
+Todos goes under ~Tasks~
 #+BEGIN_SRC emacs-lisp
-(defvar my/org-template-work-todo
-  '("Project todo"
-    entry (function +org-capture-central-work-file)
+(defun my/org-template-project-todo ()
+  '("Projects"
+    entry (function +org-capture-central-project-file)
     "** TODO %?\n%i\n%a"
-    :heading "Tasks" :prepend nil)
-  )
+    :heading "Tasks" :prepend nil))
 #+END_SRC
 ****** note
+~ Notes goes under ~notes~
 #+BEGIN_SRC emacs-lisp
-(defvar my/org-template-work-note
+(defun my/org-template-project-note ()
   '("Project notes"
-    entry (function +org-capture-central-work-file)
+    entry (function +org-capture-central-project-file)
     "* %U %?\n %i\n %a"
     :heading "Notes" :prepend t)
   )
+#+END_SRC
+***** Personal
+#+BEGIN_SRC emacs-lisp
+(defun +org-capture-personal-inbox ()
+  "Personal capture inbox for notes and tasks"
+  (+org--capture-central-file "private.org" "Inbox"))
+#+END_SRC
+****** todo
+#+BEGIN_SRC emacs-lisp
+(defun my/org-template-personal-todo ()
+      `("Personal todo"
+        entry (function +org-capture-personal-inbox)
+        ;; entry (function (+org--capture-central-file "private.org" "Inbox"))
+        "** TODO %?\n%i\n%a"
+        :heading "Tasks" :prepend nil))
+#+END_SRC
+****** note
+#+BEGIN_SRC emacs-lisp
+(defun my/org-template-personal-note ()
+      `("Personal notes"
+        entry (function +org-capture-personal-inbox)
+        "* %U %?\n %i\n %a"
+        :heading "Notes" :prepend t)
+      )
+#+END_SRC
+***** Work
+#+BEGIN_SRC emacs-lisp
+(defun +org-capture-work-inbox ()
+  "Personal capture inbox for notes and tasks"
+  (+org--capture-central-file "work.org" "Inbox"))
+#+END_SRC
+****** todo
+#+BEGIN_SRC emacs-lisp
+(defun my/org-template-work-todo ()
+      `("Work todo"
+        entry (function +org-capture-work-inbox)
+        "** TODO %?\n%i\n%a"
+        :heading "Tasks" :prepend nil))
+#+END_SRC
+****** note
+#+BEGIN_SRC emacs-lisp
+(defun my/org-template-work-note ()
+      `("Work notes"
+        entry (function +org-capture-work-inbox)
+        "* %U %?\n %i\n %a"
+        :heading "Tasks" :prepend t)
+      )
 #+END_SRC
 ***** Update list
 #+BEGIN_SRC emacs-lisp
 (after! org-capture
   (setq org-capture-templates
-        (list
-         (cons "t" my/org-template-personal-todo )
-         (cons "n" my/org-template-personal-note)
+        `(
+          ("t" . ,(my/org-template-personal-todo))
+          ("n" . ,(my/org-template-personal-note))
 
-         '("w" "Work")
-         (cons "wt" my/org-template-work-todo)
-         (cons "wn" my/org-template-work-note)
-         )))
+          ("p" "Project")
+          ("pt" . ,(my/org-template-project-todo))
+          ("pn" . ,(my/org-template-project-note))
+
+          ("w" "Work")
+          ("wt" . ,(my/org-template-work-todo))
+          ("wn" . ,(my/org-template-work-note))
+          )))
 #+END_SRC
 *** org-depend
 #+BEGIN_SRC emacs-lisp
