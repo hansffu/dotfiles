@@ -231,6 +231,9 @@ Todos goes under ~Tasks~
 Monday is first day of the week
 #+BEGIN_SRC emacs-lisp
 (setq calendar-week-start-day 1)
+(map!
+(:leader :prefix-map ("o" . "open")
+ :desc "calendar" "c" #'=calendar))
 #+END_SRC
 * Languages
 ** typescript
