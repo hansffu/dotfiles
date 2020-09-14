@@ -83,7 +83,7 @@ plugins=(
   osx
   vscode
   mvn
-  # vi-mode
+  vi-mode
   zsh-autosuggestions
 )
 
@@ -101,7 +101,7 @@ source $ZSH/oh-my-zsh.sh
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='emacs -nw'
 else
-  export EDITOR='emacs'
+  export EDITOR='emacsclient -n -c -a "emacs"'
 fi
 
 # Compilation flags
@@ -140,10 +140,9 @@ PATH=$LOCAL_PATH:$HOME/.dotfiles/utils/bin:$HOME/.dotfiles/macos/scripts:$PATH
 #VI-MODE
 bindkey -M viins 'jk' vi-cmd-mode
 
-alias e='emacsclient -c'
 
 #source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
+alias magit="i3-swallow emacsclient -c -e \(magit-status\)"
 alias e="emacsclient -n -c -a \"emacs\""
 export EDITOR=emacs
 
@@ -151,3 +150,38 @@ export EDITOR=emacs
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+###VTERM###
+vterm_printf(){
+    if [ -n "$TMUX" ]; then
+        # Tell tmux to pass the escape sequences through
+        # (Source: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/1324)
+        printf "\ePtmux;\e\e]%s\007\e\\" "$1"
+    elif [ "${TERM%%-*}" = "screen" ]; then
+        # GNU screen (screen, screen-256color, screen-256color-bce)
+        printf "\eP\e]%s\007\e\\" "$1"
+    else
+        printf "\e]%s\e\\" "$1"
+    fi
+}
+
+
+vterm_cmd() {
+    local vterm_elisp
+    vterm_elisp=""
+    while [ $# -gt 0 ]; do
+        vterm_elisp="$vterm_elisp""$(printf '"%s" ' "$(printf "%s" "$1" | sed -e 's|\\|\\\\|g' -e 's|"|\\"|g')")"
+        shift
+    done
+    vterm_printf "51;E$vterm_elisp"
+}
+
+find_file() {
+    vterm_cmd find-file "$(realpath "$@")"
+}
+
+vterm_prompt_end() {
+    vterm_printf "51;A$(whoami)@$(hostname):$(pwd)";
+}
+setopt PROMPT_SUBST
+PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
