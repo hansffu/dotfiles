@@ -54,3 +54,4 @@
 (package! reason-mode)
 (package! graphql-mode)
 (package! org-jira)
+(package! org-super-agenda)

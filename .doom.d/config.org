@@ -85,6 +85,26 @@
 (after! org-agenda
   (advice-add  'org-agenda-redo :around #'refresh-org-agenda-advice)
   (refresh-org-agenda-files))
+
+#+END_SRC
+**** org-super-agenda
+#+BEGIN_SRC emacs-lisp
+(use-package! org-super-agenda
+  :config
+  (org-super-agenda-mode)
+
+  (setq org-agenda-start-day nil)
+  (setq org-agenda-span 'day)
+  (setq org-agenda-current-span 'day)
+  (setq org-super-agenda-header-map (make-sparse-keymap))
+  (setq org-super-agenda-groups
+        '((:name "JIRA-issues"
+           :category "my-issues")
+          (:name "Privat"
+           :category "private")
+          (:name "Jobb"
+           :category "work")
+          )))
 #+END_SRC
 *** org-capture
 Copied from doom org-capture autoload. Should figure out a better way to do this
