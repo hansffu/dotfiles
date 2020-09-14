@@ -70,7 +70,12 @@
 *** org-agenda
 #+BEGIN_SRC emacs-lisp
 (defun refresh-org-agenda-files ()
-  (setq org-agenda-files (directory-files-recursively org-directory "\.org$")))
+  (setq org-agenda-files
+        (append
+         (directory-files-recursively org-directory "\.org$")
+         (if (boundp 'org-jira-working-dir)
+             (directory-files-recursively org-jira-working-dir "\.org$")
+           '()))))
 
 (defun refresh-org-agenda-advice (orig-fun &rest args)
   (message "Refresh org-agenda files")
