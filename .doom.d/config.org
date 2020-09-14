@@ -218,6 +218,8 @@ Todos goes under ~Tasks~
 (after! org
   (require 'org-depend))
 #+END_SRC
+*** org-jira
+#+INCLUDE: "./jira.el" src emacs-lisp
 ** Mail (mu4e)
 #+INCLUDE: "./email.el" src emacs-lisp
 ** Calendar

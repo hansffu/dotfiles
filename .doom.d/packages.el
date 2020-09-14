@@ -53,3 +53,4 @@
 (package! speed-type)
 (package! reason-mode)
 (package! graphql-mode)
+(package! org-jira)
