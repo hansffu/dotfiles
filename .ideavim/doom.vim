@@ -30,3 +30,5 @@ source ~/.ideavim/modules/idea.vim
 source ~/.ideavim/modules/git.vim
 source ~/.ideavim/modules/buffer.vim
 source ~/.ideavim/modules/errors.vim
+source ~/.ideavim/modules/window.vim
+source ~/.ideavim/modules/open.vim
