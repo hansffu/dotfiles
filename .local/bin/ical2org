@@ -384,7 +384,7 @@ BEGIN {
             if (condense)
                 print "* " statusKeyword " <" date "> " gensub("^[ ]+", "", "", unescape(summary, 0))
             else
-                print "* " statusKeyword " " gensub("^[ ]+", "", "g", unescape(summary, 0))
+                print "* " gensub("^[ ]+", "", "g", unescape(summary, 0))
 
             if (!condense)
                  print "SCHEDULED: <" date ">"
