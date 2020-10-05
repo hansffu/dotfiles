@@ -29,6 +29,9 @@ set_remaining_time() {
     TIME_REMAINING=$(emacsclient --eval '(org-pomodoro-format-seconds)')
     TIME_REMAINING="${TIME_REMAINING%\"}" # Bash trick to remove leading and trailing quotes
     TIME_REMAINING="${TIME_REMAINING#\"}"
+    SHORT_TIME=`echo ${TIME_REMAINING} | cut -c1-3`
+
+    TIME_REMAINING="${SHORT_TIME} min"
 }
 
 set_task_at_hand() {
