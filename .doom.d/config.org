@@ -64,6 +64,11 @@
 (setq mac-command-modifier 'meta)
 (setq mac-option-modifier nil)
 #+END_SRC
+** Clear authinfo cache
+Somewhere this is filled with trash. Clear it
+#+BEGIN_SRC emacs-lisp
+(after! auth-source (auth-source-forget-all-cached) )
+#+END_SRC
 * Keybindings
 * Plugin configuration
 ** Org mode
@@ -93,22 +98,71 @@
   :config
   (org-super-agenda-mode)
 
-  (setq org-agenda-start-day nil)
-  (setq org-agenda-span 'day)
-  (setq org-agenda-current-span 'day)
-  (setq org-super-agenda-header-map (make-sparse-keymap))
-  (setq org-super-agenda-groups
-        '(
-          (:name "Today"
-           :time-grid t
-           :todo "TODAY")
-          (:name "JIRA-issues"
-           :category "my-issues")
-          (:name "Privat"
-           :category "private")
-          (:name "Jobb"
-           :category "work")
-          )))
+  ;; (setq org-agenda-start-day nil)
+  ;; (setq org-agenda-span 'day)
+  ;; (setq org-agenda-current-span 'day)
+  (setq org-super-agenda-header-map (make-sparse-keymap)
+        org-agenda-start-day nil
+        ;; org-agenda-time-grid '((daily today require-timed) "----------------------" nil)
+        org-agenda-time-grid '((daily today require-timed)
+                               (800 1000 1200 1400 1600 1800 2000)
+                               "......" "----------------")
+        org-agenda-skip-scheduled-if-done t
+        org-agenda-skip-deadline-if-done t
+        org-agenda-include-deadlines t
+        org-agenda-include-diary t
+        org-agenda-block-separator nil
+        org-agenda-compact-blocks t
+        org-agenda-start-with-log-mode t
+
+        )
+  (setq org-agenda-custom-commands
+        '(("n" "Todays schedule"
+           ((alltodo "" ((org-agenda-span 'day)
+                         (org-super-agenda-groups
+                          '((:name "JIRA-issues"
+                             :category "my-issues")
+                            (:name "Deadline today"
+                             :deadline today)
+                            (:name "Work"
+                             :and (:category "work"
+                                   :scheduled today ))
+                            (:name "Private"
+                             :and (:category "private"
+                                   :scheduled today ))
+                            (:discard (:scheduled t))
+                            ))))
+            (agenda "" ((org-agenda-span 'day)
+                        (org-super-agenda-groups
+                         '((:name "Today"
+                            :time-grid t
+                            :date t
+                            :scheduled t)))))))
+          ("y" "yesterday"
+           ((alltodo "" ((org-agenda-span 'day)
+                         (org-super-agenda-groups
+                          '((:name "Clocked in"
+                             :log t)
+                            ))))
+            ))))
+  ;; (setq org-super-agenda-groups
+  ;;       '(
+
+  ;;         (:name "JIRA-issues"
+  ;;          :category "my-issues")
+  ;;         (:name "Privat"
+  ;;          :category "private")
+  ;;         (:name "Jobb"
+  ;;          :category "work")
+  ;;         (:name "Today"
+  ;;          :time-grid t
+  ;;          :date today
+  ;;          :todo "TODAY"
+  ;;          :scheduled today
+  ;;          :order 1
+  ;;          )
+  ;;         ))
+  )
 #+END_SRC
 *** org-capture
 Copied from doom org-capture autoload. Should figure out a better way to do this
@@ -249,6 +303,10 @@ Todos goes under ~Tasks~
 #+END_SRC
 *** org-jira
 #+INCLUDE: "./jira.el" src emacs-lisp
+*** ical2org
+#+BEGIN_SRC emacs-lisp
+(use-package! ical2org)
+#+END_SRC
 ** Mail (mu4e)
 #+INCLUDE: "./email.el" src emacs-lisp
 ** Calendar

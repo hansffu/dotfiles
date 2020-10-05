@@ -55,3 +55,6 @@
 (package! graphql-mode)
 (package! org-jira)
 (package! org-super-agenda)
+
+(package! ical2org
+  :recipe (:host github :repo "hansffu/ical2org.el"))
