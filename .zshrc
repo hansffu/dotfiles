@@ -124,7 +124,7 @@ export TERM="xterm-256color"
 
 #PATH="$PATH:/home/hansffu/Android/Sdk/platform-tools/"
 #PATH=$HOME/.cabal/bin:$HOME/.local/bin:/home/hansffu/Android/Sdk/platform-tools/:$HOME/.gem/ruby/2.6.0/bin:$PATH
-LOCAL_PATH="/home/hansffu/.scripts/jetbrains:/home/hansffu/.emacs.d/bin"
+LOCAL_PATH="$HOME/.scripts/jetbrains:$HOME/.emacs.d/bin"
 
 PATH=$LOCAL_PATH:$HOME/.dotfiles/utils/bin:$HOME/.dotfiles/macos/scripts:$PATH
 
