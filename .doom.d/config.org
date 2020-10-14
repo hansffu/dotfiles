@@ -113,7 +113,7 @@ Somewhere this is filled with trash. Clear it
         org-agenda-include-diary t
         org-agenda-block-separator nil
         org-agenda-compact-blocks t
-        org-agenda-start-with-log-mode t
+        org-agenda-start-with-log-mode nil
 
         )
   (setq org-agenda-custom-commands
@@ -121,7 +121,9 @@ Somewhere this is filled with trash. Clear it
            ((alltodo "" ((org-agenda-span 'day)
                          (org-super-agenda-groups
                           '((:name "JIRA-issues"
-                             :category "my-issues")
+                             ;; :category "my-issues"
+                             :file-path "/.org-jira/"
+                             )
                             (:name "Deadline today"
                              :deadline today)
                             (:name "Work"
