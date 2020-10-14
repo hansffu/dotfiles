@@ -59,15 +59,24 @@
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
 
-(setq mac-option-key-is-meta nil)
-(setq mac-command-key-is-meta t)
-(setq mac-command-modifier 'meta)
-(setq mac-option-modifier nil)
 #+END_SRC
 ** Clear authinfo cache
 Somewhere this is filled with trash. Clear it
 #+BEGIN_SRC emacs-lisp
 (after! auth-source (auth-source-forget-all-cached) )
+#+END_SRC
+** Mac fixes
+*** Fix mac modifiers
+#+BEGIN_SRC emacs-lisp
+(setq mac-option-key-is-meta nil)
+(setq mac-command-key-is-meta t)
+(setq mac-command-modifier 'meta)
+(setq mac-option-modifier nil)
+#+END_SRC
+*** Fix frame size
+To make sure frame has correct size on yabai
+#+BEGIN_SRC emacs-lisp
+(setq frame-resize-pixelwise t)
 #+END_SRC
 * Keybindings
 * Plugin configuration
