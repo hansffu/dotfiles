@@ -362,8 +362,53 @@ Monday is first day of the week
 #+END_SRC
 ** GraphQL
 #+BEGIN_SRC emacs-lisp
-(use-package! graphql-mode)
+(use-package! graphql-mode
+  :hook
+  (graphql-mode . lsp!)
+  :config
+  (after! lsp-mode
+    (setq lsp-log-io t)
+
+    (defcustom lsp-vscode-graphql-debug nil "Enable debug logs" :type
+      '(repeat boolean))
+    (defcustom lsp-vscode-graphql-trace-server "off" "Enable tracing for language server" :type
+      '(repeat string))
+    (defcustom lsp-vscode-graphql-show-exec-codelens t "Show codelens to execute operations inline" :type 'boolean)
+    (defcustom lsp-vscode-graphql-use-schema-file-definitions nil "Use local SDL/IDL files for definition lookups. Default is to use generated_schema.graphql from GraphQL Config settings for definitions" :type 'boolean)
+    (defcustom lsp-graphql-config-load-root-dir nil "Base dir for graphql config loadConfig()" :type
+      '(repeat string))
+    (defcustom lsp-graphql-config-load-file-path nil "filePath for graphql config loadConfig()" :type
+      '(repeat string))
+    (defcustom lsp-graphql-config-load-legacy nil "legacy mode for graphql config v2 config" :type 'boolean)
+    (defcustom lsp-graphql-config-load-config-name nil "optional <configName>.config.js instead of default `graphql`" :type
+      '(repeat string))
+    (defcustom lsp-graphql-config-dot-env-path nil "optional .env load path, if not the default" :type
+      '(repeat string))
+    (lsp-register-custom-settings
+     '(("graphql-config.dotEnvPath" lsp-graphql-config-dot-env-path)
+       ("graphql-config.load.configName" lsp-graphql-config-load-config-name)
+       ("graphql-config.load.legacy" lsp-graphql-config-load-legacy t)
+       ("graphql-config.load.filePath" lsp-graphql-config-load-file-path)
+       ("graphql-config.load.rootDir" lsp-graphql-config-load-root-dir)
+       ("vscode-graphql.useSchemaFileDefinitions" lsp-vscode-graphql-use-schema-file-definitions t)
+       ("vscode-graphql.showExecCodelens" lsp-vscode-graphql-show-exec-codelens t)
+       ("vscode-graphql.trace.server" lsp-vscode-graphql-trace-server)
+       ("vscode-graphql.debug" lsp-vscode-graphql-debug)))
+    (lsp-register-client
+     (make-lsp-client :new-connection
+                      (lsp-tcp-connection (lambda (port) `("graphql-lsp" "server" "-m" "socket" "-p" ,(number-to-string port))))
+                      :major-modes '(graphql-mode)
+                      :initialization-options (lambda () `())
+                      :server-id 'graphql))
+    (add-to-list 'lsp-language-id-configuration '(graphql-mode . "graphql"))
+    (lsp-enable-which-key-integration 'graphql-mode)
+    )
+  )
 #+END_SRC
+
+#+RESULTS:
+: t
+
 * Fun
 ** Speed types
 #+BEGIN_SRC
