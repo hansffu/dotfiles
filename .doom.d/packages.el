@@ -56,7 +56,8 @@
 
 (package! graphql-mode)
 (package! ob-graphql)
-(package! org-tanglesync)
+(package! org-tanglesync
+  :disable t)
 
 (package! org-jira)
 (package! org-super-agenda)
