@@ -51,8 +51,13 @@
 ;(package! builtin-package :recipe (:branch "develop"))
 
 (package! speed-type)
+
 (package! reason-mode)
+
 (package! graphql-mode)
+(package! ob-graphql)
+(package! org-tanglesync)
+
 (package! org-jira)
 (package! org-super-agenda)
 

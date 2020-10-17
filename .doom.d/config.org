@@ -320,6 +320,20 @@ Todos goes under ~Tasks~
 #+BEGIN_SRC emacs-lisp
 (use-package! ical2org)
 #+END_SRC
+*** org tanglesync
+#+BEGIN_SRC emacs-lisp
+(use-package! org-tanglesync
+  :hook ((org-mode . org-tanglesync-mode)
+         ;; enable watch-mode globally:
+         ((prog-mode text-mode) . org-tanglesync-watch-mode))
+  :init
+  (setq org-tanglesync-watch-files '("~/code/technipfmc/access-management/pentest/pentest.org")
+        org-tanglesync-watch-mode 1)
+
+  :bind
+  (( "C-c M-i" . org-tanglesync-process-buffer-interactive)
+   ( "C-c M-a" . org-tanglesync-process-buffer-automatic)))
+#+END_SRC
 ** Mail (mu4e)
 #+INCLUDE: "./email.el" src emacs-lisp
 #+BEGIN_SRC emacs-lisp
@@ -404,10 +418,9 @@ Monday is first day of the week
     (lsp-enable-which-key-integration 'graphql-mode)
     )
   )
+(use-package! ob-graphql)
 #+END_SRC
 
-#+RESULTS:
-: t
 
 * Fun
 ** Speed types
