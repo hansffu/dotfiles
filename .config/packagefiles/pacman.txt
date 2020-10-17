@@ -1,0 +1,16 @@
+alacritty
+aspell
+aspell-en
+aspell-nb
+discord
+docker
+docker-compose
+lastpass-cli
+ripgrep
+rofi
+the_silver_searcher
+tree
+unzip
+yarn
+yay
+zip

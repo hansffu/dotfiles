@@ -1,0 +1,10 @@
+cask
+dropbox
+emacs-native-comp-git
+i3-swallow
+jetbrains-toolbox
+reason-language-server
+spotify
+teams
+terraform-lsp
+yadm-git
