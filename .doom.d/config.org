@@ -80,6 +80,10 @@ To make sure frame has correct size on yabai
 #+END_SRC
 * Keybindings
 * Plugin configuration
+** mmm-mode
+#+BEGIN_SRC emacs-lisp
+(use-package! mmm-mode)
+#+END_SRC
 ** Org mode
 *** Looks
 #+BEGIN_SRC emacs-lisp
@@ -385,28 +389,14 @@ Monday is first day of the week
        :desc "calendar" "c" #'=calendar))
 #+END_SRC
 * Languages
-** typescript
+** Web
+*** typescript
 #+BEGIN_SRC emacs-lisp
 (after! typescript
   (setq typescript-indent-level 2))
 #+END_SRC
-** Rescript (ReasonML)
-#+BEGIN_SRC emacs-lisp
-(use-package! reason-mode
-  :mode ("\\.re?s\\'" . reason-mode)
-  :config
-  (after! lsp-mode
-    (lsp-register-client
-     (make-lsp-client :new-connection (lsp-stdio-connection "/usr/bin/reason-language-server")
-                      :major-modes '(reason-mode)
-                      :notification-handlers (ht ("client/registerCapability" 'ignore))
-                      :priority 1
-                      :server-id 'reason-ls)))
-
-  (add-hook 'reason-mode-local-vars-hook #'lsp!)
-  )
-#+END_SRC
 ** GraphQL
+Set up graphql with lsp
 #+BEGIN_SRC emacs-lisp
 (use-package! graphql-mode
   :hook
@@ -450,10 +440,41 @@ Monday is first day of the week
     (lsp-enable-which-key-integration 'graphql-mode)
     )
   )
+#+END_SRC
+Set up from org mode as well
+#+BEGIN_SRC emacs-lisp
 (use-package! ob-graphql)
 #+END_SRC
+*** Syntax highlight in js/jsx/ts/tsx
+#+BEGIN_SRC emacs-lisp
+(after! (:and graphql-mode mmm-mode)
+  (mmm-add-classes
+   '((ts-graphql
+      :submode graphql-mode
+      :face mmm-declaration-submode-face
+      :front "[^a-zA-Z]gql`" ;; regex to find the opening tag
+      :back "`"))) ;; regex to find the closing tag
+  (mmm-add-mode-ext-class 'typescript-mode nil 'ts-graphql)
+  (setq mmm-global-mode 'maybe)
+  (setq mmm-submode-decoration-level 0)
+  )
+#+END_SRC
+** Rescript (ReasonML)
+#+BEGIN_SRC emacs-lisp
+(use-package! reason-mode
+  :mode ("\\.re?s\\'" . reason-mode)
+  :config
+  (after! lsp-mode
+    (lsp-register-client
+     (make-lsp-client :new-connection (lsp-stdio-connection "/usr/bin/reason-language-server")
+                      :major-modes '(reason-mode)
+                      :notification-handlers (ht ("client/registerCapability" 'ignore))
+                      :priority 1
+                      :server-id 'reason-ls)))
 
-
+  (add-hook 'reason-mode-local-vars-hook #'lsp!)
+  )
+#+END_SRC
 * Fun
 ** Speed types
 #+BEGIN_SRC

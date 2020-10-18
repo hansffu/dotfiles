@@ -67,3 +67,4 @@
 
 (package! ical2org
   :recipe (:host github :repo "hansffu/ical2org.el"))
+(package! mmm-mode)
