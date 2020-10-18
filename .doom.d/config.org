@@ -82,6 +82,18 @@ To make sure frame has correct size on yabai
 * Plugin configuration
 ** Org mode
 *** org-agenda
+**** Popup
+Agenda window shoult show in a popup window
+#+BEGIN_SRC emacs-lisp
+(after! org-agenda
+  (set-popup-rule! "^\\*Org Agenda\\*"
+    :side 'right
+    :size 120
+    :modeline t)
+  )
+#+END_SRC
+**** Agenda files
+Recursively find files in ~org-directory~
 #+BEGIN_SRC emacs-lisp
 (defun refresh-org-agenda-files ()
   (setq org-agenda-files
@@ -106,77 +118,82 @@ To make sure frame has correct size on yabai
 (use-package! org-super-agenda
   :config
   (org-super-agenda-mode)
-
-  ;; (setq org-agenda-start-day nil)
-  ;; (setq org-agenda-span 'day)
-  ;; (setq org-agenda-current-span 'day)
   (setq org-super-agenda-header-map (make-sparse-keymap)
-        org-agenda-start-day nil
-        ;; org-agenda-time-grid '((daily today require-timed) "----------------------" nil)
-        org-agenda-time-grid '((daily today require-timed)
-                               (800 1000 1200 1400 1600 1800 2000)
-                               "......" "----------------")
-        org-agenda-skip-scheduled-if-done t
-        org-agenda-skip-deadline-if-done t
-        org-agenda-include-deadlines t
-        org-agenda-include-diary t
-        org-agenda-block-separator nil
-        org-agenda-compact-blocks t
-        org-agenda-start-with-log-mode nil
-
-        )
-  (setq org-agenda-custom-commands
-        '(("n" "Todays schedule"
-           ((alltodo "" ((org-agenda-span 'day)
-                         (org-super-agenda-groups
-                          '((:name "JIRA-issues"
-                             ;; :category "my-issues"
-                             :file-path "/.org-jira/"
-                             )
-                            (:name "Deadline today"
-                             :deadline today)
-                            (:name "Work"
-                             :and (:category "work"
-                                   :scheduled today ))
-                            (:name "Private"
-                             :and (:category "private"
-                                   :scheduled today ))
-                            (:discard (:scheduled t))
-                            ))))
-            (agenda "" ((org-agenda-span 'day)
-                        (org-agenda-overriding-header "")
-                        (org-super-agenda-groups
-                         '((:name "Today's meetings"
-                            :time-grid t
-                            :not (:tag "my-issues")
-                            ;; :scheduled today
-                            )))))))
-          ("y" "yesterday"
-           ((alltodo "" ((org-agenda-span 'day)
-                         (org-super-agenda-groups
-                          '((:name "Clocked in"
-                             :log t)
-                            ))))
-            ))))
-  ;; (setq org-super-agenda-groups
-  ;;       '(
-
-  ;;         (:name "JIRA-issues"
-  ;;          :category "my-issues")
-  ;;         (:name "Privat"
-  ;;          :category "private")
-  ;;         (:name "Jobb"
-  ;;          :category "work")
-  ;;         (:name "Today"
-  ;;          :time-grid t
-  ;;          :date today
-  ;;          :todo "TODAY"
-  ;;          :scheduled today
-  ;;          :order 1
-  ;;          )
-  ;;         ))
-  )
+        org-agenda-start-with-log-mode t))
 #+END_SRC
+***** Define the groups
+****** Workday
+The workday page will show
+- Jira issues I am currently working on
+- Tasks scheduled for today
+- Other work tasks
+- A timeline of all meetings scheduled today
+  #+BEGIN_SRC emacs-lisp
+(defun my/create-agenda-workday ()
+  '("w" "Workday"
+    ((alltodo "" ((org-agenda-span 'day)
+                  (org-super-agenda-groups
+                   '(
+                     (:name "JIRA-issues"
+                      :file-path "/.org-jira/")
+                     (:name "Today"
+                      :and (:not (:category "private")
+                            :scheduled today))
+                     (:name "Unscheduled"
+                      :category "work")
+                     (:discard (:anything t))
+
+                     ))))
+     (agenda "" ((org-agenda-span 'day)
+                 org-agenda-start-day nil
+                 (org-agenda-overriding-header "")
+                 (org-agenda-time-grid '((daily today require-timed)
+                                         (800 1000 1200 1400 1600 1800 2000)
+                                         "......" "----------------"))
+                 (org-agenda-skip-scheduled-if-done t)
+                 (org-agenda-skip-deadline-if-done t)
+                 (org-agenda-include-deadlines t)
+                 (org-agenda-include-diary t)
+                 (org-agenda-block-separator nil)
+                 (org-agenda-compact-blocks t)
+                 (org-agenda-start-with-log-mode nil)
+                 (org-super-agenda-groups
+                  '((:name "Today's meetings"
+                     :time-grid t
+                     :and (:date today
+                           :not (:tag "my-issues")
+                           )
+                     ;; :scheduled today
+                     )
+                    (:discard (:anything t))))))))
+  )
+  #+END_SRC
+****** Worklog
+Show a timeline of the work I clocked and meetings attended for a given day
+#+BEGIN_SRC emacs-lisp
+(defun my/create-agenda-worklog ()
+  '("l" "Logged work"
+    ((agenda ""
+             ((org-agenda-span 'day)
+              (org-agenda-start-day "-1d")
+              (org-agenda-time-grid '((daily require-timed)
+                                      (800 1000 1200 1400 1600 1800 2000)
+                                      "......" "----------------"))
+              (org-super-agenda-groups
+               '((:name "What I did"
+                  :time-grid t)
+                 (:discard (:anything t)))
+               ))))))
+#+END_SRC
+
+***** And register them
+  #+BEGIN_SRC emacs-lisp
+  (after! org-super-agenda
+    (setq org-agenda-custom-commands
+          (list (my/create-agenda-workday)
+                (my/create-agenda-worklog)
+                )))
+  #+END_SRC
 *** org-capture
 Copied from doom org-capture autoload. Should figure out a better way to do this
 #+BEGIN_SRC emacs-lisp
