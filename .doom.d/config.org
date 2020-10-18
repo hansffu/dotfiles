@@ -388,6 +388,12 @@ Monday is first day of the week
        :prefix-map ("o" . "open")
        :desc "calendar" "c" #'=calendar))
 #+END_SRC
+** Ivy
+#+BEGIN_SRC emacs-lisp
+(when (featurep! :completion ivy)
+  (setq ivy-use-selectable-prompt t)
+  )
+#+END_SRC
 * Languages
 ** Web
 *** typescript
