@@ -120,6 +120,8 @@ Recursively find files in ~org-directory~
   (org-super-agenda-mode)
   (setq org-super-agenda-header-map (make-sparse-keymap)
         org-agenda-start-with-log-mode t))
+(custom-set-faces
+ '(org-super-agenda-header ((t (:inherit org-agenda-structure :foreground  "#a9a1e1")))))
 #+END_SRC
 ***** Define the groups
 ****** Workday
