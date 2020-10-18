@@ -3,8 +3,10 @@
 (use-package! slack
   :commands slack-start
   :init
-  (setq slack-buffer-emojify t) ;; if you want to enable emoji, default nil
-  (setq slack-prefer-current-team t)
+  (setq slack-buffer-emojify t ;; if you want to enable emoji, default nil
+        slack-prefer-current-team t
+        slack-modeline t
+        slack-modeline-count-only-subscribed-channel nil)
 
   (map! :leader
         :prefix ("a" . "Applications")
@@ -29,7 +31,7 @@
   )
 
 (after! alert
-    ;; configure pomodoro alerts to use growl or libnotify
+  ;; configure pomodoro alerts to use growl or libnotify
   (alert-add-rule :category "slack"
                   :style (cond (alert-growl-command
                                 'growl)

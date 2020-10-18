@@ -60,8 +60,8 @@
   :disable t)
 
 (package! org-jira)
-;; (package! ox-jira)
-;; (package! ox-slack)
+(package! ox-jira)
+(package! ox-slack)
 (package! org-super-agenda)
 (package! visual-fill-column)
 

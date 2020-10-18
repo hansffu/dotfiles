@@ -39,12 +39,14 @@
 _i_: im        _T_: team      _R_ restart
 _c_: channel
 _g_: group
-_t_: threads
+_r_: room
+_t_: thread
 _u_: unread
 "
     ("i" slack-im-select)
     ("c" slack-channel-select)
     ("g" slack-group-select)
+    ("r" slack-select-rooms)
     ("t" slack-all-threads)
     ("u" slack-all-unreads)
     ("T" slack-change-current-team)
