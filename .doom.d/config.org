@@ -148,7 +148,10 @@ The workday page will show
                       :file-path "/.org-jira/")
                      (:name "Today"
                       :and (:not (:category "private")
-                            :scheduled today))
+                            :scheduled today)
+                      :and (:not (:category "private")
+                            :scheduled past)
+                      )
                      (:name "Unscheduled"
                       :category "work")
                      (:discard (:anything t))
@@ -393,6 +396,12 @@ Monday is first day of the week
 (when (featurep! :completion ivy)
   (setq ivy-use-selectable-prompt t)
   )
+#+END_SRC
+** Tree sitter
+#+BEGIN_SRC emacs-lisp
+(use-package! tree-sitter
+  :config
+  (require 'tree-sitter-langs))
 #+END_SRC
 * Languages
 ** Web
