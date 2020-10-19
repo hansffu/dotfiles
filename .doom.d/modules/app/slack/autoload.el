@@ -8,6 +8,8 @@
     (slack-register-team
      :name (plist-get entry :user)
      :default t
+     :modeline-enabled t
+     :modeline-name (plist-get entry :user)
      :token (funcall (plist-get entry :secret))
      :full-and-display-names t))
 

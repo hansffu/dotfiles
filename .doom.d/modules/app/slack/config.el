@@ -6,7 +6,9 @@
   (setq slack-buffer-emojify t ;; if you want to enable emoji, default nil
         slack-prefer-current-team t
         slack-modeline t
-        slack-modeline-count-only-subscribed-channel nil)
+        slack-enable-global-mode-string t
+        slack-modeline-formatter #'+slack/modeline-formatter
+        slack-modeline-count-only-subscribed-channel t)
 
   (map! :leader
         :prefix ("a" . "Applications")
