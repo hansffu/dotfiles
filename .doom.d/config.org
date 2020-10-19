@@ -322,6 +322,19 @@ Todos goes under ~Tasks~
         :heading "Tasks" :prepend t)
       )
 #+END_SRC
+***** Annoyance
+Capture annoyances for retro
+#+BEGIN_SRC emacs-lisp
+(defun +org-capture-work-annoyances ()
+  "Personal capture inbox for notes and tasks"
+  (+org--capture-central-file "work.org" "Annoyances"))
+(defun my/org-template-work-annoyance ()
+  `("Annoyances"
+    entry (function +org-capture-work-annoyances)
+    "* %U %?\n %i"
+    :heading ,(format-time-string "Week: %V"))
+  )
+#+END_SRC
 ***** Update list
 #+BEGIN_SRC emacs-lisp
 (after! org-capture
@@ -337,6 +350,7 @@ Todos goes under ~Tasks~
           ("w" "Work")
           ("wt" . ,(my/org-template-work-todo))
           ("wn" . ,(my/org-template-work-note))
+          ("wa" . ,(my/org-template-work-annoyance))
           )))
 #+END_SRC
 *** org-depend
@@ -357,7 +371,7 @@ Todos goes under ~Tasks~
          ;; enable watch-mode globally:
          ((prog-mode text-mode) . org-tanglesync-watch-mode))
   :init
-  (setq org-tanglesync-watch-files '("~/code/technipfmc/access-management/pentest/pentest.org")
+  (setq org-tanglesync-watch-files '("~/code/technipfmc/access-management/pentest/usermutation.org")
         org-tanglesync-watch-mode 1)
 
   :bind
