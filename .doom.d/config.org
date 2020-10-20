@@ -389,14 +389,6 @@ Capture annoyances for retro
 #+END_SRC
 ** Mail (mu4e)
 #+INCLUDE: "./email.el" src emacs-lisp
-#+BEGIN_SRC emacs-lisp
-(after! mu4e
-  (map!
-   :map mu4e-main-mode-map
-   :n "g" #'mu4e~headers-jump-to-maildir
-   )
-  )
-#+END_SRC
 ** Calendar
 Monday is first day of the week
 #+BEGIN_SRC emacs-lisp
@@ -416,6 +408,10 @@ Monday is first day of the week
 (use-package! tree-sitter
   :config
   (require 'tree-sitter-langs))
+#+END_SRC
+** Projectile
+#+BEGIN_SRC emacs-lisp
+(setq projectile-project-search-path '("~/code" "~/code/work"))
 #+END_SRC
 * Languages
 ** Web
