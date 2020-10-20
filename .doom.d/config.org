@@ -413,6 +413,12 @@ Monday is first day of the week
 #+BEGIN_SRC emacs-lisp
 (setq projectile-project-search-path '("~/code" "~/code/work"))
 #+END_SRC
+** Lastpass
+#+BEGIN_SRC emacs-lisp
+(use-package! lastpass
+  :config
+  (setq lastpass-user user-mail-address))
+#+END_SRC
 * Languages
 ** Web
 *** typescript

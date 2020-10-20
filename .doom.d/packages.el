@@ -63,6 +63,7 @@
 (package! ox-slack)
 (package! org-super-agenda)
 (package! visual-fill-column)
+(package! lastpass)
 
 (package! ical2org
   :recipe (:host github :repo "hansffu/ical2org.el"))

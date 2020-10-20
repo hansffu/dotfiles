@@ -7,7 +7,6 @@
         slack-prefer-current-team t
         slack-modeline t
         slack-enable-global-mode-string t
-        slack-modeline-formatter #'+slack/modeline-formatter
         slack-modeline-count-only-subscribed-channel t)
 
   (map! :leader
