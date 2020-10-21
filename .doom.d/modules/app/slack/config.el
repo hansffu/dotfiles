@@ -1,4 +1,5 @@
 ;;; chat/slack/config.el -*- lexical-binding: t; -*-
+(defvar +slack/accounts '())
 
 (use-package! slack
   :commands slack-start
@@ -27,7 +28,7 @@
 
   (set-popup-rule! "^\\*Slack" :size 0.5 :side 'right :select t)
   :config
-  (+slack/register-authinfo-teams)
+  (+slack/register-authinfo-teams +slack/accounts)
 
   )
 

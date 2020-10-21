@@ -158,7 +158,7 @@ The workday page will show
 
                      ))))
      (agenda "" ((org-agenda-span 'day)
-                 org-agenda-start-day nil
+                 (org-agenda-start-day nil)
                  (org-agenda-overriding-header "")
                  (org-agenda-time-grid '((daily today require-timed)
                                          (800 1000 1200 1400 1600 1800 2000)
@@ -204,8 +204,7 @@ Show a timeline of the work I clocked and meetings attended for a given day
   (after! org-super-agenda
     (setq org-agenda-custom-commands
           (list (my/create-agenda-workday)
-                (my/create-agenda-worklog)
-                )))
+                (my/create-agenda-worklog))))
   #+END_SRC
 *** org-capture
 Copied from doom org-capture autoload. Should figure out a better way to do this
@@ -406,6 +405,7 @@ Monday is first day of the week
 ** Tree sitter
 #+BEGIN_SRC emacs-lisp
 (use-package! tree-sitter
+  :defer t
   :config
   (require 'tree-sitter-langs))
 #+END_SRC
@@ -417,7 +417,9 @@ Monday is first day of the week
 #+BEGIN_SRC emacs-lisp
 (use-package! lastpass
   :config
-  (setq lastpass-user user-mail-address))
+  (setq lastpass-user user-mail-address)
+  (lastpass-auth-source-enable)
+)
 #+END_SRC
 * Languages
 ** Web
@@ -478,7 +480,7 @@ Set up from org mode as well
 #+END_SRC
 *** Syntax highlight in js/jsx/ts/tsx
 #+BEGIN_SRC emacs-lisp
-(after! (:and graphql-mode mmm-mode)
+(after! (:and graphql-mode mmm-mode typescript-mode)
   (mmm-add-classes
    '((ts-graphql
       :submode graphql-mode

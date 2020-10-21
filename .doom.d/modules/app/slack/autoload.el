@@ -1,20 +1,20 @@
 ;;; chat/slack/autoload.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
-(defun +slack/register-authinfo-teams nil
-  "Register teams for all entries in authinfo with :host slack"
-  (defun register-team (entry)
-    (message (plist-get entry :user))
+(defun +slack/register-authinfo-team (host)
+  (let ((entry (car (auth-source-search :host host :max 1))))
     (slack-register-team
      :name (plist-get entry :user)
      :default t
      :modeline-enabled t
      :modeline-name (plist-get entry :user)
-     :token (funcall (plist-get entry :secret))
-     :full-and-display-names t))
+     :token (plist-get entry :secret)
+     :full-and-display-names t)))
 
-
-  (mapcar 'register-team (auth-source-search :host "slack" :max 5)))
+;;;###autoload
+(defun +slack/register-authinfo-teams (account-hosts)
+  "Register teams for all entries in auth-source where :host is in ACCOUNT-HOSTS"
+  (mapcar '+slack/register-authinfo-team account-hosts))
 
 
 ;;;###autoload
