@@ -170,6 +170,7 @@ The workday page will show
                  (org-agenda-block-separator nil)
                  (org-agenda-compact-blocks t)
                  (org-agenda-start-with-log-mode nil)
+                 (org-agenda-show-log nil)
                  (org-super-agenda-groups
                   '((:name "Today's meetings"
                      :time-grid t
