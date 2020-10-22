@@ -359,7 +359,24 @@ Capture annoyances for retro
   (require 'org-depend))
 #+END_SRC
 *** org-jira
-#+INCLUDE: "./jira.el" src emacs-lisp
+#+BEGIN_SRC emacs-lisp
+(use-package! org-jira
+  :commands (org-jira-mode org-jira-get-issues org-jira-update-worklogs-from-org-clocks)
+  :init
+  (require 'cl)
+
+  (setq org-jira-working-dir "~/.org-jira"
+        org-jira-use-status-as-todo nil
+        org-jira-done-states '("Done" "Prod" "PROD" "Closed" "Resolved")
+        org-jira-jira-status-to-org-keyword-alist
+        '(("In Progress" . "STRT")
+          ("DEV" . "STRT")
+          ("Demo" . "STRT")
+          ("Pull request" . "HOLD")
+          ("Prod" . "DONE")))
+  (make-directory org-jira-working-dir 'parents)
+  )
+#+END_SRC
 *** ical2org
 #+BEGIN_SRC emacs-lisp
 (use-package! ical2org)
@@ -387,8 +404,6 @@ Capture annoyances for retro
 (use-package visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
 #+END_SRC
-** Mail (mu4e)
-#+INCLUDE: "./email.el" src emacs-lisp
 ** Calendar
 Monday is first day of the week
 #+BEGIN_SRC emacs-lisp

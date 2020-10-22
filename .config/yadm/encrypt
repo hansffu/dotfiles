@@ -1,5 +1,2 @@
 .mbsyncrc
-.doom.d/email.el
 .doom.d/personal.el
-.doom.d/jira.el
-.doom.d/autoload/ical2org.el
