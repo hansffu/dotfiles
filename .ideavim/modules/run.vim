@@ -10,3 +10,5 @@ nnoremap <leader>rk    :action Stop<CR>
 
 nnoremap <leader>rR :action RunClass<cr>
 nnoremap <leader>rD :action DebugClass<cr>
+
+nnoremap <leader>rb :action ToggleLineBreakpoint<cr>

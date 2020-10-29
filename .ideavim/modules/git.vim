@@ -9,3 +9,6 @@ vnoremap <leader>gG    :action ActivateVersionControlToolWindow<CR>
 " Select a VCS operation
 nnoremap <leader>gg    :action Vcs.QuickListPopupAction<CR>
 vnoremap <leader>gg    :action Vcs.QuickListPopupAction<CR>
+
+" blame
+nnoremap <leader>gB    :action Annotate<CR>
