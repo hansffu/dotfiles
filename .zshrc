@@ -146,7 +146,7 @@ alias magit="i3-swallow emacsclient -c -e \(magit-status\)"
 alias e="emacsclient -n -c -a \"emacs\""
 export EDITOR=emacs
 
-[ -s "/home/hansffu/.jabba/jabba.sh" ] && source "/home/hansffu/.jabba/jabba.sh"
+[ -s "$HOME/.jabba/jabba.sh" ] && source "$HOME/.jabba/jabba.sh"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
