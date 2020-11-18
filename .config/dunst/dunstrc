@@ -1,8 +1,9 @@
 [global]
     frame_width = 1
-    frame_color = "#788388"
+    # frame_color = "#282C34"
+    frame_color = "#21242B"
     
-    font = Noto Sans 10
+    font = Noto Sans 11
     
     # Allow a small subset of html markup:
     #   <b>bold</b>
@@ -68,16 +69,16 @@
     # the top and down respectevly.
     # The width can be negative.  In this case the actual width is the
     # screen width minus the width defined in within the geometry option.
-    geometry = "0x4-25+25"
+    geometry = "400x4-25-40"
     
     # Shrink window if it's smaller than the width.  Will be ignored if
     # width is 0.
-    shrink = yes
+    shrink = false
     
     # The transparency of the window.  Range: [0; 100].
     # This option will only work if a compositing windowmanager is
     # present (e.g. xcompmgr, compiz, etc.).
-    transparency = 15
+    transparency = 0
     
     # Don't remove messages, if the user is idle (no mouse or keyboard input)
     # for longer than idle_threshold seconds.
@@ -99,7 +100,7 @@
     # 
     # If this option is set to mouse or keyboard, the monitor option
     # will be ignored.
-    follow = mouse
+    follow = none
     
     # Should a notification popped up from history be sticky or timeout
     # as if it would normally do.
@@ -123,10 +124,10 @@
     
     # Padding between text and separator.
     # padding = 8
-    padding = 8
+    padding = 18
     
     # Horizontal padding.
-    horizontal_padding = 10
+    horizontal_padding = 18
     
     # Define a color for the separator.
     # possible values are:
@@ -181,12 +182,12 @@
 [urgency_low]
     # IMPORTANT: colors have to be defined in quotation marks.
     # Otherwise the "#" and following would be interpreted as a comment.
-    background = "#263238"
+    background = "#282C34"
     foreground = "#556064"
-    timeout = 10
+    timeout = 7
 
 [urgency_normal]
-    background = "#263238"
+    background = "#282C34"
     foreground = "#F9FAF9"
     timeout = 10
 
