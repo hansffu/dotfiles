@@ -1,28 +1,27 @@
 /*-*- mode: css; -*-*/
 
 * {
-  background-color: #282C33;
+  background-color: #282c33;
   border-color: #2e343f;
-  text-color: #B7BECA;
+  text-color: #b7beca;
   spacing: 0;
-  width: 512px;
 }
 
 inputbar {
   border: 0 0 10px 0;
-  children: [prompt,entry];
+  children: [prompt, entry];
 }
 
 prompt {
   padding: 8px;
   border: 0 1px 0 0;
-  color: #3C9CE7;
+  color: #3c9ce7;
 }
 
 textbox {
   background-color: #2e343f;
   border: 0 0 1px 0;
-  border-color: #282C33;
+  border-color: #282c33;
   padding: 8px 16px;
 }
 
@@ -36,14 +35,16 @@ listview {
   scrollbar: false;
 }
 
-element {
-  /* border: 0 0 1px 0; */
-  /* padding: 8px; */
+element-icon {
+  size: 20;
+}
+
+element-text {
+  padding: 8;
 }
 
 element selected {
-  /* background-color: #2e343f; */
-  background-color: #2257A0;
+  background-color: #2257a0;
 }
 window {
   border: 10 5 5 5;

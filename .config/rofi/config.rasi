@@ -1,15 +1,18 @@
 configuration {
- modi: "window,drun,ssh,combi,run";
- theme: "slate";
- font: "hack 10";
- combi-modi: "window,drun,ssh";
+    modi: "window,drun,ssh,combi,run";
+    theme: "slate";
+    font: "hack 10";
+    combi-modi: "drun";
 
-kb-row-up:                      "Up,Control+k,Shift+Tab,Shift+ISO_Left_Tab";
-kb-row-down:                    "Down,Control+j";
-kb-accept-entry:                "Control+m,Return,KP_Enter";
-terminal:                       "mate-terminal";
-kb-remove-to-eol:               "Control+Shift+e";
-kb-mode-next:                   "Shift+Right,Control+Tab,Control+l";
-kb-mode-previous:               "Shift+Left,Control+Shift+Tab,Control+h";
-kb-remove-char-back:            "BackSpace";
+    kb-row-up:                      "Up,Control+k,Shift+Tab,Shift+ISO_Left_Tab";
+    kb-row-down:                    "Down,Control+j";
+    kb-accept-entry:                "Control+m,Return,KP_Enter";
+    terminal:                       "mate-terminal";
+    kb-remove-to-eol:               "Control+Shift+e";
+    kb-mode-next:                   "Shift+Right,Control+Tab,Control+l";
+    kb-mode-previous:               "Shift+Left,Control+Shift+Tab,Control+h";
+    kb-remove-char-back:            "BackSpace";
+
+    show-icons:         true;
+    icon-theme:         "Papirus";
 }
