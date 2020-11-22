@@ -81,3 +81,13 @@
   :recipe (:host github
            :repo "ubolonton/emacs-tree-sitter"
            :files ("langs/*.el" "langs/queries")))
+
+(package! oauth)
+(package! simple-httpd)
+(package! spotify
+  :disable t
+  :recipe (:host github
+           :repo "danielfm/spotify.el"))
+(package! counsel-spotify :disable t)
+
+(package! exwm)

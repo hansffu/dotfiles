@@ -41,7 +41,6 @@
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
 
-
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
@@ -78,6 +77,173 @@ To make sure frame has correct size on yabai
 #+BEGIN_SRC emacs-lisp
 (setq frame-resize-pixelwise t)
 #+END_SRC
+** EXWM
+*** Functions
+Rename buffer to EXWM window name
+#+begin_src emacs-lisp
+(defun my/exwm-update-class ()
+  (exwm-workspace-rename-buffer exwm-class-name))
+#+end_src
+Helper function to start background apps
+#+begin_src emacs-lisp
+(defun my/run-in-background (command)
+  (let ((command-parts (split-string command "[ ]+")))
+    (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
+#+end_src
+
+Extra config after exwm is initialized
+#+begin_src emacs-lisp
+(defun my/exwm-init-hook ()
+  (exwm-workspace-switch-create 1)
+
+  (setq display-time-day-and-date t
+        display-time-24hr-format t)
+  (display-time-mode 1)
+
+  (my/run-in-background "nm-applet")
+  (my/run-in-background "pasystray")
+  (my/run-in-background "blueman-applet")
+  )
+#+end_src
+**** Insert/normal state
+#+begin_src emacs-lisp
+(defun my/exwm-enter-insert-state ()
+  "Simulate insert state by using line mode without passthrough"
+  (interactive)
+  (setq exwm-input-line-mode-passthrough nil)
+  (exwm-input-grab-keyboard)
+  (evil-insert-state))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun my/exwm-enter-normal-state ()
+  "Simulate normal state by using line mode with passthrough, i.e. forward all commands to emacs"
+  (interactive)
+  (setq exwm-input-line-mode-passthrough t)
+  (call-interactively 'exwm-input-grab-keyboard)
+  (evil-normal-state))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun my/exwm-escape ()
+  "Switch to normal state, and cancel possible fullscreen layout.  Also close minibuffer."
+  (interactive)
+  (my/exwm-enter-normal-state)
+  (exwm-layout-unset-fullscreen)
+  (when (active-minibuffer-window)
+    (minibuffer-keyboard-quit)))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun my/exwm-enter-char-mode ()
+  "Enter EXWM char mode."
+  (interactive)
+  (when exwm--id
+    (my/exwm-enter-insert-state)
+    (call-interactively 'exwm-input-release-keyboard)))
+#+end_src
+*** Keybindings
+**** Global keys
+#+begin_src emacs-lisp
+(defun my/exwm-set-global-keys ()
+  (setq exwm-input-global-keys
+        `(
+          ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+          ([?\s-r] . exwm-reset)
+          ([?\C-q] . my/exwm-escape)
+
+          ;; Move between windows
+          ([s-left] . windmove-left)
+          ([s-right] . windmove-right)
+          ([s-up] . windmove-up)
+          ([s-down] . windmove-down)
+          ([?\s- ] . counsel-linux-app)
+
+          ;; Launch applications via shell command
+          ([?\s-&] . (lambda (command)
+                       (interactive (list (read-shell-command "$ ")))
+                       (start-process-shell-command command nil command)))
+
+          ;; Switch workspace
+          ([?\s-w] . exwm-workspace-switch)
+
+          ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+          ,@(mapcar (lambda (i)
+                      `(,(kbd (format "s-%d" i)) .
+                        (lambda ()
+                          (interactive)
+                          (exwm-workspace-switch-create ,i))))
+                    (number-sequence 0 9))))
+  )
+#+end_src
+**** Window management
+#+begin_src emacs-lisp
+(map! :leader
+      (:prefix ("e" . "EXWM")
+       :desc "Reset" "r" #'exwm-reset
+       :desc "Floating hide" "h" #'exwm-floating-hide
+       :desc "Switch workspace" "w" #'exwm-workspace-switch
+       :desc "Add workspace" "a" #'exwm-workspace-add
+       :desc "Delete workspace" "d" #'exwm-workspace-delete
+       :desc "Move workspace" "m" #'exwm-workspace-move
+       :desc "Swap workspace" "s" #'exwm-workspace-swap
+       :desc "Detatch minibuffer" "Md" #'exwm-workspace-detach-minibuffer
+       :desc "Attach minibuffer" "Ma" #'exwm-workspace-attach-minibuffer
+
+       ))
+;; (map! :leader
+;;       (:prefix ("e"  "EXWM")
+;;        :desc "r" #'exwm-reset
+;;        ;; :desc "h" #'exwm-floating-hide
+;;        ;; :desc "w" #'exwm-workspace-switch
+;;        ;; :desc "a" #'exwm-workspace-add
+;;        ;; :desc "d" #'exwm-workspace-delete
+;;        ;; :desc "m" #'exwm-workspace-move
+;;        ;; :desc "s" #'exwm-workspace-swap
+;;        ;; :desc "Md" #'exwm-workspace-detach-minibuffer
+;;        ;; :desc "Ma" #'exwm-workspace-attach-minibuffer
+;;        ) )
+#+end_src
+*** Initialize
+#+begin_src emacs-lisp
+(set-popup-rule! "^\\*EXWM" :ignore t)
+
+(use-package! exwm
+  :config
+  (setq exwm-workspace-number 5)
+
+  (require 'exwm-randr)
+
+  (setq exwm-randr-workspace-output-plist '(1 "DP-2" 4 "DP-4"))
+  (add-hook 'exwm-randr-screen-change-hook
+            (lambda ()
+              (start-process-shell-command
+               "xrandr" nil "xrandr --output DP-2 --auto --left-of DP-4 --primary")))
+
+  (exwm-randr-enable)
+
+  (require 'exwm-systemtray)
+  (exwm-systemtray-enable)
+  (add-hook 'exwm-update-class-hook #'my/exwm-update-class)
+  (add-hook 'exwm-init-hook #'my/exwm-init-hook)
+  (add-hook 'exwm-manage-finish-hook 'exwm/enter-insert-state)
+  (my/exwm-set-global-keys)
+
+  (evil-define-key 'normal exwm-mode-map (kbd "i") 'my/exwm-enter-insert-state)
+  ;; (dolist (k '("<down-mouse-1>" "<down-mouse-2>" "<down-mouse-3>"))
+  ;;   (evil-define-key 'normal exwm-mode-map (kbd k) 'my/exwm-enter-insert-state))
+  ;; (map!
+  ;;  :map exwm-mode-map
+  ;;  ;; :n "SPC" #'doom/leader
+  ;;  ;; :n "i" #'my/exwm-enter-insert-state
+  ;;  :localleader
+  ;;  :desc "Toggle floating" "f" #'exwm-floating-toggle-floating
+  ;;  :desc "Application" "a" #'counsel-linux-app
+  ;;  )
+  ;; (exwm-input-set-key (kbd "M-SPC") 'counsel-linux-app)
+  (exwm-enable)
+  )
+#+end_src
 * Keybindings
 * Plugin configuration
 ** mmm-mode
