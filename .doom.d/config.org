@@ -219,11 +219,11 @@ Extra config after exwm is initialized
 
 (use-package! exwm
   :config
-  (setq exwm-workspace-number 5)
+  (setq exwm-workspace-number 3)
 
   (require 'exwm-randr)
 
-  (setq exwm-randr-workspace-output-plist '(1 "DP-2" 4 "DP-4"))
+  (setq exwm-randr-workspace-output-plist '(1 "DP-2" 2 "DP-4"))
   (add-hook 'exwm-randr-screen-change-hook
             (lambda ()
               (start-process-shell-command
@@ -239,6 +239,13 @@ Extra config after exwm is initialized
   (my/exwm-set-global-keys)
 
   )
+#+end_src
+*** Desktop environment
+Handle media keys and such
+#+begin_src emacs-lisp
+(use-package! desktop-environment
+  :after exwm
+  :config (desktop-environment-mode))
 #+end_src
 * Keybindings
 * Plugin configuration
@@ -599,6 +606,10 @@ Monday is first day of the week
   (lastpass-auth-source-enable)
 )
 #+END_SRC
+** Webkit
+#+begin_src emacs-lisp
+(use-package! webkit)
+#+end_src
 * Languages
 ** Web
 *** typescript
