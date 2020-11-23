@@ -77,7 +77,7 @@ To make sure frame has correct size on yabai
 #+BEGIN_SRC emacs-lisp
 (setq frame-resize-pixelwise t)
 #+END_SRC
-** EXWM
+** COMMENT EXWM
 *** Functions
 **** Utilities
 Rename buffer to EXWM window name
@@ -606,10 +606,6 @@ Monday is first day of the week
   (lastpass-auth-source-enable)
 )
 #+END_SRC
-** Webkit
-#+begin_src emacs-lisp
-(use-package! webkit)
-#+end_src
 * Languages
 ** Web
 *** typescript

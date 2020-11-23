@@ -82,19 +82,6 @@
            :repo "ubolonton/emacs-tree-sitter"
            :files ("langs/*.el" "langs/queries")))
 
-(package! oauth)
-(package! simple-httpd)
-(package! spotify
-  :disable t
-  :recipe (:host github
-           :repo "danielfm/spotify.el"))
-(package! counsel-spotify :disable t)
-
 (package! exwm :disable t)
 (package! desktop-environment :disable t)
 
-(package! webkit
-  :recipe (:type git :host github :repo "akirakyle/emacs-webkit"
-           :branch "main"
-           :files (:defaults "*.js" "*.css" "*.so")
-           :build ("make")))
