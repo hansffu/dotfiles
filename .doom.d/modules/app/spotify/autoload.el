@@ -4,7 +4,6 @@
 (defun +spotify/register-hydra ()
   (defhydra +spotify/hydra (:hint nil)
     "
-%(format \"%s\" spotify-player-status)
 ^Search^                  ^Control^               ^Manage^
 ^^^^^^^^-----------------------------------------------------------------
 _t_: Track               _SPC_: Play/Pause        _+_: Volume up
@@ -32,6 +31,11 @@ _u_: User Playlists      _r_  : Repeat            _d_: Device
 ;;;###autoload
 (defun +spotify/start ()
   (interactive)
+  (setq spotify-transport 'connect
+        spotify-oauth2-client-secret (auth-source-pick-first-password :host "spotify-client-secret" )
+        spotify-oauth2-client-id spotify-client-id
+        counsel-spotify-client-id spotify-client-id
+        counsel-spotify-client-secret (auth-source-pick-first-password :host "spotify-client-secret" ))
   (+spotify/register-hydra)
   (global-set-key [remap +spotify/start] #'+spotify/hydra/body)
   (+spotify/hydra/body)

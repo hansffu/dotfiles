@@ -611,7 +611,13 @@ Monday is first day of the week
 *** typescript
 #+BEGIN_SRC emacs-lisp
 (after! typescript
-  (setq typescript-indent-level 2))
+  (setq typescript-indent-level 2
+        lsp-clients-typescript-log-verbosity "debug"
+        lsp-clients-typescript-plugins
+        (vector
+         (list :name "@vsintellicode/typescript-intellicode-plugin"
+               :location "~/.vscode/extensions/visualstudioexptteam.vscodeintellicode-1.2.10/")))
+  )
 #+END_SRC
 ** GraphQL
 Set up graphql with lsp
