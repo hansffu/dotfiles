@@ -573,6 +573,30 @@ Capture annoyances for retro
 (use-package visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
 #+END_SRC
+*** Integrations
+**** jira/pomodoro
+Insert the task id from last started pomodoro
+#+begin_src emacs-lisp
+(when (featurep! :lang org +pomodoro)
+  (defun my/get-task-id ()
+    (save-window-excursion
+      (org-clock-goto)
+      (cdr (assoc "ID" (org-entry-properties)))))
+
+  (defun my/insert-task-id ()
+    (interactive)
+    (let ((id (my/get-task-id)))
+      (if id (progn
+               (evil-append 1)
+               (insert id)
+               (evil-normal-state)))))
+
+  (map! :leader
+        (:prefix "i"
+         :desc "Task ID" "t" #'my/insert-task-id
+         ))
+  )
+#+end_src
 ** Calendar
 Monday is first day of the week
 #+BEGIN_SRC emacs-lisp
