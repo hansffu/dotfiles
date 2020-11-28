@@ -630,6 +630,10 @@ Monday is first day of the week
   (lastpass-auth-source-enable)
 )
 #+END_SRC
+** Webkit
+#+begin_src emacs-lisp
+(use-package! webkit)
+#+end_src
 * Languages
 ** Web
 *** typescript

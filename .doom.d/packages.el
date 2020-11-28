@@ -85,3 +85,10 @@
 (package! exwm :disable t)
 (package! desktop-environment :disable t)
 
+;; Requires emacs 28
+(package! webkit
+  :disable t
+  :recipe (:host github :repo "akirakyle/emacs-webkit"
+          :branch "main"
+          :files (:defaults "*.js" "*.css" "*.el" "*.so")
+          :build ("make")))
