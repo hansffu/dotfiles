@@ -36,6 +36,7 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Dropbox/org/")
+;; (setq org-roam-directory  "~/Dropbox/org-roam/")
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -276,9 +277,10 @@ Recursively find files in ~org-directory~
   (setq org-agenda-files
         (append
          (directory-files-recursively org-directory "\.org$")
-         (if (boundp 'org-jira-working-dir)
-             (directory-files-recursively org-jira-working-dir "\.org$")
-           '()))))
+         ;; (if (boundp 'org-jira-working-dir)
+         ;;     (directory-files-recursively org-jira-working-dir "\.org$")
+         ;;   '())
+         )))
 
 (defun refresh-org-agenda-advice (orig-fun &rest args)
   (message "Refresh org-agenda files")
@@ -534,7 +536,7 @@ Capture annoyances for retro
   :init
   (require 'cl)
 
-  (setq org-jira-working-dir "~/.org-jira"
+  (setq org-jira-working-dir "~/Dropbox/org/roam/org-jira"
         org-jira-use-status-as-todo nil
         org-jira-done-states '("Done" "Prod" "PROD" "Closed" "Resolved")
         org-jira-jira-status-to-org-keyword-alist
