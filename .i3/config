@@ -438,12 +438,12 @@ exec setxkbmap -layout no -option ctrl:nocaps       # Make Caps Lock a Control k
 set $switcher Switcher [hjkl] focus direction, [w] window mode
 bindsym Ctrl+q mode "$switcher"
 mode "$switcher" {
-  bindsym k focus left
+  bindsym m focus left
     bindsym n focus down
     bindsym e focus up
     bindsym i focus right
 
-    bindsym Shift+k move left
+    bindsym Shift+m move left
     bindsym Shift+n move down
     bindsym Shift+e move up
     bindsym Shift+i move right
