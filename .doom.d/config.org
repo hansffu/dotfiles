@@ -36,7 +36,7 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Dropbox/org/")
-;; (setq org-roam-directory  "~/Dropbox/org-roam/")
+(setq org-roam-directory  "~/Dropbox/org/")
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -219,9 +219,11 @@ Extra config after exwm is initialized
 (set-popup-rule! "^\\*EXWM" :ignore t)
 
 (use-package! exwm
-  :config
-  (setq exwm-workspace-number 3)
+  :custom
+  (exwm-workspace-number 3)
+  (exwm-workspace-show-all-buffers t)
 
+  :config
   (require 'exwm-randr)
 
   (setq exwm-randr-workspace-output-plist '(1 "DP-2" 2 "DP-4"))
@@ -316,7 +318,7 @@ The workday page will show
                   (org-super-agenda-groups
                    '(
                      (:name "JIRA-issues"
-                      :file-path "/.org-jira/")
+                      :file-path "/org-jira/")
                      (:name "Today"
                       :and (:not (:category "private")
                             :scheduled today)
@@ -536,13 +538,13 @@ Capture annoyances for retro
   :init
   (require 'cl)
 
-  (setq org-jira-working-dir "~/Dropbox/org/roam/org-jira"
+  (setq org-jira-working-dir "~/Dropbox/org/org-jira"
         org-jira-use-status-as-todo nil
         org-jira-done-states '("Done" "Prod" "PROD" "Closed" "Resolved")
         org-jira-jira-status-to-org-keyword-alist
         '(("In Progress" . "STRT")
-          ("DEV" . "STRT")
-          ("Demo" . "STRT")
+          ("DEV" . "DONE")
+          ("Demo" . "DONE")
           ("Pull request" . "HOLD")
           ("Prod" . "DONE")))
   (make-directory org-jira-working-dir 'parents)
@@ -635,6 +637,26 @@ Monday is first day of the week
 ** Webkit
 #+begin_src emacs-lisp
 (use-package! webkit)
+#+end_src
+** EAF
+#+begin_src emacs-lisp
+(use-package! eaf
+  :config
+  (eaf-setq eaf-browser-dark-mode "false")
+  (eaf-setq eaf-browser-enable-adblocker "true")
+  (ignore-errors (require 'eaf-evil))
+  (map! :leader
+        (:prefix ("e" . "EAF")
+        :desc "Browser" "b" #'eaf-open-browser-with-history
+        )
+        )
+  )
+#+end_src
+** Terminal
+*** vterm
+#+begin_src emacs-lisp
+(when (featurep! :term vterm)
+  (setq vterm-buffer-name-string "vterm: %s"))
 #+end_src
 * Languages
 ** Web

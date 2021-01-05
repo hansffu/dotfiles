@@ -118,6 +118,7 @@ fi
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias laws="aws --endpoint-url=http://localhost:4566 --region=eu-west-1"
 
 export TERM="xterm-256color"
 
@@ -152,36 +153,40 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 ###VTERM###
-vterm_printf(){
-    if [ -n "$TMUX" ]; then
-        # Tell tmux to pass the escape sequences through
-        # (Source: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/1324)
-        printf "\ePtmux;\e\e]%s\007\e\\" "$1"
-    elif [ "${TERM%%-*}" = "screen" ]; then
-        # GNU screen (screen, screen-256color, screen-256color-bce)
-        printf "\eP\e]%s\007\e\\" "$1"
-    else
-        printf "\e]%s\e\\" "$1"
-    fi
-}
+if [[ "$INSIDE_EMACS" = "vterm" ]]; then
+  vterm_printf(){
+      if [ -n "$TMUX" ]; then
+          # Tell tmux to pass the escape sequences through
+          # (Source: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/1324)
+          printf "\ePtmux;\e\e]%s\007\e\\" "$1"
+      elif [ "${TERM%%-*}" = "screen" ]; then
+          # GNU screen (screen, screen-256color, screen-256color-bce)
+          printf "\eP\e]%s\007\e\\" "$1"
+      else
+          printf "\e]%s\e\\" "$1"
+      fi
+  }
 
 
-vterm_cmd() {
-    local vterm_elisp
-    vterm_elisp=""
-    while [ $# -gt 0 ]; do
-        vterm_elisp="$vterm_elisp""$(printf '"%s" ' "$(printf "%s" "$1" | sed -e 's|\\|\\\\|g' -e 's|"|\\"|g')")"
-        shift
-    done
-    vterm_printf "51;E$vterm_elisp"
-}
+  vterm_cmd() {
+      local vterm_elisp
+      vterm_elisp=""
+      while [ $# -gt 0 ]; do
+          vterm_elisp="$vterm_elisp""$(printf '"%s" ' "$(printf "%s" "$1" | sed -e 's|\\|\\\\|g' -e 's|"|\\"|g')")"
+          shift
+      done
+      vterm_printf "51;E$vterm_elisp"
+  }
 
-find_file() {
-    vterm_cmd find-file "$(realpath "$@")"
-}
+  find_file() {
+      vterm_cmd find-file "$(realpath "$@")"
+  }
 
-vterm_prompt_end() {
-    vterm_printf "51;A$(whoami)@$(hostname):$(pwd)";
-}
-setopt PROMPT_SUBST
-PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
+  vterm_prompt_end() {
+      vterm_printf "51;A$(whoami)@$(hostname):$(pwd)";
+  }
+  setopt PROMPT_SUBST
+  PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
+
+  alias ff="find_file"
+fi

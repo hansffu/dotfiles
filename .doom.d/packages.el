@@ -89,6 +89,10 @@
 (package! webkit
   :disable t
   :recipe (:host github :repo "akirakyle/emacs-webkit"
-          :branch "main"
-          :files (:defaults "*.js" "*.css" "*.el" "*.so")
-          :build ("make")))
+           :branch "main"
+           :files (:defaults "*.js" "*.css" "*.el" "*.so")
+           :build ("make")))
+
+(package! eaf
+  :recipe (:host github :repo "manateelazycat/emacs-application-framework"
+           :files ("*.el" "*.py" "core" "app")))
