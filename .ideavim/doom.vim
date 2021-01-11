@@ -8,6 +8,7 @@ set easymotion
 set argtextobj
 set ReplaceWithRegister
 set highlightedyank
+set exchange
 
 set nu
 set rnu
