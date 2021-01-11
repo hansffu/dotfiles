@@ -629,8 +629,10 @@ Monday is first day of the week
 ** Lastpass
 #+BEGIN_SRC emacs-lisp
 (use-package! lastpass
+  :custom
+  (lastpass-user user-mail-address)
+  (lastpass-trust-login t)
   :config
-  (setq lastpass-user user-mail-address)
   (lastpass-auth-source-enable)
 )
 #+END_SRC
