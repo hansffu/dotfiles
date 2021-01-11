@@ -638,20 +638,6 @@ Monday is first day of the week
 #+begin_src emacs-lisp
 (use-package! webkit)
 #+end_src
-** EAF
-#+begin_src emacs-lisp
-(use-package! eaf
-  :config
-  (eaf-setq eaf-browser-dark-mode "false")
-  (eaf-setq eaf-browser-enable-adblocker "true")
-  (ignore-errors (require 'eaf-evil))
-  (map! :leader
-        (:prefix ("e" . "EAF")
-        :desc "Browser" "b" #'eaf-open-browser-with-history
-        )
-        )
-  )
-#+end_src
 ** Terminal
 *** vterm
 #+begin_src emacs-lisp

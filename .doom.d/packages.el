@@ -93,6 +93,3 @@
            :files (:defaults "*.js" "*.css" "*.el" "*.so")
            :build ("make")))
 
-(package! eaf
-  :recipe (:host github :repo "manateelazycat/emacs-application-framework"
-           :files ("*.el" "*.py" "core" "app")))
