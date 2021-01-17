@@ -33,11 +33,6 @@
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-one)
 
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/Dropbox/org/")
-(setq org-roam-directory  "~/Dropbox/org/")
-
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
@@ -257,6 +252,26 @@ Handle media keys and such
 (use-package! mmm-mode)
 #+END_SRC
 ** Org mode
+*** Setup
+#+begin_src emacs-lisp
+(setq org-directory "~/Dropbox/org/")
+
+#+end_src
+*** org-roam
+**** File locations
+Org roam will track all org files
+#+begin_src emacs-lisp
+(setq org-roam-directory  org-directory)
+#+end_src
+but only capture to the roam directory to not create a mess with normal org files
+#+begin_src emacs-lisp
+(setq org-roam-capture-templates
+      '(("d" "default" plain #'org-roam-capture--get-point "%?" :file-name "roam/%<%Y%m%d%H%M%S>-${slug}" :head "#+title: ${title}\n" :unnarrowed t)))
+#+end_src
+**** Setup
+#+begin_src emacs-lisp
+(setq org-roam-graph-viewer nil)
+#+end_src
 *** Looks
 #+BEGIN_SRC emacs-lisp
 (setq org-ellipsis " ▼")
@@ -624,7 +639,8 @@ Monday is first day of the week
 #+END_SRC
 ** Projectile
 #+BEGIN_SRC emacs-lisp
-(setq projectile-project-search-path '("~/code" "~/code/work"))
+(setq projectile-project-search-path '("~/code" "~/code/work")
+      projectile-switch-project-action 'projectile-vterm)
 #+END_SRC
 ** Lastpass
 #+BEGIN_SRC emacs-lisp
