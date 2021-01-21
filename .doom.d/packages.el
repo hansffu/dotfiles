@@ -92,3 +92,4 @@
            :branch "main"
            :files (:defaults "*.js" "*.css" "*.el" "*.so")
            :build ("make")))
+(package! nvm)

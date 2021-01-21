@@ -761,6 +761,12 @@ Monday is first day of the week
 #+end_src
 * Languages
 ** Web
+*** nvm
+#+begin_src emacs-lisp
+(use-package! nvm
+  :config
+  (nvm-use "14"))
+#+end_src
 *** typescript
 #+BEGIN_SRC emacs-lisp
 (after! typescript
