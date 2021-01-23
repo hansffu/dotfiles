@@ -713,6 +713,29 @@ Insert the task id from last started pomodoro
          ))
   )
 #+end_src
+*** Import files
+Copy the file into dropbox and insert a link to it
+#+begin_src emacs-lisp
+(setq my/org-file-import-dir "~/Dropbox/org/filer")
+
+(defun my/import-file ()
+  "Select a file into 'my/org-file-import-dir'"
+  (interactive)
+  (let* ((imported-file-link nil))
+    (save-window-excursion
+      (counsel-find-file "~/")
+      (let* ((old-file-name (file-name-nondirectory (buffer-file-name)))
+             (new-dirname (format "%s/%s" my/org-file-import-dir (format-time-string "%Y%m%d%H%M%S" (current-time) )))
+             (new-file-path (format "%s/%s" new-dirname old-file-name)))
+        (message "%s -> %s" old-file-name new-file-path)
+        (make-directory new-dirname 'parents)
+        (copy-file (buffer-file-name) new-file-path)
+        (setq imported-file (format "[[%s][%s]]" new-file-path old-file-name))
+        ))
+    (insert imported-file))
+  )
+#+end_src
+
 ** Calendar
 Monday is first day of the week
 #+BEGIN_SRC emacs-lisp
