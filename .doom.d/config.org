@@ -725,8 +725,14 @@ Copy the file into dropbox and insert a link to it
     (save-window-excursion
       (counsel-find-file "~/")
       (let* ((old-file-name (file-name-nondirectory (buffer-file-name)))
-             (new-dirname (format "%s/%s" my/org-file-import-dir (format-time-string "%Y%m%d%H%M%S" (current-time) )))
-             (new-file-path (format "%s/%s" new-dirname old-file-name)))
+             (new-dirname (format "%s/%s/%s"
+                                  my/org-file-import-dir
+                                  (format-time-string "%Y" (current-time))
+                                  (format-time-string "%m" (current-time))
+                                  ))
+             (new-file-path (format "%s/%s-%s" new-dirname
+                                    (format-time-string "%Y%m%d%H%M%S" (current-time))
+                                    old-file-name)))
         (message "%s -> %s" old-file-name new-file-path)
         (make-directory new-dirname 'parents)
         (copy-file (buffer-file-name) new-file-path)
