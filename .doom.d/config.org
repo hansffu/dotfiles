@@ -369,6 +369,33 @@ but only capture to the roam directory to not create a mess with normal org file
 #+begin_src emacs-lisp
 (setq org-roam-graph-viewer nil)
 #+end_src
+**** Dailies
+Daily notes goes to ~org/daily~
+#+begin_src emacs-lisp
+(setq org-roam-dailies-directory "daily/")
+#+end_src
+Set up two contexts. One for random notes and another for storing link to capture location
+#+begin_src emacs-lisp
+(setq org-roam-dailies-capture-templates
+      '(("d" "default" entry
+         #'org-roam-capture--get-point
+         "* %?"
+         :file-name "daily/%<%Y-%m-%d>"
+         :head "#+title: %<%Y-%m-%d>\n\n")
+        ("c" "With context" entry
+         #'org-roam-capture--get-point
+         "* %?\n%a"
+         :file-name "daily/%<%Y-%m-%d>"
+         :head "#+title: %<%Y-%m-%d>\n\n")))
+#+end_src
+Probably a temporary fix to make SPC-n-r consistent with SPC-m-m bindings
+#+begin_src emacs-lisp
+(map! :leader
+      (:prefix "n"
+       (:prefix "r"
+        (:prefix "d"
+         :desc "Capture daily" "n" #'org-roam-dailies-capture-today))))
+#+end_src
 *** Looks
 #+BEGIN_SRC emacs-lisp
 (setq org-ellipsis " ▼")
