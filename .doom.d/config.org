@@ -808,6 +808,8 @@ Make sure notes are opened in ~Notes~ workspace
     (+workspace/display)))
 
 (advice-add 'org-roam-find-file :before #'my/switch-to-notes-workspace)
+(advice-add '+default/org-notes-search :before #'my/switch-to-notes-workspace)
+(advice-add 'org-agenda-switch-to :before #'my/switch-to-notes-workspace)
 #+end_src
 ** Calendar
 Monday is first day of the week
