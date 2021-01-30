@@ -396,6 +396,28 @@ Probably a temporary fix to make SPC-n-r consistent with SPC-m-m bindings
         (:prefix "d"
          :desc "Capture daily" "n" #'org-roam-dailies-capture-today))))
 #+end_src
+**** Fix agenda category
+#+begin_src emacs-lisp
+(setq org-agenda-prefix-format
+      '((agenda . " %i %-12:(+org-entry-category)%?-12t% s")
+        (todo . " %i %-12:(+org-entry-category)")
+        (tags . " %i %-12:(+org-entry-category)")
+        (search . " %i %-12:(+org-entry-category)")))
+
+(defun +org-entry-category ()
+  "Get category of item at point.
+
+Supports `org-roam' filenames by chopping prefix cookie."
+  (+string-chop-prefix-regexp
+   "^[0-9]+\\-"
+   (or (org-entry-get nil "CATEGORY")
+       "")))
+
+;; requires s.el
+(defun +string-chop-prefix-regexp (prefix s)
+  "Remove PREFIX regexp if it is at the start of S."
+  (s-chop-prefix (car (s-match prefix s)) s))
+#+end_src
 *** Looks
 #+BEGIN_SRC emacs-lisp
 (setq org-ellipsis " ▼")
@@ -815,6 +837,10 @@ Monday is first day of the week
 (when (featurep! :term vterm)
   (setq vterm-buffer-name-string "vterm: %s"))
 #+end_src
+** LSP
+#+begin_src emacs-lisp
+(setq lsp-file-watch-threshold 10000)
+#+end_src
 * Languages
 ** Web
 *** nvm
@@ -825,6 +851,10 @@ Monday is first day of the week
 #+end_src
 *** typescript
 #+BEGIN_SRC emacs-lisp
+(setq-hook! 'typescript-mode-hook +format-with-lsp nil)
+(setq-hook! 'typescript-tsx-mode-hook +format-with-lsp nil)
+(add-hook 'typescript-mode-hook #'tree-sitter-hl-mode)
+(add-hook 'typescript-tsx-mode-hook #'tree-sitter-hl-mode)
 (after! typescript
   (setq typescript-indent-level 2
         lsp-clients-typescript-log-verbosity "debug"
@@ -832,8 +862,9 @@ Monday is first day of the week
         (vector
          (list :name "@vsintellicode/typescript-intellicode-plugin"
                :location "~/.vscode/extensions/visualstudioexptteam.vscodeintellicode-1.2.10/")))
-  (setq-hook! 'typescript-mode-hook +format-with-lsp nil)
-  (setq-hook! 'typescript-tsx-mode-hook +format-with-lsp nil)
+  (when (not (assoc 'typescript-tsx-mode tree-sitter-major-mode-language-alist))
+    (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-mode . tsx)))
+
   )
 #+END_SRC
 ** GraphQL
