@@ -738,7 +738,7 @@ Capture annoyances for retro
 (use-package visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
 #+END_SRC
-*** Integrations
+*** Custom configuration
 **** jira/pomodoro
 Insert the task id from last started pomodoro
 #+begin_src emacs-lisp
@@ -762,7 +762,7 @@ Insert the task id from last started pomodoro
          ))
   )
 #+end_src
-*** Import files
+**** Import files
 Copy the file into dropbox and insert a link to it
 #+begin_src emacs-lisp
 (setq my/org-file-import-dir "~/Dropbox/org/filer")
@@ -791,6 +791,24 @@ Copy the file into dropbox and insert a link to it
   )
 #+end_src
 
+**** Open notes in workspace
+Set ~org-roam-find-file~ as default note finding binding. It will not include non-org files.
+#+begin_src emacs-lisp
+(global-set-key [remap +default/find-in-notes] #'org-roam-find-file)
+#+end_src
+
+Make sure notes are opened in ~Notes~ workspace
+#+begin_src emacs-lisp
+(defun my/switch-to-notes-workspace ()
+  "Open notes workspace. If it doesn't exist, open roam index."
+  (let ((exists (+workspace-exists-p "Notes")))
+    (+workspace-switch "Notes" t)
+    (when (not exists)
+      (org-roam-jump-to-index))
+    (+workspace/display)))
+
+(advice-add 'org-roam-find-file :before #'my/switch-to-notes-workspace)
+#+end_src
 ** Calendar
 Monday is first day of the week
 #+BEGIN_SRC emacs-lisp
