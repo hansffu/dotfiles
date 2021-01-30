@@ -861,6 +861,22 @@ Monday is first day of the week
 #+begin_src emacs-lisp
 (setq lsp-file-watch-threshold 10000)
 #+end_src
+** Git
+#+begin_src emacs-lisp
+(after! tramp
+  (add-to-list 'tramp-methods
+               '("yadm"
+                 (tramp-login-program "yadm")
+                 (tramp-login-args (("enter")))
+                 (tramp-login-env (("SHELL") ("/bin/sh")))
+                 (tramp-remote-shell "/bin/sh")
+                 (tramp-remote-shell-args ("-c"))))
+  )
+(defun yadm-status ()
+  "Magit status form yadm dotfiles"
+  (interactive)
+  (magit-status "/yadm::"))
+#+end_src
 * Languages
 ** Web
 *** nvm
