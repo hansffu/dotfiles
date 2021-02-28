@@ -9,6 +9,7 @@ set argtextobj
 set ReplaceWithRegister
 set highlightedyank
 set exchange
+set NERDTree
 
 set nu
 set rnu
