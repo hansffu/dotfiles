@@ -87,6 +87,9 @@
 (package! exwm)
 (package! desktop-environment)
 
+(package! mu4e-thread-folding
+  :recipe (:host github :repo "rougier/mu4e-thread-folding"))
+
 ;; Requires emacs 28
 (package! webkit
   :disable t

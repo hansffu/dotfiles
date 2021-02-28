@@ -896,6 +896,35 @@ Monday is first day of the week
   (interactive)
   (magit-status "/yadm::"))
 #+end_src
+** Email
+#+begin_src emacs-lisp
+  (use-package! mu4e-thread-folding
+    :after mu4e
+    :config
+    (setq +mu4e-header-colorized-faces
+          '(all-the-icons-green
+            all-the-icons-lblue
+            all-the-icons-purple-alt
+            all-the-icons-blue-alt
+            all-the-icons-purple
+            all-the-icons-yellow))
+    (add-to-list 'mu4e-header-info-custom
+                 '(:empty .
+                   (:name "Empty"
+                    :shortname ""
+                    :function (lambda (msg) "  ")))
+                 )
+    (setq mu4e-headers-fields
+          '(
+            (:empty . 2)
+            (:account . 12)
+            (:human-date . 12)
+            (:flags . 4)
+            (:from . 25)
+            (:subject . 235)
+            (:maildir . 20)
+            )))
+#+end_src
 ** Ace windows
 #+begin_src emacs-lisp
 (setq aw-scope 'global
