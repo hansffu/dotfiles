@@ -84,6 +84,8 @@
 
 (package! exwm :disable t)
 (package! desktop-environment :disable t)
+(package! exwm)
+(package! desktop-environment)
 
 ;; Requires emacs 28
 (package! webkit

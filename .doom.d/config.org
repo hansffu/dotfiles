@@ -170,22 +170,22 @@ To make sure frame has correct size on yabai
 #+BEGIN_SRC emacs-lisp
 (setq frame-resize-pixelwise t)
 #+END_SRC
-** COMMENT EXWM
+** EXWM
 *** Functions
 **** Utilities
-Rename buffer to EXWM window name
-#+begin_src emacs-lisp
-(defun my/exwm-update-class ()
-  (exwm-workspace-rename-buffer exwm-class-name))
-#+end_src
-Helper function to start background apps
+***** Helper function to start background apps
 #+begin_src emacs-lisp
 (defun my/run-in-background (command)
   (let ((command-parts (split-string command "[ ]+")))
     (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
 #+end_src
-
-Extra config after exwm is initialized
+**** Hooks
+***** Rename buffer to EXWM window name
+#+begin_src emacs-lisp
+(defun my/exwm-update-class ()
+  (exwm-workspace-rename-buffer exwm-class-name))
+#+end_src
+***** Extra config after exwm is initialized
 #+begin_src emacs-lisp
 (defun my/exwm-init-hook ()
   (exwm-workspace-switch-create 1)
@@ -200,6 +200,11 @@ Extra config after exwm is initialized
   (my/run-in-background "pasystray")
   (my/run-in-background "blueman-applet")
   )
+#+end_src
+***** Config for new EXWM buffers
+#+begin_src emacs-lisp
+(defun my/exwm-mode-hook ()
+  (doom-mark-buffer-as-real-h))
 #+end_src
 **** Insert/normal state
 #+begin_src emacs-lisp
@@ -238,6 +243,17 @@ Extra config after exwm is initialized
     (my/exwm-enter-insert-state)
     (call-interactively 'exwm-input-release-keyboard)))
 #+end_src
+
+#+begin_src emacs-lisp
+(defvar my/exwm-char-mode-class-names '()
+  "List of applications by char name that should use char mode instead of insert mode by default")
+
+(defun my/exwm-enter-insert-or-char-mode ()
+  (interactive)
+  (if (member exwm-class-name my/exwm-char-mode-class-names)
+      (my/exwm-enter-char-mode)
+    (my/exwm-enter-insert-state)))
+#+end_src
 *** Keybindings
 **** Global keys
 #+begin_src emacs-lisp
@@ -272,16 +288,17 @@ Extra config after exwm is initialized
                           (exwm-workspace-switch-create ,i))))
                     (number-sequence 0 9))))
   
-  (evil-define-key 'normal exwm-mode-map (kbd "i") 'my/exwm-enter-insert-state)
-  (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-1>" ) 'my/exwm-enter-insert-state)
-  (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-2>" ) 'my/exwm-enter-insert-state)
-  (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-3>" ) 'my/exwm-enter-insert-state)
+  (evil-define-key 'normal exwm-mode-map (kbd "i") 'my/exwm-enter-insert-or-char-mode)
+  (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-1>" ) 'my/exwm-enter-insert-or-char-mode)
+  (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-2>" ) 'my/exwm-enter-insert-or-char-mode)
+  (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-3>" ) 'my/exwm-enter-insert-or-char-mode)
   )
 #+end_src
 **** Window management
 #+begin_src emacs-lisp
 (map! :leader
-      (:prefix ("e" . "EXWM")
+      (:prefix ("d" . "Desktop")
+       :desc "Buffer" "b" #'exwm-workspace-switch-to-buffer
        :desc "Reset" "r" #'exwm-reset
        :desc "Floating hide" "h" #'exwm-floating-hide
        :desc "Switch workspace" "w" #'exwm-workspace-switch
@@ -330,9 +347,11 @@ Extra config after exwm is initialized
   ;; (exwm-systemtray-enable)
   (add-hook 'exwm-update-class-hook #'my/exwm-update-class)
   (add-hook 'exwm-init-hook #'my/exwm-init-hook)
-  (add-hook 'exwm-manage-finish-hook #'my/exwm-enter-insert-state)
+  (add-hook 'exwm-manage-finish-hook #'my/exwm-enter-insert-or-char-mode)
+  (add-hook 'exwm-mode-hook #'my/exwm-mode-hook)
   (my/exwm-set-global-keys)
 
+  (setq my/exwm-char-mode-class-names '("jetbrains-idea"))
   )
 #+end_src
 *** Desktop environment
@@ -876,6 +895,11 @@ Monday is first day of the week
   "Magit status form yadm dotfiles"
   (interactive)
   (magit-status "/yadm::"))
+#+end_src
+** Ace windows
+#+begin_src emacs-lisp
+(setq aw-scope 'global
+      ace-window-display-mode t)
 #+end_src
 * Languages
 ** Web
