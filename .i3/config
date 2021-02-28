@@ -227,6 +227,8 @@ for_window [class="(?i)virtualbox"] floating enable border normal
 for_window [class="Xfburn"] floating enable
 for_window [title="Microsoft Teams Notification"] floating enable
 for_window [title="doom-capture"] floating enable
+for_window [title="^Emacs Everywhere :: "] floating enable
+for_window [title="^emacs-everywhere"] floating enable
 
 # switch to workspace with urgent window automatically
 for_window [urgent=latest] focus
@@ -536,6 +538,8 @@ mode "$startemacs" {
     bindsym e exec emacsclient -a emacs -c; mode "default"
     bindsym u exec emacs; mode "default"
     bindsym c exec /home/hansffu/.emacs.d/bin/org-capture; mode "default"
+    bindsym a exec /home/hansffu/.emacs.d/bin/doom everywhere; mode "default"
+    # bindsym a exec emacsclient -a "" -c -F '((name . "doom-capture") (width . 70) (height . 25))' -e '(emacs-everywhere)'
 
     bindsym Return mode "default"
     bindsym Escape mode "default"

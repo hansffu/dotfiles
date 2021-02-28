@@ -896,6 +896,10 @@ Monday is first day of the week
   (interactive)
   (magit-status "/yadm::"))
 #+end_src
+** Emacs Everywhere
+#+begin_src emacs-lisp
+(setq! emacs-everywhere-markdown-apps '("Discord" "Slack"))
+#+end_src
 ** Email
 #+begin_src emacs-lisp
   (use-package! mu4e-thread-folding
