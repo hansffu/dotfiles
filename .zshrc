@@ -137,6 +137,8 @@ PATH=$LOCAL_PATH:$HOME/.dotfiles/utils/bin:$HOME/.dotfiles/macos/scripts:$HOME/.
 
 #export ZSH_TMUX_AUTOSTART=true
 
+#Lastpass timeout
+export LPASS_AGENT_TIMEOUT=0
 
 #VI-MODE
 bindkey -M viins 'jk' vi-cmd-mode
@@ -145,7 +147,7 @@ bindkey -M viins 'jk' vi-cmd-mode
 #source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 alias magit="i3-swallow emacsclient -c -e \(magit-status\)"
 alias e="emacsclient -n -c -a \"emacs\""
-export EDITOR=emacs
+export EDITOR='emacsclient -n -c -a "emacs"'
 
 [ -s "$HOME/.jabba/jabba.sh" ] && source "$HOME/.jabba/jabba.sh"
 export NVM_DIR="$HOME/.nvm"
@@ -190,3 +192,6 @@ if [[ "$INSIDE_EMACS" = "vterm" ]]; then
 
   alias ff="find_file"
 fi
+
+# Howdy - disable debug log
+export OPENCV_LOG_LEVEL=ERROR
