@@ -69,21 +69,22 @@
   :recipe (:host github :repo "hansffu/ical2org.el"))
 (package! mmm-mode)
 
-(package! tsc
-  :recipe (:host github
-           :repo "ubolonton/emacs-tree-sitter"
-           :files ("core/*.el")))
-(package! tree-sitter
-  :recipe (:host github
-           :repo "ubolonton/emacs-tree-sitter"
-           :files ("lisp/*.el")))
-(package! tree-sitter-langs
-  :recipe (:host github
-           :repo "ubolonton/emacs-tree-sitter"
-           :files ("langs/*.el" "langs/queries")))
+;; (package! tsc
+;;   :recipe (:host github
+;;            :repo "ubolonton/emacs-tree-sitter"
+;;            :files ("core/*.el")))
+;; (package! tree-sitter
+;;   :recipe (:host github
+;;            :repo "ubolonton/emacs-tree-sitter"
+;;            :files ("lisp/*.el")))
+;; (package! tree-sitter-langs
+;;   :recipe (:host github
+;;            :repo "ubolonton/emacs-tree-sitter"
+;;            :files ("langs/*.el" "langs/queries")))
 
-(package! exwm :disable t)
-(package! desktop-environment :disable t)
+(package! tree-sitter)
+(package! tree-sitter-langs)
+
 (package! exwm)
 (package! desktop-environment)
 
