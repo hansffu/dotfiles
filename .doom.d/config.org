@@ -175,9 +175,30 @@ To make sure frame has correct size on yabai
 **** Utilities
 ***** Helper function to start background apps
 #+begin_src emacs-lisp
-(defun my/run-in-background (command)
-  (let ((command-parts (split-string command "[ ]+")))
+(defun my/run-in-background (command &optional working-dir)
+  (let ((command-parts (split-string command "[ ]+"))
+        (default-directory (or working-dir default-directory)))
+    (message "Launching command %s in %s" command default-directory)
     (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
+#+end_src
+***** Update default-directory
+#+begin_src emacs-lisp
+(defun my/exwm--set-cwd ()
+  (let* ((id (exwm--buffer->id (current-buffer)))
+         (response (xcb:+request-unchecked+reply exwm--connection
+                       (make-instance 'xcb:ewmh:get-_NET_WM_PID :window id)))
+         (pid (and response (slot-value response 'value)))
+         (cwd (and pid (file-chase-links (format "/proc/%d/cwd" pid) 1))))
+    (if (and cwd (file-accessible-directory-p cwd))
+        (setq-local default-directory (file-name-as-directory cwd))
+      (setq-local default-directory user-home-directory))))
+#+end_src
+**** Start apps
+***** Rofi
+#+begin_src emacs-lisp
+(defun my/run-rofi ()
+  (interactive)
+  (my/run-in-background "rofi -show drun"))
 #+end_src
 **** Hooks
 ***** Rename buffer to EXWM window name
@@ -188,17 +209,19 @@ To make sure frame has correct size on yabai
 ***** Extra config after exwm is initialized
 #+begin_src emacs-lisp
 (defun my/exwm-init-hook ()
-  (exwm-workspace-switch-create 1)
+  ;; (exwm-workspace-switch-create 0)
 
-  (setq display-time-day-and-date t
-        display-time-24hr-format t)
-  (display-time-mode 1)
+  ;; (setq display-time-day-and-date t
+  ;;       display-time-24hr-format t)
+  ;; (display-time-mode 1)
 
   (my/run-in-background "~/.config/polybar/launch_polybar.sh")
   (my/run-in-background "dunst")
   (my/run-in-background "nm-applet")
   (my/run-in-background "pasystray")
   (my/run-in-background "blueman-applet")
+  (setenv "LPASS_AGENT_TIMEOUT" "0")
+  (my/run-in-background (format "lpass login %s" user-mail-address))
   )
 #+end_src
 ***** Config for new EXWM buffers
@@ -250,9 +273,11 @@ To make sure frame has correct size on yabai
 
 (defun my/exwm-enter-insert-or-char-mode ()
   (interactive)
-  (if (member exwm-class-name my/exwm-char-mode-class-names)
-      (my/exwm-enter-char-mode)
-    (my/exwm-enter-insert-state)))
+  (my/exwm-enter-char-mode)
+  ;; (if (member exwm-class-name my/exwm-char-mode-class-names)
+  ;;     (my/exwm-enter-char-mode)
+  ;;   (my/exwm-enter-insert-state))
+  )
 #+end_src
 *** Keybindings
 **** Global keys
@@ -270,7 +295,9 @@ To make sure frame has correct size on yabai
           ([s-right] . windmove-right)
           ([s-up] . windmove-up)
           ([s-down] . windmove-down)
-          ([?\s- ] . counsel-linux-app)
+          ;; ([?\s- ] . counsel-linux-app)
+          ([?\s- ] . my/run-rofi)
+
 
           ;; Launch applications via shell command
           ([?\s-&] . (lambda (command)
@@ -287,12 +314,18 @@ To make sure frame has correct size on yabai
                           (interactive)
                           (exwm-workspace-switch-create ,i))))
                     (number-sequence 0 9))))
-  
+  (define-key exwm-mode-map (kbd "C-c") nil)
   (evil-define-key 'normal exwm-mode-map (kbd "i") 'my/exwm-enter-insert-or-char-mode)
   (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-1>" ) 'my/exwm-enter-insert-or-char-mode)
   (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-2>" ) 'my/exwm-enter-insert-or-char-mode)
   (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-3>" ) 'my/exwm-enter-insert-or-char-mode)
   )
+#+end_src
+**** Simulation keys
+#+begin_src emacs-lisp
+;; (map! :map exwm-mode-map
+;;       :n "j" (cmd! ())
+;;       )
 #+end_src
 **** Window management
 #+begin_src emacs-lisp
@@ -329,13 +362,13 @@ To make sure frame has correct size on yabai
 
 (use-package! exwm
   :custom
-  (exwm-workspace-number 3)
+  (exwm-workspace-number 2)
   (exwm-workspace-show-all-buffers t)
 
   :config
   (require 'exwm-randr)
 
-  (setq exwm-randr-workspace-output-plist '(1 "DP-2" 2 "DP-4"))
+  (setq exwm-randr-workspace-output-plist '(0 "DP-2" 1 "DP-4"))
   (add-hook 'exwm-randr-screen-change-hook
             (lambda ()
               (start-process-shell-command
@@ -348,6 +381,7 @@ To make sure frame has correct size on yabai
   (add-hook 'exwm-update-class-hook #'my/exwm-update-class)
   (add-hook 'exwm-init-hook #'my/exwm-init-hook)
   (add-hook 'exwm-manage-finish-hook #'my/exwm-enter-insert-or-char-mode)
+  (add-hook 'exwm-manage-finish-hook #'my/exwm--set-cwd)
   (add-hook 'exwm-mode-hook #'my/exwm-mode-hook)
   (my/exwm-set-global-keys)
 
@@ -360,6 +394,35 @@ Handle media keys and such
 (use-package! desktop-environment
   :after exwm
   :config (desktop-environment-mode))
+#+end_src
+*** Plugins
+**** exwm-edit
+#+begin_src emacs-lisp
+(use-package! exwm-edit
+  :custom
+  (exwm-edit-bind-default-keys nil)
+  :init
+  (set-popup-rule! "^\\*exwm-edit "
+    :side 'bottom
+    :size 30
+    :modeline t)
+  )
+#+end_src
+*** Apps
+**** Intellij
+#+begin_src emacs-lisp
+(defun my/idea-in-project ()
+  (interactive)
+  "Open IntelliJ IDEA in project root."
+  (my/run-in-background "idea ." (projectile-project-root))
+
+  )
+#+end_src
+**** Keybinds
+#+begin_src emacs-lisp
+(map! :leader
+      :prefix ("a" . "Applications")
+      :desc "IDEA" "i" #'my/idea-in-project)
 #+end_src
 * Keybindings
 * Plugin configuration
@@ -847,9 +910,12 @@ Monday is first day of the week
 ** Tree sitter
 #+BEGIN_SRC emacs-lisp
 (use-package! tree-sitter
-  :defer t
+  ;; :defer t
   :config
-  (require 'tree-sitter-langs))
+  ;; (require 'tree-sitter-langs)
+  )
+(use-package! tree-sitter-langs
+  :after tree-sitter)
 #+END_SRC
 ** Projectile
 #+BEGIN_SRC emacs-lisp
@@ -931,8 +997,13 @@ Monday is first day of the week
 #+end_src
 ** Ace windows
 #+begin_src emacs-lisp
-(setq aw-scope 'global
-      ace-window-display-mode t)
+(use-package! framemove
+  :after windmove
+  :init
+  (setq framemove-hook-into-windmove t))
+(after! ace-window
+  (setq aw-scope 'global
+        ace-window-display-mode t) )
 #+end_src
 * Languages
 ** Web
@@ -948,17 +1019,14 @@ Monday is first day of the week
 (setq-hook! 'typescript-tsx-mode-hook +format-with-lsp nil)
 (add-hook 'typescript-mode-hook #'tree-sitter-hl-mode)
 (add-hook 'typescript-tsx-mode-hook #'tree-sitter-hl-mode)
-(after! typescript
-  (setq typescript-indent-level 2
-        ;; lsp-clients-typescript-log-verbosity "info"
-        lsp-clients-typescript-plugins
-        (vector
-         (list :name "@vsintellicode/typescript-intellicode-plugin"
-               :location "~/.vscode/extensions/visualstudioexptteam.vscodeintellicode-1.2.10/")))
-  (when (not (assoc 'typescript-tsx-mode tree-sitter-major-mode-language-alist))
-    (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-mode . tsx)))
-
-  )
+(setq typescript-indent-level 2
+      ;; lsp-clients-typescript-log-verbosity "info"
+      lsp-clients-typescript-plugins
+      (vector
+       (list :name "@vsintellicode/typescript-intellicode-plugin"
+             :location "~/.vscode/extensions/visualstudioexptteam.vscodeintellicode-1.2.11/")))
+(when (not (assoc 'typescript-tsx-mode tree-sitter-major-mode-language-alist))
+  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-mode . tsx)))
 #+END_SRC
 
 **** Inline html

@@ -187,7 +187,7 @@
        ;;twitter           ; twitter client https://twitter.com/vnought
        slack
        spotify
-       eaf
+       ;; eaf
        everywhere
 
        :config

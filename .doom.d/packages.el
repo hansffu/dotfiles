@@ -85,8 +85,12 @@
 (package! tree-sitter)
 (package! tree-sitter-langs)
 
+;; exwm specific
 (package! exwm)
 (package! desktop-environment)
+(package! exwm-edit)
+(package! framemove
+  :recipe (:host github :repo "emacsmirror/framemove"))
 
 (package! mu4e-thread-folding
   :recipe (:host github :repo "rougier/mu4e-thread-folding"))
