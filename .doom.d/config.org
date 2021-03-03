@@ -170,10 +170,10 @@ To make sure frame has correct size on yabai
 #+BEGIN_SRC emacs-lisp
 (setq frame-resize-pixelwise t)
 #+END_SRC
-** EXWM
-*** Functions
-**** Utilities
-***** Helper function to start background apps
+* Desktop
+** Functions
+*** Utilities
+**** Helper function to start background apps
 #+begin_src emacs-lisp
 (defun my/run-in-background (command &optional working-dir)
   (let ((command-parts (split-string command "[ ]+"))
@@ -181,7 +181,7 @@ To make sure frame has correct size on yabai
     (message "Launching command %s in %s" command default-directory)
     (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
 #+end_src
-***** Update default-directory
+**** Update default-directory
 #+begin_src emacs-lisp
 (defun my/exwm--set-cwd ()
   (let* ((id (exwm--buffer->id (current-buffer)))
@@ -193,20 +193,20 @@ To make sure frame has correct size on yabai
         (setq-local default-directory (file-name-as-directory cwd))
       (setq-local default-directory user-home-directory))))
 #+end_src
-**** Start apps
-***** Rofi
+*** Start apps
+**** Rofi
 #+begin_src emacs-lisp
 (defun my/run-rofi ()
   (interactive)
   (my/run-in-background "rofi -show drun"))
 #+end_src
-**** Hooks
-***** Rename buffer to EXWM window name
+*** Hooks
+**** Rename buffer to EXWM window name
 #+begin_src emacs-lisp
 (defun my/exwm-update-class ()
   (exwm-workspace-rename-buffer exwm-class-name))
 #+end_src
-***** Extra config after exwm is initialized
+**** Extra config after exwm is initialized
 #+begin_src emacs-lisp
 (defun my/exwm-init-hook ()
   ;; (exwm-workspace-switch-create 0)
@@ -224,12 +224,12 @@ To make sure frame has correct size on yabai
   (my/run-in-background (format "lpass login %s" user-mail-address))
   )
 #+end_src
-***** Config for new EXWM buffers
+**** Config for new EXWM buffers
 #+begin_src emacs-lisp
 (defun my/exwm-mode-hook ()
   (doom-mark-buffer-as-real-h))
 #+end_src
-**** Insert/normal state
+*** Insert/normal state
 #+begin_src emacs-lisp
 (defun my/exwm-enter-insert-state ()
   "Simulate insert state by using line mode without passthrough"
@@ -279,8 +279,8 @@ To make sure frame has correct size on yabai
   ;;   (my/exwm-enter-insert-state))
   )
 #+end_src
-*** Keybindings
-**** Global keys
+** Keybindings
+*** Global keys
 #+begin_src emacs-lisp
 (defun my/exwm-set-global-keys ()
   (setq exwm-input-global-keys
@@ -321,13 +321,13 @@ To make sure frame has correct size on yabai
   (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-3>" ) 'my/exwm-enter-insert-or-char-mode)
   )
 #+end_src
-**** Simulation keys
+*** Simulation keys
 #+begin_src emacs-lisp
 ;; (map! :map exwm-mode-map
 ;;       :n "j" (cmd! ())
 ;;       )
 #+end_src
-**** Window management
+*** Window management
 #+begin_src emacs-lisp
 (map! :leader
       (:prefix ("d" . "Desktop")
@@ -356,7 +356,7 @@ To make sure frame has correct size on yabai
 ;;        ;; :desc "Ma" #'exwm-workspace-attach-minibuffer
 ;;        ) )
 #+end_src
-*** Initialize
+** Initialize
 #+begin_src emacs-lisp
 (set-popup-rule! "^\\*EXWM" :ignore t)
 
@@ -388,15 +388,15 @@ To make sure frame has correct size on yabai
   (setq my/exwm-char-mode-class-names '("jetbrains-idea"))
   )
 #+end_src
-*** Desktop environment
+** Desktop environment
 Handle media keys and such
 #+begin_src emacs-lisp
 (use-package! desktop-environment
   :after exwm
   :config (desktop-environment-mode))
 #+end_src
-*** Plugins
-**** exwm-edit
+** Plugins
+*** exwm-edit
 #+begin_src emacs-lisp
 (use-package! exwm-edit
   :custom
@@ -408,8 +408,8 @@ Handle media keys and such
     :modeline t)
   )
 #+end_src
-*** Apps
-**** Intellij
+** Apps
+*** Intellij
 #+begin_src emacs-lisp
 (defun my/idea-in-project ()
   (interactive)
@@ -418,7 +418,7 @@ Handle media keys and such
 
   )
 #+end_src
-**** Keybinds
+*** Keybinds
 #+begin_src emacs-lisp
 (map! :leader
       :prefix ("a" . "Applications")
