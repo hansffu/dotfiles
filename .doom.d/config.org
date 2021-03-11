@@ -204,7 +204,7 @@ To make sure frame has correct size on yabai
 **** Rename buffer to EXWM window name
 #+begin_src emacs-lisp
 (defun my/exwm-update-class ()
-  (exwm-workspace-rename-buffer exwm-class-name))
+  (exwm-workspace-rename-buffer (format "%s - %s" exwm-class-name exwm-title)))
 #+end_src
 **** Extra config after exwm is initialized
 #+begin_src emacs-lisp
@@ -234,6 +234,8 @@ To make sure frame has correct size on yabai
 (defun my/exwm-enter-insert-state ()
   "Simulate insert state by using line mode without passthrough"
   (interactive)
+  (setq exwm--ewmh-state
+            (delq xcb:Atom:_NET_WM_STATE_HIDDEN exwm--ewmh-state))
   (setq exwm-input-line-mode-passthrough nil)
   (exwm-input-grab-keyboard)
   (evil-insert-state))
@@ -383,6 +385,7 @@ To make sure frame has correct size on yabai
   (add-hook 'exwm-manage-finish-hook #'my/exwm-enter-insert-or-char-mode)
   (add-hook 'exwm-manage-finish-hook #'my/exwm--set-cwd)
   (add-hook 'exwm-mode-hook #'my/exwm-mode-hook)
+  (add-hook 'exwm-update-title-hook #'my/exwm-update-class)
   (my/exwm-set-global-keys)
 
   (setq my/exwm-char-mode-class-names '("jetbrains-idea"))
@@ -401,12 +404,7 @@ Handle media keys and such
 (use-package! exwm-edit
   :custom
   (exwm-edit-bind-default-keys nil)
-  :init
-  (set-popup-rule! "^\\*exwm-edit "
-    :side 'bottom
-    :size 30
-    :modeline t)
-  )
+  (exwm-edit-split "below"))
 #+end_src
 ** Apps
 *** Intellij
@@ -414,18 +412,33 @@ Handle media keys and such
 (defun my/idea-in-project ()
   (interactive)
   "Open IntelliJ IDEA in project root."
-  (my/run-in-background "idea ." (projectile-project-root))
-
-  )
+  (my/run-in-background (format "idea %s" (if (buffer-file-name)
+                                              (buffer-file-name)
+                                            "."))
+                        (projectile-project-root)))
+#+end_src
+*** Brave
+#+begin_src emacs-lisp
+(defun my/brave-in-project ()
+  (interactive)
+  "Open Brave browser in project root."
+  (my/run-in-background "brave" (projectile-project-root)))
 #+end_src
 *** Keybinds
 #+begin_src emacs-lisp
 (map! :leader
       :prefix ("a" . "Applications")
-      :desc "IDEA" "i" #'my/idea-in-project)
+      :desc "IDEA" "i" #'my/idea-in-project
+      :desc "Browser" "b" #'my/brave-in-project)
 #+end_src
 * Keybindings
 * Plugin configuration
+** Alert
+#+begin_src emacs-lisp
+(setq alert-default-style (cond (IS-LINUX 'notifications)
+                                (IS-MAC 'osx-notifier)
+                                (t 'message)))
+#+end_src
 ** mmm-mode
 #+BEGIN_SRC emacs-lisp
 (use-package! mmm-mode)
@@ -476,7 +489,9 @@ Probably a temporary fix to make SPC-n-r consistent with SPC-m-m bindings
       (:prefix "n"
        (:prefix "r"
         (:prefix "d"
-         :desc "Capture daily" "n" #'org-roam-dailies-capture-today))))
+         :desc "Capture daily" "n" #'org-roam-dailies-capture-today
+         :desc "Capture daily" "c" #'org-roam-dailies-capture-today
+         ))))
 #+end_src
 **** Fix agenda category
 #+begin_src emacs-lisp
@@ -820,6 +835,14 @@ Capture annoyances for retro
 (use-package visual-fill-column
   :hook (org-mode . my/org-mode-visual-fill))
 #+END_SRC
+*** org-wild-notifier
+#+begin_src emacs-lisp
+(use-package! org-wild-notifier
+  :init
+  (setq org-wild-notifier-keyword-whitelist '())
+  :config
+  (org-wild-notifier-mode 1))
+#+end_src
 *** Custom configuration
 **** jira/pomodoro
 Insert the task id from last started pomodoro
@@ -995,7 +1018,8 @@ Monday is first day of the week
             (:maildir . 20)
             )))
 #+end_src
-** Ace windows
+** Window configuration
+Configure so both evil-window (windmove) and ace windows works for all frames
 #+begin_src emacs-lisp
 (use-package! framemove
   :after windmove
@@ -1003,7 +1027,10 @@ Monday is first day of the week
   (setq framemove-hook-into-windmove t))
 (after! ace-window
   (setq aw-scope 'global
-        ace-window-display-mode t) )
+        ace-window-display-mode t))
+(map! :leader
+      (:prefix "w"
+       :desc "Switch window all frames" "f" #'ace-window))
 #+end_src
 * Languages
 ** Web
