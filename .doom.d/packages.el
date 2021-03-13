@@ -63,6 +63,9 @@
 (package! ox-slack)
 (package! org-super-agenda)
 (package! visual-fill-column)
+(package! org-wild-notifier)
+
+
 (package! lastpass)
 
 (package! ical2org
@@ -91,6 +94,8 @@
 (package! exwm-edit)
 (package! framemove
   :recipe (:host github :repo "emacsmirror/framemove"))
+(package! exwm-mff
+  :recipe (:host github :repo "ieure/exwm-mff"))
 
 (package! mu4e-thread-folding
   :recipe (:host github :repo "rougier/mu4e-thread-folding"))

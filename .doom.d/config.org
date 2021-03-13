@@ -406,6 +406,13 @@ Handle media keys and such
   (exwm-edit-bind-default-keys nil)
   (exwm-edit-split "below"))
 #+end_src
+*** Mouse follow focus
+#+begin_src emacs-lisp
+(use-package! exwm-mff
+  :after exwm
+  :config
+  (exwm-mff-mode 1))
+#+end_src
 ** Apps
 *** Intellij
 #+begin_src emacs-lisp
