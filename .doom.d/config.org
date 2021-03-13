@@ -402,14 +402,22 @@ Handle media keys and such
 *** exwm-edit
 #+begin_src emacs-lisp
 (use-package! exwm-edit
-  :custom
-  (exwm-edit-bind-default-keys nil)
-  (exwm-edit-split "below"))
+  :commands #'exwm-edit--compose
+  :init
+  (defadvice! my/exwm-edit--display-buffer-a (orig-fn buf)
+    :around #'exwm-edit--display-buffer
+    (pop-to-buffer buf))
+  (map! :leader
+      (:prefix "d"
+       :desc "Edit" "e" #'exwm-edit--compose
+       ))
+  :config
+  (global-exwm-edit-mode t))
 #+end_src
 *** Mouse follow focus
 #+begin_src emacs-lisp
 (use-package! exwm-mff
-  :after exwm
+  :hook exwm-init-hook
   :config
   (exwm-mff-mode 1))
 #+end_src
