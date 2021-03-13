@@ -417,9 +417,9 @@ Handle media keys and such
 *** Mouse follow focus
 #+begin_src emacs-lisp
 (use-package! exwm-mff
-  :hook exwm-init-hook
-  :config
-  (exwm-mff-mode 1))
+  :commands exwm-mff-mode
+  :init
+  (add-hook! 'exwm-init-hook #'exwm-mff-mode))
 #+end_src
 ** Apps
 *** Intellij
