@@ -339,7 +339,7 @@ To make sure frame has correct size on yabai
        :desc "Switch workspace" "w" #'exwm-workspace-switch
        :desc "Add workspace" "a" #'exwm-workspace-add
        :desc "Delete workspace" "d" #'exwm-workspace-delete
-       :desc "Move workspace" "m" #'exwm-workspace-move
+       :desc "Move window to workspace" "m" #'exwm-workspace-move-window
        :desc "Swap workspace" "s" #'exwm-workspace-swap
        :desc "Detatch minibuffer" "Md" #'exwm-workspace-detach-minibuffer
        :desc "Attach minibuffer" "Ma" #'exwm-workspace-attach-minibuffer
