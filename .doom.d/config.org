@@ -1047,6 +1047,31 @@ Configure so both evil-window (windmove) and ace windows works for all frames
       (:prefix "w"
        :desc "Switch window all frames" "f" #'ace-window))
 #+end_src
+** AWS
+*** AWS logs
+#+begin_src emacs-lisp
+(use-package! aws-logs
+  :commands aws-logs
+  :config
+  (set-popup-rule! "^\\*AWS logs - "
+    :side 'bottom
+    :size 120)
+  )
+#+end_src
+Localstack logs
+#+begin_src emacs-lisp
+(defun localstack-logs ()
+  (interactive)
+  (let ((aws-logs-endpoint "http://localhost:4566"))
+    (aws-logs)))
+#+end_src
+keybindings
+#+begin_src emacs-lisp
+(map! :leader
+      :prefix ("l" . "Logs")
+      :desc "AWS" "a" #'aws-logs
+      :desc "Localstack" "l" #'localstack-logs)
+#+end_src
 * Languages
 ** Web
 *** nvm

@@ -70,6 +70,9 @@
 
 (package! ical2org
   :recipe (:host github :repo "hansffu/ical2org.el"))
+(package! aws-logs
+  :recipe (:host github :repo "hansffu/aws-logs.el"))
+
 (package! mmm-mode)
 
 ;; (package! tsc
