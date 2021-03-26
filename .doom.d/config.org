@@ -1078,10 +1078,10 @@ keybindings
 #+end_src
 *** typescript
 #+BEGIN_SRC emacs-lisp
-(setq-hook! 'typescript-mode-hook +format-with-lsp nil)
-(setq-hook! 'typescript-tsx-mode-hook +format-with-lsp nil)
-(add-hook 'typescript-mode-hook #'tree-sitter-hl-mode)
-(add-hook 'typescript-tsx-mode-hook #'tree-sitter-hl-mode)
+;; (setq-hook! '(typescript-mode-local-vars-hook typescript-tsx-mode-local-vars-hook)
+;;   +format-with-lsp nil)
+(add-hook! '(typescript-tsx-mode typescript-mode) #'tree-sitter-hl-mode :append :local (setq +format-with-lsp nil))
+
 (setq typescript-indent-level 2
       ;; lsp-clients-typescript-log-verbosity "info"
       lsp-clients-typescript-plugins
