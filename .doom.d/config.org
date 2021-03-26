@@ -823,10 +823,6 @@ Capture annoyances for retro
   (make-directory org-jira-working-dir 'parents)
   )
 #+END_SRC
-*** ical2org
-#+BEGIN_SRC emacs-lisp
-(use-package! ical2org)
-#+END_SRC
 *** org tanglesync
 #+BEGIN_SRC emacs-lisp
 (use-package! org-tanglesync
