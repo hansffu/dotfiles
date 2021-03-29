@@ -535,6 +535,49 @@ Supports `org-roam' filenames by chopping prefix cookie."
 (setq org-ellipsis " ▼")
 #+END_SRC
 *** org-agenda
+**** Populate from external sources
+I want to view my meetings and jira tasks in my agenda. Jira tasks are synced with org-jira while calendars are imported into the diary.
+#+begin_src emacs-lisp
+(setq org-agenda-include-diary t)
+
+(defun my/import-daily-tasks ()
+  "Import calendars to diary and "
+  (interactive)
+  (call-interactively #'my/import-calendars)
+  (call-interactively #'org-jira-get-issues))
+
+(map! :leader
+      (:prefix "n"
+       :desc "Import agenda items" "i" #'my/import-daily-tasks))
+#+end_src
+
+Fetching items from the diary can be really slow. This is because when the agenda includes it, it will show the entire description which causes some slowness. Here I add an advice to remove everything after the summary
+#+begin_src emacs-lisp
+(setq icalendar-import-format-description "\n Desc: %s")
+(defun my/agenda-remove-desc-from-diary (orig-fun extra txt &optional level category tags dotime
+				                  remove-re habitp)
+  (apply orig-fun
+         (list extra
+               (if (string-equal category "Diary") (car (s-split ";" txt)) txt)
+               level category tags dotime remove-re habitp)))
+
+(advice-add 'org-agenda-format-item :around #'my/agenda-remove-desc-from-diary)
+#+end_src
+To speed it up even further, cache the result
+#+begin_src emacs-lisp
+(defvar my/remembered-diary-items '())
+
+(setq my/remembered-diary-items '())
+
+(defun my/remember-diary-items (orig-fun date)
+  (or (cdr (assoc date my/remembered-diary-items))
+      (let ((ret (apply orig-fun (list date))))
+        (add-to-list 'my/remembered-diary-items (cons date ret))
+        ret
+        )))
+
+(advice-add 'org-get-entries-from-diary :around #'my/remember-diary-items)
+#+end_src
 **** Popup
 Agenda window shoult show in a popup window
 #+BEGIN_SRC emacs-lisp
@@ -549,13 +592,7 @@ Agenda window shoult show in a popup window
 Recursively find files in ~org-directory~
 #+BEGIN_SRC emacs-lisp
 (defun refresh-org-agenda-files ()
-  (setq org-agenda-files
-        (append
-         (directory-files-recursively org-directory "\.org$")
-         ;; (if (boundp 'org-jira-working-dir)
-         ;;     (directory-files-recursively org-jira-working-dir "\.org$")
-         ;;   '())
-         )))
+  (setq org-agenda-files (directory-files-recursively org-directory "\.org$")))
 
 (defun refresh-org-agenda-advice (orig-fun &rest args)
   (message "Refresh org-agenda files")
@@ -565,7 +602,6 @@ Recursively find files in ~org-directory~
 (after! org-agenda
   (advice-add  'org-agenda-redo :around #'refresh-org-agenda-advice)
   (refresh-org-agenda-files))
-
 #+END_SRC
 **** org-super-agenda
 #+BEGIN_SRC emacs-lisp

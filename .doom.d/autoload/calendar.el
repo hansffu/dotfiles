@@ -5,6 +5,7 @@
   (interactive)
   (delete-file diary-file)
   (and (get-buffer "diary") (kill-buffer "diary") )
+  (setq my/remembered-diary-items '())
   (dolist (calendar my/calendars)
     (let ((url (auth-source-pick-first-password :host (format "calendar.%s" calendar))))
       (async-start (lambda ()
