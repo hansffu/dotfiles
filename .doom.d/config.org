@@ -220,6 +220,7 @@ To make sure frame has correct size on yabai
   (my/run-in-background "nm-applet")
   (my/run-in-background "pasystray")
   (my/run-in-background "blueman-applet")
+  (my/run-in-background "dropbox")
   (setenv "LPASS_AGENT_TIMEOUT" "0")
   (my/run-in-background (format "lpass login %s" user-mail-address))
   )
@@ -363,6 +364,7 @@ To make sure frame has correct size on yabai
 (set-popup-rule! "^\\*EXWM" :ignore t)
 
 (use-package! exwm
+  :commands exwm-enable
   :custom
   (exwm-workspace-number 2)
   (exwm-workspace-show-all-buffers t)
