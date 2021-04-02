@@ -223,58 +223,37 @@ To make sure frame has correct size on yabai
 (defun my/exwm-mode-hook ()
   (doom-mark-buffer-as-real-h))
 #+end_src
-*** Insert/normal state
+**** Input change hook
 #+begin_src emacs-lisp
-(defun my/exwm-enter-insert-state ()
-  "Simulate insert state by using line mode without passthrough"
-  (interactive)
-  (setq exwm--ewmh-state
-            (delq xcb:Atom:_NET_WM_STATE_HIDDEN exwm--ewmh-state))
+(defun my/exwm-on-enter-char-mode ()
   (setq exwm-input-line-mode-passthrough nil)
-  (exwm-input-grab-keyboard)
+  (setq exwm--ewmh-state
+        (delq xcb:Atom:_NET_WM_STATE_HIDDEN exwm--ewmh-state))
   (evil-insert-state))
-#+end_src
 
-#+begin_src emacs-lisp
-(defun my/exwm-enter-normal-state ()
-  "Simulate normal state by using line mode with passthrough, i.e. forward all commands to emacs"
-  (interactive)
+(defun my/exwm-on-enter-line-mode ()
   (setq exwm-input-line-mode-passthrough t)
-  (call-interactively 'exwm-input-grab-keyboard)
-  (evil-normal-state))
+  (evil-normal-state)
+  )
+
+(defun my/exwm-handle-input-state ()
+  (pcase exwm--selected-input-mode
+    ('char-mode (my/exwm-on-enter-char-mode))
+    ('line-mode (my/exwm-on-enter-line-mode)))
+  )
 #+end_src
+*** Insert/normal state
 
 #+begin_src emacs-lisp
 (defun my/exwm-escape ()
   "Switch to normal state, and cancel possible fullscreen layout.  Also close minibuffer."
   (interactive)
-  (my/exwm-enter-normal-state)
+  (call-interactively 'exwm-input-grab-keyboard)
   (exwm-layout-unset-fullscreen)
   (when (active-minibuffer-window)
     (minibuffer-keyboard-quit)))
 #+end_src
 
-#+begin_src emacs-lisp
-(defun my/exwm-enter-char-mode ()
-  "Enter EXWM char mode."
-  (interactive)
-  (when exwm--id
-    (my/exwm-enter-insert-state)
-    (call-interactively 'exwm-input-release-keyboard)))
-#+end_src
-
-#+begin_src emacs-lisp
-(defvar my/exwm-char-mode-class-names '()
-  "List of applications by char name that should use char mode instead of insert mode by default")
-
-(defun my/exwm-enter-insert-or-char-mode ()
-  (interactive)
-  (my/exwm-enter-char-mode)
-  ;; (if (member exwm-class-name my/exwm-char-mode-class-names)
-  ;;     (my/exwm-enter-char-mode)
-  ;;   (my/exwm-enter-insert-state))
-  )
-#+end_src
 ** Keybindings
 *** Global keys
 #+begin_src emacs-lisp
@@ -284,7 +263,7 @@ To make sure frame has correct size on yabai
           ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
           ([?\s-r] . exwm-reset)
           ([?\C-q] . my/exwm-escape)
-          ([?\s-c] . my/exwm-enter-char-mode)
+          ([?\s-c] . exwm-input-release-keyboard)
 
           ;; Move between windows
           ([s-left] . windmove-left)
@@ -311,10 +290,10 @@ To make sure frame has correct size on yabai
                           (exwm-workspace-switch-create ,i))))
                     (number-sequence 0 9))))
   (define-key exwm-mode-map (kbd "C-c") nil)
-  (evil-define-key 'normal exwm-mode-map (kbd "i") 'my/exwm-enter-insert-or-char-mode)
-  (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-1>" ) 'my/exwm-enter-insert-or-char-mode)
-  (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-2>" ) 'my/exwm-enter-insert-or-char-mode)
-  (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-3>" ) 'my/exwm-enter-insert-or-char-mode)
+  (evil-define-key 'normal exwm-mode-map (kbd "i") 'exwm-input-release-keyboard)
+  (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-1>" ) 'exwm-input-release-keyboard)
+  (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-2>" ) 'exwm-input-release-keyboard)
+  (evil-define-key 'normal exwm-mode-map (kbd "<down-mouse-3>" ) 'exwm-input-release-keyboard)
   )
 #+end_src
 *** Simulation keys
@@ -364,10 +343,11 @@ To make sure frame has correct size on yabai
   ;; (exwm-systemtray-enable)
   (add-hook 'exwm-update-class-hook #'my/exwm-update-class)
   (add-hook 'exwm-init-hook #'my/exwm-init-hook)
-  (add-hook 'exwm-manage-finish-hook #'my/exwm-enter-insert-or-char-mode)
+  ;; (add-hook 'exwm-manage-finish-hook #'exwm-input-release-keyboard)
   (add-hook 'exwm-manage-finish-hook #'my/exwm--set-cwd)
   (add-hook 'exwm-mode-hook #'my/exwm-mode-hook)
   (add-hook 'exwm-update-title-hook #'my/exwm-update-class)
+  (add-hook 'exwm-input-input-mode-change-hook #'my/exwm-handle-input-state)
   (my/exwm-set-global-keys)
 
   (setq my/exwm-char-mode-class-names '("jetbrains-idea"))
