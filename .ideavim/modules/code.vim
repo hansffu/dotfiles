@@ -11,3 +11,6 @@ nmap <leader>cr    :action RenameElement<CR>
 nmap <leader>co    :action OptimizeImports<cr>
 
 nmap <leader>clrev :action IntroduceVariable<CR>
+
+
+nmap <leader>ca <Action>(ShowIntentionActions)
