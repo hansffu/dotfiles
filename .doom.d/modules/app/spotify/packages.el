@@ -1,9 +1,10 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; app/spotify/packages.el
 
-(package! spotify
+(package! oauth2)
+(package! smudge
   :recipe (:host github
-           :repo "danielfm/spotify.el"
+           :repo "danielfm/smudge"
            :files ("*.el")))
 (package! counsel-spotify)
 

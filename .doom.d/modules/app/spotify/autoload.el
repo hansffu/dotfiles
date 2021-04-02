@@ -13,27 +13,27 @@ _u_: User Playlists      _r_  : Repeat            _d_: Device
 ^^                       _s_  : Shuffle           _q_: Quit
 "
     ("t" counsel-spotify-search-track :exit t)
-    ("m" spotify-my-playlists :exit t)
-    ("f" spotify-featured-playlists :exit t)
-    ("u" spotify-user-playlists :exit t)
-    ("SPC" spotify-toggle-play :exit nil)
-    ("n" spotify-next-track :exit nil)
-    ("p" spotify-previous-track :exit nil)
-    ("r" spotify-toggle-repeat :exit nil)
-    ("s" spotify-toggle-shuffle :exit nil)
-    ("+" spotify-volume-up :exit nil)
-    ("-" spotify-volume-down :exit nil)
-    ("x" spotify-volume-mute-unmute :exit nil)
-    ("d" spotify-select-device :exit nil)
+    ("m" smudge-my-playlists :exit t)
+    ("f" smudge-featured-playlists :exit t)
+    ("u" smudge-user-playlists :exit t)
+    ("SPC" smudge-controller-toggle-play :exit nil)
+    ("n" smudge-controller-next-track :exit nil)
+    ("p" smudge-controller-previous-track :exit nil)
+    ("r" smudge-controller-toggle-repeat :exit nil)
+    ("s" smudge-controller-toggle-shuffle :exit nil)
+    ("+" smudge-controller-volume-up :exit nil)
+    ("-" smudge-controller-volume-down :exit nil)
+    ("x" smudge-controller-volume-mute-unmute :exit nil)
+    ("d" smudge-select-device :exit nil)
     ("q" quit-window "quit" :color blue))
   )
 
 ;;;###autoload
 (defun +spotify/start ()
   (interactive)
-  (setq spotify-transport 'connect
-        spotify-oauth2-client-secret (auth-source-pick-first-password :host "spotify-client-secret" )
-        spotify-oauth2-client-id spotify-client-id
+  (setq smudge-transport 'connect
+        smudge-oauth2-client-secret (auth-source-pick-first-password :host "spotify-client-secret" )
+        smudge-oauth2-client-id spotify-client-id
         counsel-spotify-client-id spotify-client-id
         counsel-spotify-client-secret (auth-source-pick-first-password :host "spotify-client-secret" ))
   (+spotify/register-hydra)
