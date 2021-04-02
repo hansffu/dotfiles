@@ -193,12 +193,18 @@ To make sure frame has correct size on yabai
         (setq-local default-directory (file-name-as-directory cwd))
       (setq-local default-directory user-home-directory))))
 #+end_src
-*** Start apps
-**** Rofi
+*** Launch apps on login
 #+begin_src emacs-lisp
-(defun my/run-rofi ()
-  (interactive)
-  (my/run-in-background "rofi -show drun"))
+(defun my/start-apps-on-login ()
+  (my/run-in-background "~/.config/polybar/launch_polybar.sh")
+  (my/run-in-background "dunst")
+  (my/run-in-background "nm-applet")
+  (my/run-in-background "pasystray")
+  (my/run-in-background "blueman-applet")
+  (my/run-in-background "dropbox")
+  (setenv "LPASS_AGENT_TIMEOUT" "0")
+  (my/run-in-background (format "lpass login %s" user-mail-address))
+  )
 #+end_src
 *** Hooks
 **** Rename buffer to EXWM window name
@@ -209,20 +215,7 @@ To make sure frame has correct size on yabai
 **** Extra config after exwm is initialized
 #+begin_src emacs-lisp
 (defun my/exwm-init-hook ()
-  ;; (exwm-workspace-switch-create 0)
-
-  ;; (setq display-time-day-and-date t
-  ;;       display-time-24hr-format t)
-  ;; (display-time-mode 1)
-
-  (my/run-in-background "~/.config/polybar/launch_polybar.sh")
-  (my/run-in-background "dunst")
-  (my/run-in-background "nm-applet")
-  (my/run-in-background "pasystray")
-  (my/run-in-background "blueman-applet")
-  (my/run-in-background "dropbox")
-  (setenv "LPASS_AGENT_TIMEOUT" "0")
-  (my/run-in-background (format "lpass login %s" user-mail-address))
+  (my/start-apps-on-login)
   )
 #+end_src
 **** Config for new EXWM buffers
@@ -344,20 +337,7 @@ To make sure frame has correct size on yabai
        :desc "Swap workspace" "s" #'exwm-workspace-swap
        :desc "Detatch minibuffer" "Md" #'exwm-workspace-detach-minibuffer
        :desc "Attach minibuffer" "Ma" #'exwm-workspace-attach-minibuffer
-
        ))
-;; (map! :leader
-;;       (:prefix ("e"  "EXWM")
-;;        :desc "r" #'exwm-reset
-;;        ;; :desc "h" #'exwm-floating-hide
-;;        ;; :desc "w" #'exwm-workspace-switch
-;;        ;; :desc "a" #'exwm-workspace-add
-;;        ;; :desc "d" #'exwm-workspace-delete
-;;        ;; :desc "m" #'exwm-workspace-move
-;;        ;; :desc "s" #'exwm-workspace-swap
-;;        ;; :desc "Md" #'exwm-workspace-detach-minibuffer
-;;        ;; :desc "Ma" #'exwm-workspace-attach-minibuffer
-;;        ) )
 #+end_src
 ** Initialize
 #+begin_src emacs-lisp
@@ -440,6 +420,12 @@ Handle media keys and such
   (interactive)
   "Open Brave browser in project root."
   (my/run-in-background "brave" (projectile-project-root)))
+#+end_src
+*** Rofi
+#+begin_src emacs-lisp
+(defun my/run-rofi ()
+  (interactive)
+  (my/run-in-background "rofi -show drun"))
 #+end_src
 *** Keybinds
 #+begin_src emacs-lisp
