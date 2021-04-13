@@ -10,7 +10,7 @@ _t_: Track               _SPC_: Play/Pause        _+_: Volume up
 _m_: My Playlists        _n_  : Next Track        _-_: Volume down
 _f_: Featured Playlists  _p_  : Previous Track    _x_: Mute
 _u_: User Playlists      _r_  : Repeat            _d_: Device
-^^                       _s_  : Shuffle           _q_: Quit
+^^                       _s_  : Shuffle
 "
     ("t" counsel-spotify-search-track :exit t)
     ("m" smudge-my-playlists :exit t)
@@ -25,7 +25,8 @@ _u_: User Playlists      _r_  : Repeat            _d_: Device
     ("-" smudge-controller-volume-down :exit nil)
     ("x" smudge-controller-volume-mute-unmute :exit nil)
     ("d" smudge-select-device :exit nil)
-    ("q" quit-window "quit" :color blue))
+    ;; ("q" quit-window "quit" :color blue)
+    )
   )
 
 ;;;###autoload
@@ -36,6 +37,8 @@ _u_: User Playlists      _r_  : Repeat            _d_: Device
         smudge-oauth2-client-id spotify-client-id
         counsel-spotify-client-id spotify-client-id
         counsel-spotify-client-secret (auth-source-pick-first-password :host "spotify-client-secret" ))
+  (require 'smudge)
+  (require 'counsel-spotify)
   (+spotify/register-hydra)
   (global-set-key [remap +spotify/start] #'+spotify/hydra/body)
   (+spotify/hydra/body)

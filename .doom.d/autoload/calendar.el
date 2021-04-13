@@ -13,7 +13,22 @@
                                        (buffer-string)))
                    (lambda (ret)
                      (with-temp-buffer (insert ret)
-                                       (icalendar-import-buffer diary-file t))))
+                                       (icalendar-import-buffer diary-file t))
+                     (appt-activate 1)
+                     (after! org
+                       (org-agenda-to-appt t))
+                     ))
       )
     )
   )
+
+
+;;;###autoload
+(defun my/open-calendar ()
+  (interactive)
+  (cfw:open-calendar-buffer
+   :contents-sources
+   (list
+    (cfw:org-create-source "Green")  ; org-agenda source
+    (cfw:cal-create-source "Orange") ; diary source
+   )))

@@ -11,6 +11,6 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 
 export VISUAL=emacsclient
 export EDITOR="$VISUAL"
-
+compton &
 # exec dbus-launch --sh-syntax --exit-with-session emacs --eval "(exwm-enable)"
 exec emacs --eval "(exwm-enable)"

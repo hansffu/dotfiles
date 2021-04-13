@@ -109,3 +109,5 @@
            :files (:defaults "*.js" "*.css" "*.el" "*.so")
            :build ("make")))
 (package! nvm)
+
+(package! jest-test-mode)
