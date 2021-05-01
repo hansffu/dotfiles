@@ -16,7 +16,8 @@
                                        (icalendar-import-buffer diary-file t))
                      (appt-activate 1)
                      (after! org
-                       (org-agenda-to-appt t))
+                       (org-agenda-to-appt t)
+                       (appt-check t))
                      ))
       )
     )

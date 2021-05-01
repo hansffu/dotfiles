@@ -99,6 +99,7 @@
   :recipe (:host github :repo "ieure/exwm-mff"))
 
 (package! mu4e-thread-folding
+  :disable t
   :recipe (:host github :repo "rougier/mu4e-thread-folding"))
 
 ;; Requires emacs 28
@@ -111,3 +112,10 @@
 (package! nvm)
 
 (package! jest-test-mode)
+(package! code-compass
+  :disable t
+  :recipe (:host github :repo "ag91/code-compass"
+           :files ("*")))
+
+(package! elfeed-goodies
+  :disable t)

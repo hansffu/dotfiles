@@ -211,6 +211,11 @@ To make sure frame has correct size on yabai
 #+begin_src emacs-lisp
 (defun my/exwm-update-class ()
   (exwm-workspace-rename-buffer (format "%s - %s" exwm-class-name exwm-title)))
+
+(advice-add #'exwm--update-utf8-title
+            :before-while
+            (defun exwm--update-utf8-title-a (id &optional force)
+              (get-buffer-window (exwm--id->buffer id))))
 #+end_src
 **** Extra config after exwm is initialized
 #+begin_src emacs-lisp
@@ -329,6 +334,7 @@ To make sure frame has correct size on yabai
   :custom
   (exwm-workspace-number 2)
   (exwm-workspace-show-all-buffers t)
+  (exwm-layout-show-all-buffers t)
 
   :config
   (require 'exwm-randr)
@@ -409,6 +415,13 @@ Handle media keys and such
 (defun my/run-rofi ()
   (interactive)
   (my/run-in-background "rofi -show drun"))
+#+end_src
+*** Qutebrowser
+#+begin_src emacs-lisp
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "qutebrowser"
+      browse-url-generic-args '("--target" "window")
+      )
 #+end_src
 *** Keybinds
 #+begin_src emacs-lisp
@@ -868,6 +881,10 @@ Capture annoyances for retro
   :config
   (org-wild-notifier-mode 1))
 #+end_src
+*** org-clock
+#+begin_src emacs-lisp
+(setq org-clock-clocked-in-display nil)
+#+end_src
 *** Custom configuration
 **** jira/pomodoro
 Insert the task id from last started pomodoro
@@ -1102,6 +1119,17 @@ keybindings
   (add-hook 'typescript-mode-hook 'jest-test-mode)
   (add-hook 'js-mode-hook 'jest-test-mode)
   (add-hook 'typescript-tsx-mode-hook 'jest-test-mode))
+#+end_src
+** Code compass
+#+begin_src emacs-lisp
+(use-package! code-compass)
+#+end_src
+** Elfeed
+#+begin_src emacs-lisp
+(use-package! elfeed-goodies
+  :after elfeed
+  :config
+  (elfeed-goodies/setup))
 #+end_src
 * Languages
 ** Web

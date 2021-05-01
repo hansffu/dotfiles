@@ -50,7 +50,7 @@ _u_: unread
     ("g" slack-group-select)
     ("r" slack-select-rooms)
     ("t" slack-all-threads)
-    ("u" slack-all-unreads)
+    ("u" slack-select-unread-rooms)
     ("T" slack-change-current-team)
     ("R" +slack/start)))
 

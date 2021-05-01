@@ -3,6 +3,8 @@
 
 (use-package! slack
   :commands slack-start
+  :custom
+  (slack-enable-global-mode-string nil)
   :init
   (setq slack-buffer-emojify t ;; if you want to enable emoji, default nil
         slack-prefer-current-team t
@@ -29,7 +31,13 @@
   (set-popup-rule! "^\\*Slack" :size 0.5 :side 'right :select t)
   :config
   (+slack/register-authinfo-teams +slack/accounts)
-
+  (defclass slack-image-block-element (slack-block-element)
+    ((type :initarg :type :type string :initform "image")
+     (image-url :initarg :image_url :type string)
+     (alt-text :initarg :alt_text :type string)
+     (image-height :initarg :image_height :type (or number null))
+     (image-width :initarg :image_width :type (or number null))
+     (image-bytes :initarg :image_bytes :type (or number null))))
   )
 
 (after! alert
