@@ -323,6 +323,7 @@ To make sure frame has correct size on yabai
        :desc "Swap workspace" "s" #'exwm-workspace-swap
        :desc "Detatch minibuffer" "Md" #'exwm-workspace-detach-minibuffer
        :desc "Attach minibuffer" "Ma" #'exwm-workspace-attach-minibuffer
+       :desc "Open app" "SPC" #'counsel-linux-app
        ))
 #+end_src
 ** Initialize
@@ -1137,6 +1138,23 @@ keybindings
   :after elfeed
   :config
   (elfeed-goodies/setup))
+#+end_src
+** Workspaces
+#+begin_src emacs-lisp
+(when (featurep! :ui workspaces)
+  (after! persp-mode
+    (map! :leader
+          "-" #'+workspace/switch-to
+          "1" #'+workspace/switch-to-0
+          "2" #'+workspace/switch-to-1
+          "3" #'+workspace/switch-to-2
+          "4" #'+workspace/switch-to-3
+          "5" #'+workspace/switch-to-4
+          "6" #'+workspace/switch-to-5
+          "7" #'+workspace/switch-to-6
+          "8" #'+workspace/switch-to-7
+          "9" #'+workspace/switch-to-8
+          "0" #'+workspace/switch-to-final)))
 #+end_src
 * Languages
 ** Web
