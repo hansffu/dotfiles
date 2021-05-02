@@ -223,6 +223,46 @@ To make sure frame has correct size on yabai
   (my/start-apps-on-login)
   )
 #+end_src
+**** Auto workspace
+Some applications should always open in a specific workspace, so we move them as soon as possible
+#+begin_src emacs-lisp
+(defvar my/exwm-buffer-default-workspace-alist '()
+  "Associate exwm class name to default workspace")
+
+(setq my/exwm-buffer-default-workspace-alist '(("Spotify" . "Musikk")))
+
+(when (featurep! :ui workspaces)
+  (after! (:all exwm persp-mode)
+    (persp-def-auto-persp
+     "exwm"
+     :dont-pick-up-buffers t
+     :parameters '((dont-save-to-file . t))
+     :mode 'exwm-mode
+     :dyn-env '(after-switch-to-buffer-functions ;; prevent recursion
+                (persp-add-buffer-on-find-file nil)
+                persp-add-buffer-on-after-change-major-mode)
+     :hooks '(exwm-update-class-hook)
+     :switch 'window
+     :predicate (lambda (buffer &optional state)
+                  (and
+                   exwm-class-name
+                   (assoc exwm-class-name my/exwm-buffer-default-workspace-alist)
+                   (or state t)))
+     :get-name (lambda (state)
+                 (append (list
+                          (cons 'old-persp (get-current-persp))
+                          (cons 'persp-name (cdr (assoc exwm-class-name my/exwm-buffer-default-workspace-alist))))
+                         state))
+     :after-match (lambda (state)
+                    ;; (message "%s" (alist-get 'buffer state))
+                    ;; (message "%s" (alist-get 'old-persp state))
+                    (persp-remove-buffer (alist-get 'buffer state) (alist-get 'old-persp state))
+                    (+workspace-switch (alist-get 'persp-name state) t)
+                    ;; (+workspaces-add-current-buffer-h)
+                    (switch-to-buffer (alist-get 'buffer state))
+                    (+workspace/display))
+     )))
+#+end_src
 **** Config for new EXWM buffers
 #+begin_src emacs-lisp
 (defun my/exwm-mode-hook ()
