@@ -393,15 +393,22 @@ Handle media keys and such
   (add-hook! 'exwm-init-hook #'exwm-mff-mode))
 #+end_src
 ** Apps
-*** Intellij
+*** IntelliJ
+Open IntelliJ in current project or if it already exists in project, open file in running instance.
 #+begin_src emacs-lisp
 (defun my/idea-in-project ()
   (interactive)
   "Open IntelliJ IDEA in project root."
+
   (my/run-in-background (format "idea %s" (if (buffer-file-name)
-                                              (buffer-file-name)
+                                              (format ". %s" (buffer-file-name))
                                             "."))
-                        (projectile-project-root)))
+                        (projectile-project-root))
+
+  (let* ((exwm-buffers (--filter (exwm--buffer->id it) (+workspace-buffer-list) ))
+         (idea-window (car (--filter (with-current-buffer it (string= "jetbrains-idea" exwm-class-name)) exwm-buffers))))
+    (when idea-window (switch-to-buffer idea-window)))
+  )
 #+end_src
 *** Brave
 #+begin_src emacs-lisp
