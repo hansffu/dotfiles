@@ -191,7 +191,7 @@ To make sure frame has correct size on yabai
          (cwd (and pid (file-chase-links (format "/proc/%d/cwd" pid) 1))))
     (if (and cwd (file-accessible-directory-p cwd))
         (setq-local default-directory (file-name-as-directory cwd))
-      (setq-local default-directory user-home-directory))))
+      (when (boundp 'user-home-directory) (setq-local default-directory user-home-directory)))))
 #+end_src
 *** Launch apps on login
 #+begin_src emacs-lisp
@@ -202,6 +202,7 @@ To make sure frame has correct size on yabai
   (my/run-in-background "pasystray")
   (my/run-in-background "blueman-applet")
   (my/run-in-background "dropbox")
+  (my/run-in-background "flameshot")
   (setenv "LPASS_AGENT_TIMEOUT" "0")
   (my/run-in-background (format "lpass login %s" user-mail-address))
   )
@@ -229,7 +230,11 @@ Some applications should always open in a specific workspace, so we move them as
 (defvar my/exwm-buffer-default-workspace-alist '()
   "Associate exwm class name to default workspace")
 
-(setq my/exwm-buffer-default-workspace-alist '(("Spotify" . "Musikk")))
+(setq my/exwm-buffer-default-workspace-alist '(("Spotify" . "Musikk")
+                                               ("Slack" . "Kommunikasjon")
+                                               ;; ("Microsoft Teams - Preview" . "Kommunikasjon")
+                                               ("discord" . "Kommunikasjon")
+                                               ))
 
 (when (featurep! :ui workspaces)
   (after! (:all exwm persp-mode)
@@ -247,6 +252,7 @@ Some applications should always open in a specific workspace, so we move them as
                   (and
                    exwm-class-name
                    (assoc exwm-class-name my/exwm-buffer-default-workspace-alist)
+                   (not (memq xcb:Atom:_NET_WM_WINDOW_TYPE_SPLASH exwm-window-type))
                    (or state t)))
      :get-name (lambda (state)
                  (append (list
@@ -254,11 +260,9 @@ Some applications should always open in a specific workspace, so we move them as
                           (cons 'persp-name (cdr (assoc exwm-class-name my/exwm-buffer-default-workspace-alist))))
                          state))
      :after-match (lambda (state)
-                    ;; (message "%s" (alist-get 'buffer state))
-                    ;; (message "%s" (alist-get 'old-persp state))
-                    (persp-remove-buffer (alist-get 'buffer state) (alist-get 'old-persp state))
+                    (unless (string= (alist-get 'persp-name state) (persp-name (alist-get 'old-persp state)))
+                      (persp-remove-buffer (alist-get 'buffer state) (alist-get 'old-persp state)))
                     (+workspace-switch (alist-get 'persp-name state) t)
-                    ;; (+workspaces-add-current-buffer-h)
                     (switch-to-buffer (alist-get 'buffer state))
                     (+workspace/display))
      )))
