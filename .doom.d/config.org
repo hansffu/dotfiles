@@ -571,6 +571,10 @@ Supports `org-roam' filenames by chopping prefix cookie."
 (setq org-ellipsis " ▼")
 #+END_SRC
 *** org-agenda
+**** Only show top level in agenda
+#+begin_src emacs-lisp
+(setq org-agenda-todo-list-sublevels nil)
+#+end_src
 **** Populate from external sources
 I want to view my meetings and jira tasks in my agenda. Jira tasks are synced with org-jira while calendars are imported into the diary.
 #+begin_src emacs-lisp
@@ -636,6 +640,7 @@ Recursively find files in ~org-directory~
   (apply orig-fun args))
 
 (after! org-agenda
+  (setq org-agenda-tag-filter-preset '("-noagenda"))
   (advice-add  'org-agenda-redo :around #'refresh-org-agenda-advice)
   (refresh-org-agenda-files))
 #+END_SRC
@@ -860,6 +865,13 @@ Capture annoyances for retro
     :heading ,(format-time-string "Week: %V"))
   )
 #+END_SRC
+***** Email
+#+begin_src emacs-lisp
+(defun my/org-template-email-followup ()
+  '("Email to follow up"
+    entry (file+headline "email.org" "Follow up")
+    "* TODO %a %?\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))"))
+#+end_src
 ***** Update list
 #+BEGIN_SRC emacs-lisp
 (after! org-capture
@@ -867,6 +879,8 @@ Capture annoyances for retro
         `(
           ("t" . ,(my/org-template-personal-todo))
           ("n" . ,(my/org-template-personal-note))
+
+          ("e" . ,(my/org-template-email-followup))
 
           ("p" "Project")
           ("pt" . ,(my/org-template-project-todo))
@@ -1117,7 +1131,10 @@ We use commitlint with max summary length 100
             (:from . 25)
             (:subject . 235)
             (:maildir . 20)
-            )))
+            ))
+    (map! :map (mu4e-view-header-field-keymap mu4e-view-mode-map mu4e-headers-mode-map)
+          :n "f" #'mu4e-org-store-and-capture)
+    )
 #+end_src
 ** Window configuration
 Configure so both evil-window (windmove) and ace windows works for all frames
