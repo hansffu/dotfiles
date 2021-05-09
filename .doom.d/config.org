@@ -354,67 +354,6 @@ our package manager can't deal with; see raxod502/straight.el#279)
 #+begin_src emacs-lisp :tangle packages.el
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
-
-(package! speed-type)
-
-(package! reason-mode)
-
-(package! graphql-mode)
-(package! ob-graphql)
-(package! org-tanglesync
-  :disable t)
-
-(package! org-jira)
-(package! ox-slack)
-(package! org-super-agenda)
-(package! visual-fill-column)
-(package! org-wild-notifier)
-
-
-(package! lastpass)
-
-(package! aws-logs
-  :recipe (:host github :repo "hansffu/aws-logs.el"))
-
-(package! mmm-mode)
-
-;; (package! tsc
-;;   :recipe (:host github
-;;            :repo "ubolonton/emacs-tree-sitter"
-;;            :files ("core/*.el")))
-;; (package! tree-sitter
-;;   :recipe (:host github
-;;            :repo "ubolonton/emacs-tree-sitter"
-;;            :files ("lisp/*.el")))
-;; (package! tree-sitter-langs
-;;   :recipe (:host github
-;;            :repo "ubolonton/emacs-tree-sitter"
-;;            :files ("langs/*.el" "langs/queries")))
-
-(package! tree-sitter)
-(package! tree-sitter-langs)
-
-(package! mu4e-thread-folding
-  :disable t
-  :recipe (:host github :repo "rougier/mu4e-thread-folding"))
-
-;; Requires emacs 28
-(package! webkit
-  :disable t
-  :recipe (:host github :repo "akirakyle/emacs-webkit"
-           :branch "main"
-           :files (:defaults "*.js" "*.css" "*.el" "*.so")
-           :build ("make")))
-(package! nvm)
-
-(package! jest-test-mode)
-(package! code-compass
-  :disable t
-  :recipe (:host github :repo "ag91/code-compass"
-           :files ("*")))
-
-(package! elfeed-goodies
-  :disable t)
 #+end_src
 ** Doom setup
 #+INCLUDE: "./personal.el" src emacs-lisp
@@ -499,7 +438,6 @@ To make sure frame has correct size on yabai
 (defun my/run-in-background (command &optional working-dir)
   (let ((command-parts (split-string command "[ ]+"))
         (default-directory (or working-dir default-directory)))
-    (message "Launching command %s in %s" command default-directory)
     (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
 #+end_src
 **** Update default-directory
@@ -854,6 +792,9 @@ Open IntelliJ in current project or if it already exists in project, open file i
                                 (t 'message)))
 #+end_src
 ** mmm-mode
+#+begin_src emacs-lisp :tangle packages.el
+(package! mmm-mode)
+#+end_src
 #+BEGIN_SRC emacs-lisp
 (use-package! mmm-mode)
 #+END_SRC
@@ -1008,6 +949,9 @@ Recursively find files in ~org-directory~
   (refresh-org-agenda-files))
 #+END_SRC
 **** org-super-agenda
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-super-agenda)
+#+end_src
 #+BEGIN_SRC emacs-lisp
 (use-package! org-super-agenda
   :config
@@ -1261,6 +1205,9 @@ Capture annoyances for retro
   (require 'org-depend))
 #+END_SRC
 *** org-jira
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-jira)
+#+end_src
 #+BEGIN_SRC emacs-lisp
 (use-package! org-jira
   :commands (org-jira-mode org-jira-get-issues org-jira-update-worklogs-from-org-clocks)
@@ -1279,7 +1226,11 @@ Capture annoyances for retro
   (make-directory org-jira-working-dir 'parents)
   )
 #+END_SRC
-*** org tanglesync
+*** COMMENT org tanglesync
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-tanglesync
+  :disable t)
+#+end_src
 #+BEGIN_SRC emacs-lisp
 (use-package! org-tanglesync
   :hook ((org-mode . org-tanglesync-mode)
@@ -1294,6 +1245,9 @@ Capture annoyances for retro
    ( "C-c M-a" . org-tanglesync-process-buffer-automatic)))
 #+END_SRC
 *** Visual fill column
+#+begin_src emacs-lisp :tangle packages.el
+(package! visual-fill-column)
+#+end_src
 #+BEGIN_SRC emacs-lisp
 (defun my/org-mode-visual-fill ()
   (setq visual-fill-column-width 180)
@@ -1303,6 +1257,9 @@ Capture annoyances for retro
   :hook (org-mode . my/org-mode-visual-fill))
 #+END_SRC
 *** org-wild-notifier
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-wild-notifier)
+#+end_src
 #+begin_src emacs-lisp
 (use-package! org-wild-notifier
   :init
@@ -1404,6 +1361,10 @@ Monday is first day of the week
   )
 #+END_SRC
 ** Tree sitter
+#+begin_src emacs-lisp :tangle packages.el
+(package! tree-sitter)
+(package! tree-sitter-langs)
+#+end_src
 #+BEGIN_SRC emacs-lisp
 (use-package! tree-sitter)
 (use-package! tree-sitter-langs
@@ -1418,6 +1379,9 @@ Monday is first day of the week
       projectile-switch-project-action 'projectile-vterm)
 #+END_SRC
 ** Lastpass
+#+begin_src emacs-lisp :tangle packages.el
+(package! lastpass)
+#+end_src
 #+BEGIN_SRC emacs-lisp
 (use-package! lastpass
   :custom
@@ -1427,7 +1391,16 @@ Monday is first day of the week
   (lastpass-auth-source-enable)
 )
 #+END_SRC
-** Webkit
+** COMMENT Webkit
+ Requires emacs 28
+#+begin_src emacs-lisp :tangle packages.el
+(package! webkit
+  :disable t
+  :recipe (:host github :repo "akirakyle/emacs-webkit"
+           :branch "main"
+           :files (:defaults "*.js" "*.css" "*.el" "*.so")
+           :build ("make")))
+#+end_src
 #+begin_src emacs-lisp
 (use-package! webkit)
 #+end_src
@@ -1468,6 +1441,11 @@ We use commitlint with max summary length 100
 (setq! emacs-everywhere-markdown-apps '("Discord" "Slack"))
 #+end_src
 ** Email
+#+begin_src emacs-lisp :tangle packages.el
+(package! mu4e-thread-folding
+  :disable t
+  :recipe (:host github :repo "rougier/mu4e-thread-folding"))
+#+end_src
 #+begin_src emacs-lisp
   (use-package! mu4e-thread-folding
     :after mu4e
@@ -1518,6 +1496,10 @@ Configure so both evil-window (windmove) and ace windows works for all frames
 #+end_src
 ** AWS
 *** AWS logs
+#+begin_src emacs-lisp :tangle packages.el
+(package! aws-logs
+  :recipe (:host github :repo "hansffu/aws-logs.el"))
+#+end_src
 #+begin_src emacs-lisp
 (use-package! aws-logs
   :commands aws-logs
@@ -1546,6 +1528,9 @@ keybindings
 (remove-hook! vterm-mode 'hide-mode-line-mode)
 #+end_src
 ** Jest
+#+begin_src emacs-lisp :tangle packages.el
+(package! jest-test-mode)
+#+end_src
 #+begin_src emacs-lisp
 (use-package! jest-test-mode
   :defer t
@@ -1556,10 +1541,20 @@ keybindings
   (add-hook 'typescript-tsx-mode-hook 'jest-test-mode))
 #+end_src
 ** Code compass
+#+begin_src emacs-lisp :tangle packages.el
+(package! code-compass
+  :disable t
+  :recipe (:host github :repo "ag91/code-compass"
+           :files ("*")))
+#+end_src
 #+begin_src emacs-lisp
 (use-package! code-compass)
 #+end_src
 ** Elfeed
+#+begin_src emacs-lisp :tangle packages.el
+(package! elfeed-goodies
+  :disable t)
+#+end_src
 #+begin_src emacs-lisp
 (use-package! elfeed-goodies
   :after elfeed
@@ -1586,6 +1581,9 @@ keybindings
 * Languages
 ** Web
 *** nvm
+#+begin_src emacs-lisp :tangle packages.el
+(package! nvm)
+#+end_src
 #+begin_src emacs-lisp
 (use-package! nvm
   :config
@@ -1630,6 +1628,10 @@ variants of Typescript.")
 #+end_src
 ** GraphQL
 Set up graphql with lsp
+#+begin_src emacs-lisp :tangle packages.el
+(package! graphql-mode)
+(package! ob-graphql)
+#+end_src
 #+BEGIN_SRC emacs-lisp
 (use-package! graphql-mode
   :hook (graphql-mode . lsp!)
@@ -1692,6 +1694,9 @@ Set up from org mode as well
   )
 #+END_SRC
 ** Rescript (ReasonML)
+#+begin_src emacs-lisp :tangle packages.el
+(package! reason-mode)
+#+end_src
 #+BEGIN_SRC emacs-lisp
 (use-package! reason-mode
   :mode ("\\.re?s\\'" . reason-mode)
@@ -1709,6 +1714,9 @@ Set up from org mode as well
 #+END_SRC
 * Fun
 ** Speed types
+#+begin_src emacs-lisp :tangle packages.el
+(package! speed-type)
+#+end_src
 #+BEGIN_SRC
 (use-package! speed-type)
 #+END_SRC
