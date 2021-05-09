@@ -291,6 +291,34 @@ Some applications should always open in a specific workspace, so we move them as
     ('line-mode (my/exwm-on-enter-line-mode)))
   )
 #+end_src
+*** Advice
+#+begin_src emacs-lisp
+(defun my/switch-buffer-advice (orig-fun &rest args)
+  (letf! ((defun ivy--switch-buffer-action (buffer)
+            "Switch to BUFFER.
+BUFFER may be a string or nil."
+            (if (zerop (length buffer))
+                (switch-to-buffer
+                 ivy-text nil 'force-same-window)
+              (let ((virtual (assoc buffer ivy--virtual-buffers))
+                    (view (assoc buffer ivy-views)))
+                (cond ((and virtual
+                            (not (get-buffer buffer)))
+                       (find-file (cdr virtual)))
+                      (view
+                       (delete-other-windows)
+                       (let (
+                             ;; silence "Directory has changed on disk"
+                             (inhibit-message t))
+                         (ivy-set-view-recur (cadr view))))
+                      (t
+                       (exwm-workspace-switch-to-buffer buffer))))))
+          )
+
+    (apply orig-fun args)
+    )
+  )
+#+end_src
 *** Insert/normal state
 #+begin_src emacs-lisp
 (defun my/exwm-enter-char-mode ()
@@ -401,6 +429,8 @@ Some applications should always open in a specific workspace, so we move them as
   (add-hook 'exwm-mode-hook #'my/exwm-mode-hook)
   (add-hook 'exwm-update-title-hook #'my/exwm-update-class)
   (add-hook 'exwm-input-input-mode-change-hook #'my/exwm-handle-input-state)
+
+  (advice-add '+ivy/switch-workspace-buffer :around #'my/switch-buffer-advice)
   (my/exwm-set-global-keys)
 
   (setq my/exwm-char-mode-class-names '("jetbrains-idea"))
