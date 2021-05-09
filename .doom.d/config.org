@@ -99,6 +99,323 @@ CURRENT-NAME, if it does not already have them:
 #+end_src
 
 * Setup
+** init.el
+:HELPTEXT:
+This file controls what Doom modules are enabled and what order they load in.
+Remember to run 'doom sync' after modifying it!
+
+NOTE Press 'SPC h d h' (or 'C-h d h' for non-vim users) to access Doom's
+     documentation. There you'll find information about all of Doom's modules
+     and what flags they support.
+
+NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
+     'C-c g k' for non-vim users) to view its documentation. This works on
+     flags as well (those symbols that start with a plus).
+
+     Alternatively, press 'gd' (or 'C-c g d') on a module to browse its
+     directory (for easy access to its source code).
+:END:
+#+begin_src emacs-lisp :tangle init.el
+;;; init.el -*- lexical-binding: t; -*-
+
+(doom! :input
+       ;;chinese
+       ;;japanese
+
+       :completion
+       (company
+        +childframe)           ; the ultimate code completion backend
+       ;; helm              ; the *other* search engine for love and life
+       ;;ido               ; the other *other* search engine...
+       (ivy +icons
+            ;; +childframe
+            ;; +fuzzy
+            +prescient)    ; a search engine for love and life
+
+       :ui
+       ;;deft              ; notational velocity for Emacs
+       doom              ; what makes DOOM look the way it does
+       doom-dashboard    ; a nifty splash screen for Emacs
+       doom-quit         ; DOOM quit-message prompts when you quit Emacs
+       ;;fill-column       ; a `fill-column' indicator
+       hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+       hydra
+       ;;indent-guides     ; highlighted indent columns
+       modeline          ; snazzy, Atom-inspired modeline, plus API
+       nav-flash         ; blink the current line after jumping
+       ;;neotree           ; a project drawer, like NERDTree for vim
+       ophints           ; highlight the region an operation acts on
+       (popup            ; tame sudden yet inevitable temporary windows
+        +all             ; catch all popups that start with an asterix
+        +defaults)       ; default popup rules
+       ligatures       ; replace bits of code with pretty symbols
+       ;; tabs              ; an tab bar for Emacs
+       treemacs          ; a project drawer, like neotree but cooler
+       ;;unicode           ; extended unicode support for various languages
+       vc-gutter         ; vcs diff in the fringe
+       vi-tilde-fringe   ; fringe tildes to mark beyond EOB
+       window-select     ; visually switch windows
+       workspaces        ; tab emulation, persistence & separate workspaces
+       zen               ; distraction-free coding or writing
+
+       :editor
+       (evil +everywhere); come to the dark side, we have cookies
+       file-templates    ; auto-snippets for empty files
+       fold              ; (nigh) universal code folding
+       format  ; automated prettiness
+       ;;god               ; run Emacs commands without modifier keys
+       lispy             ; vim for lisp, for people who don't like vim
+       multiple-cursors  ; editing in many places at once
+       ;;objed             ; text object editing for the innocent
+       ;; parinfer          ; turn lisp into python, sort of
+       rotate-text       ; cycle region at point between text candidates
+       snippets          ; my elves. They type so I don't have to
+       ;;word-wrap         ; soft wrapping with language-aware indent
+
+       :emacs
+       (dired +icons)             ; making dired pretty [functional]
+       electric          ; smarter, keyword-based electric-indent
+       (ibuffer +icons)           ; interactive buffer management
+       vc                ; version-control and Emacs, sitting in a tree
+       (undo +tree)
+
+       :term
+       eshell            ; a consistent, cross-platform shell (WIP)
+       ;;shell             ; a terminal REPL for Emacs
+       ;;term              ; terminals in Emacs
+       vterm             ; another terminals in Emacs
+
+       :checkers
+       syntax              ; tasing you for every semicolon you forget
+       (spell +flyspell +aspell)             ; tasing you for misspelling mispelling
+       ;;grammar           ; tasing grammar mistake every you make
+
+       :tools
+       ;;ansible
+       (debugger +lsp)          ; FIXME stepping through code, to help you add bugs
+       ;;direnv
+       (docker +lsp)
+       ;;editorconfig      ; let someone else argue about tabs vs spaces
+       ;;ein               ; tame Jupyter notebooks with emacs
+       (eval +overlay)     ; run code, run (also, repls)
+       ;;gist              ; interacting with github gists
+       (lookup           ; helps you navigate your code and documentation
+        +docsets)        ; ...or in Dash docsets locally
+       (lsp +peek)
+       ;;macos             ; MacOS-specific commands
+       (magit +forge)             ; a git porcelain for Emacs
+       ;;make              ; run make tasks from Emacs
+       ;;pass              ; password manager for nerds
+       pdf               ; pdf enhancements
+       ;;prodigy           ; FIXME managing external services & code builders
+       rgb               ; creating color strings
+       (terraform +lsp)         ; infrastructure as code
+       ;;tmux              ; an API for interacting with tmux
+       ;;upload            ; map local to remote projects via ssh/ftp
+       taskrunner
+
+       :lang
+       ;;agda              ; types of types of types of types...
+       ;;assembly          ; assembly for fun or debugging
+       ;;cc                ; C/C++/Obj-C madness
+       ;;clojure           ; java with a lisp
+       ;;common-lisp       ; if you've seen one lisp, you've seen them all
+       ;;coq               ; proofs-as-programs
+       ;;crystal           ; ruby at the speed of c
+       ;;csharp            ; unity, .NET, and mono shenanigans
+       data              ; config/data formats
+       ;;elixir            ; erlang done right
+       elm               ; care for a cup of TEA?
+       emacs-lisp        ; drown in parentheses
+       ;;erlang            ; an elegant language for a more civilized age
+       ;;ess               ; emacs speaks statistics
+       ;;faust             ; dsp, but you get to keep your soul
+       ;;fsharp           ; ML stands for Microsoft's Language
+       ;;fstar             ; (dependent) types and (monadic) effects and Z3
+       ;;go                ; the hipster dialect
+       graql
+       (haskell +dante)  ; a language that's lazier than I am
+       ;;hy                ; readability of scheme w/ speed of python
+       ;;idris             ;
+       (java +lsp) ; the poster child for carpal tunnel syndrome
+       (javascript +lsp)        ; all(hope(abandon(ye(who(enter(here))))))
+       (json +lsp)
+       ;;julia             ; a better, faster MATLAB
+       (kotlin +lsp)            ; a better, slicker Java(Script)
+       ;;latex             ; writing papers in Emacs has never been so fun
+       ;;lean
+       ;;factor
+       ;; ledger            ; an accounting system in Emacs
+       ;;lua               ; one-based indices? one-based indices
+       markdown          ; writing docs for people to ignore
+       ;;nim               ; python + lisp at the speed of c
+       ;;nix               ; I hereby declare "nix geht mehr!"
+       ;;ocaml             ; an objective camel
+       (org              ; organize your plain life in plain text
+        +dragndrop       ; drag & drop files/images into org buffers
+        +pretty
+        +roam
+        ;;+hugo            ; use Emacs for hugo blogging
+        ;;+jupyter        ; ipython/jupyter support for babel
+        ;; +pandoc          ; export-with-pandoc support
+        +pomodoro        ; be fruitful with the tomato technique
+        +present)        ; using org-mode for presentations
+       ;;perl              ; write code no one else can comprehend
+       ;;php               ; perl's insecure younger brother
+       plantuml          ; diagrams for confusing people more
+       ;;purescript        ; javascript, but functional
+       ;;python            ; beautiful is better than ugly
+       ;;qt                ; the 'cutest' gui framework ever
+       ;;racket            ; a DSL for DSLs
+       rest              ; Emacs as a REST client
+       ;;rst               ; ReST in peace
+       ;;ruby              ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+       ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+       ;;scala             ; java, but good
+       ;;scheme            ; a fully conniving family of lisps
+       sh                ; she sells {ba,z,fi}sh shells on the C xor
+       ;;solidity          ; do you need a blockchain? No.
+       ;;swift             ; who asked for emoji variables?
+       ;;terra             ; Earth and Moon in alignment for performance.
+       web               ; the tubes
+       yaml
+
+       :email
+       (mu4e +gmail)
+       ;;notmuch
+       ;;(wanderlust +gmail)
+
+       :app
+       calendar
+       ;;irc               ; how neckbeards socialize
+       (rss +org)        ; emacs as an RSS reader
+       ;;twitter           ; twitter client https://twitter.com/vnought
+       slack
+       spotify
+       ;; eaf
+       everywhere
+
+       :config
+       literate
+       (default +bindings +smartparens))
+#+end_src
+** packages.el
+Temporarily tangle this file here until I move them to a more logical spot
+:HELPTEXT:
+To install a package with Doom you must declare them here, run 'doom sync' on
+the command line, then restart Emacs for the changes to take effect.
+Alternatively, use M-x doom/reload.
+
+WARNING: Disabling core packages listed in ~/.emacs.d/core/packages.el may
+have nasty side-effects and is not recommended.
+
+
+All of Doom's packages are pinned to a specific commit, and updated from
+release to release. To un-pin all packages and live on the edge, do:
+                                     ;(unpin! t)
+
+...but to unpin a single package:
+                                     ;(unpin! pinned-package)
+Use it to unpin multiple packages
+                                     ;(unpin! pinned-package another-pinned-package)
+
+
+To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
+                                     ;(package! some-package)
+
+To install a package directly from a particular repo, you'll need to specify
+a `:recipe'. You'll find documentation on what `:recipe' accepts here:
+https://github.com/raxod502/straight.el#the-recipe-format
+                                     ;(package! another-package
+                                     ;  :recipe (:host github :repo "username/repo"))
+
+If the package you are trying to install does not contain a PACKAGENAME.el
+file, or is located in a subdirectory of the repo, you'll need to specify
+`:files' in the `:recipe':
+                                     ;(package! this-package
+                                     ;  :recipe (:host github :repo "username/repo"
+                                     ;           :files ("some-file.el" "src/lisp/*.el")))
+
+If you'd like to disable a package included with Doom, for whatever reason,
+you can do so here with the `:disable' property:
+                                     ;(package! builtin-package :disable t)
+
+You can override the recipe of a built in package without having to specify
+all the properties for `:recipe'. These will inherit the rest of its recipe
+from Doom or MELPA/ELPA/Emacsmirror:
+                                     ;(package! builtin-package :recipe (:nonrecursive t))
+                                     ;(package! builtin-package-2 :recipe (:repo "myfork/package"))
+
+Specify a `:branch' to install a package from a particular branch or tag.
+This is required for some packages whose default branch isn't 'master' (which
+our package manager can't deal with; see raxod502/straight.el#279)
+                                        ;(package! builtin-package :recipe (:branch "develop"))
+:END:
+#+begin_src emacs-lisp :tangle packages.el
+;; -*- no-byte-compile: t; -*-
+;;; $DOOMDIR/packages.el
+
+(package! speed-type)
+
+(package! reason-mode)
+
+(package! graphql-mode)
+(package! ob-graphql)
+(package! org-tanglesync
+  :disable t)
+
+(package! org-jira)
+(package! ox-slack)
+(package! org-super-agenda)
+(package! visual-fill-column)
+(package! org-wild-notifier)
+
+
+(package! lastpass)
+
+(package! aws-logs
+  :recipe (:host github :repo "hansffu/aws-logs.el"))
+
+(package! mmm-mode)
+
+;; (package! tsc
+;;   :recipe (:host github
+;;            :repo "ubolonton/emacs-tree-sitter"
+;;            :files ("core/*.el")))
+;; (package! tree-sitter
+;;   :recipe (:host github
+;;            :repo "ubolonton/emacs-tree-sitter"
+;;            :files ("lisp/*.el")))
+;; (package! tree-sitter-langs
+;;   :recipe (:host github
+;;            :repo "ubolonton/emacs-tree-sitter"
+;;            :files ("langs/*.el" "langs/queries")))
+
+(package! tree-sitter)
+(package! tree-sitter-langs)
+
+(package! mu4e-thread-folding
+  :disable t
+  :recipe (:host github :repo "rougier/mu4e-thread-folding"))
+
+;; Requires emacs 28
+(package! webkit
+  :disable t
+  :recipe (:host github :repo "akirakyle/emacs-webkit"
+           :branch "main"
+           :files (:defaults "*.js" "*.css" "*.el" "*.so")
+           :build ("make")))
+(package! nvm)
+
+(package! jest-test-mode)
+(package! code-compass
+  :disable t
+  :recipe (:host github :repo "ag91/code-compass"
+           :files ("*")))
+
+(package! elfeed-goodies
+  :disable t)
+#+end_src
 ** Doom setup
 #+INCLUDE: "./personal.el" src emacs-lisp
 
@@ -171,6 +488,10 @@ To make sure frame has correct size on yabai
 (setq frame-resize-pixelwise t)
 #+END_SRC
 * Desktop
+** packages
+#+begin_src emacs-lisp :tangle packages.el
+(package! exwm)
+#+end_src
 ** Functions
 *** Utilities
 **** Helper function to start background apps
@@ -438,6 +759,9 @@ BUFFER may be a string or nil."
 #+end_src
 ** Desktop environment
 Handle media keys and such
+#+begin_src emacs-lisp :tangle packages.el
+(package! desktop-environment)
+#+end_src
 #+begin_src emacs-lisp
 (use-package! desktop-environment
   :after exwm
@@ -445,6 +769,10 @@ Handle media keys and such
 #+end_src
 ** Plugins
 *** exwm-edit
+#+begin_src emacs-lisp :tangle packages.el
+(package! exwm-edit)
+#+end_src
+
 #+begin_src emacs-lisp
 (use-package! exwm-edit
   :commands #'exwm-edit--compose
@@ -461,6 +789,11 @@ Handle media keys and such
   (global-exwm-edit-mode t))
 #+end_src
 *** Mouse follow focus
+#+begin_src emacs-lisp :tangle packages.el
+(package! exwm-mff
+  :recipe (:host github :repo "ieure/exwm-mff"))
+#+end_src
+
 #+begin_src emacs-lisp
 (use-package! exwm-mff
   :commands exwm-mff-mode
@@ -1168,6 +1501,9 @@ We use commitlint with max summary length 100
 #+end_src
 ** Window configuration
 Configure so both evil-window (windmove) and ace windows works for all frames
+#+begin_src emacs-lisp :tangle packages.el
+(package! framemove :recipe (:host github :repo "emacsmirror/framemove"))
+#+end_src
 #+begin_src emacs-lisp
 (use-package! framemove
   :after windmove
