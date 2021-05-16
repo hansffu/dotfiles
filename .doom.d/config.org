@@ -1448,6 +1448,16 @@ We use commitlint with max summary length 100
 #+begin_src emacs-lisp
 (setq git-commit-summary-max-length 100)
 #+end_src
+*** CircleCI magit integration
+#+begin_src emacs-lisp :tangle packages.el
+(package! magit-circleci)
+#+end_src
+#+begin_src emacs-lisp
+(use-package! magit-circleci
+  :commands magit-circleci-mode
+  :config
+  (setq magit-circleci-token (auth-source-pick-first-password :host "circleci.magit.token" )))
+#+end_src
 ** Emacs Everywhere
 #+begin_src emacs-lisp
 (setq! emacs-everywhere-markdown-apps '("Discord" "Slack"))
