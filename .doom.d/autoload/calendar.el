@@ -12,7 +12,7 @@
                      (with-temp-buffer (url-insert-file-contents url)
                                        (buffer-string)))
                    (lambda (ret)
-                     (with-temp-buffer (insert ret)
+                     (with-temp-buffer (insert (s-replace-all '(("%" . "-")) ret))
                                        (icalendar-import-buffer diary-file t))
                      (appt-activate 1)
                      (after! org
