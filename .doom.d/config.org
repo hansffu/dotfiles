@@ -1528,13 +1528,13 @@ keybindings
 #+BEGIN_SRC emacs-lisp
 ;; (setq-hook! '(typescript-mode-local-vars-hook typescript-tsx-mode-local-vars-hook)
 ;;   +format-with-lsp nil)
-(add-hook! (typescript-mode typescript-tsx-mode) #'tree-sitter-hl-mode)
+;; (add-hook! (typescript-mode typescript-tsx-mode) #'tree-sitter-hl-mode)
 
-(define-derived-mode typescript-tsx-mode typescript-mode "TSX"
-  "Major mode for editing TSX files.
-
-Refer to Typescript documentation for syntactic differences between normal and TSX
-variants of Typescript.")
+;; (define-derived-mode typescript-tsx-mode typescript-mode "TSX"
+;;   "Major mode for editing TSX files.
+(setq tree-sitter-hl-use-font-lock-keywords nil)
+;; Refer to Typescript documentation for syntactic differences between normal and TSX
+;; variants of Typescript.")
 
 (setq-hook! '(typescript-tsx-mode-hook typescript-mode-hook)
   +format-with-lsp nil)
