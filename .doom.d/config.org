@@ -901,7 +901,11 @@ The workday page will show
                             :scheduled past)
                       )
                      (:name "Unscheduled"
-                      :category "work")
+                      :and (:category "work"
+                            :not (:habit t)))
+                     (:name "Personal"
+                      :and (:category "private"
+                            :date today))
                      (:discard (:anything t))
 
                      ))))
@@ -1134,13 +1138,16 @@ Capture annoyances for retro
 
   (setq org-jira-working-dir "~/Dropbox/org/org-jira"
         org-jira-use-status-as-todo nil
-        org-jira-done-states '("Done" "Prod" "PROD" "Closed" "Resolved" "Accept")
+        org-jira-done-states '("Done" "Prod" "PROD" "Closed" "Resolved" "Accept" "Dev (Done)")
         org-jira-jira-status-to-org-keyword-alist
         '(("In Progress" . "STRT")
           ("DEV" . "DONE")
+          ("Dev (Done)" . "DONE")
           ("Demo" . "DONE")
           ("Pull request" . "HOLD")
-          ("Prod" . "DONE")))
+          ("Pull Request" . "HOLD")
+          ("Prod" . "DONE")
+          ("rejected" . "KILL")))
   (make-directory org-jira-working-dir 'parents)
   )
 #+END_SRC
