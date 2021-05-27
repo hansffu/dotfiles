@@ -642,8 +642,9 @@ Handle media keys and such
 #+begin_src emacs-lisp
 (use-package! exwm-mff
   :commands exwm-mff-mode
-  :init
-  (add-hook! 'exwm-init-hook #'exwm-mff-mode))
+  ;; :init
+  ;; (add-hook! 'exwm-init-hook #'exwm-mff-mode)
+  )
 #+end_src
 ** Apps
 *** IntelliJ
