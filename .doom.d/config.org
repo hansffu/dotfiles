@@ -261,7 +261,9 @@ our package manager can't deal with; see raxod502/straight.el#279)
 ;;; $DOOMDIR/packages.el
 #+end_src
 ** Doom setup
-#+INCLUDE: "./personal.el" src emacs-lisp
+#+begin_src emacs-lisp
+(load "~/.doom.d/personal.el")
+#+end_src
 
 #+BEGIN_SRC emacs-lisp
 
