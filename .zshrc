@@ -83,7 +83,7 @@ plugins=(
   osx
   vscode
   mvn
-  vi-mode
+  # vi-mode
   zsh-autosuggestions
 )
 
@@ -101,7 +101,7 @@ source $ZSH/oh-my-zsh.sh
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='emacs -nw'
 else
-  export EDITOR='emacsclient -n -c -a "emacs"'
+  export EDITOR='emacsclient -n'
 fi
 
 # Compilation flags
@@ -146,8 +146,8 @@ bindkey -M viins 'jk' vi-cmd-mode
 
 #source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 alias magit="i3-swallow emacsclient -c -e \(magit-status\)"
-alias e="emacsclient -n -c -a \"emacs\""
-export EDITOR='emacsclient -n -c -a "emacs"'
+alias e="emacsclient -n"
+export EDITOR='emacsclient -n'
 
 [ -s "$HOME/.jabba/jabba.sh" ] && source "$HOME/.jabba/jabba.sh"
 export NVM_DIR="$HOME/.nvm"
