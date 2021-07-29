@@ -62,3 +62,4 @@ _u_: unread
 
   (global-set-key [remap +slack/start] #'+slack/hydra/body)
   (+slack/hydra/body))
+
