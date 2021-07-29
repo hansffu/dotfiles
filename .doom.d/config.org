@@ -1598,11 +1598,22 @@ keybindings
   :config
   (nvm-use "14"))
 #+end_src
+*** Yarn
+#+begin_src emacs-lisp
+(defun my/run-tests-in-file ()
+  (interactive)
+  (compile (format "yarn test %s" (buffer-file-name (buffer-base-buffer)))))
+
+(map! :map (typescript-mode-map typescript-tsx-mode-map)
+      :leader
+      (:prefix "r"
+       :desc "Run tests in file" "t" #'my/run-tests-in-file) )
+#+end_src
 *** typescript
 #+BEGIN_SRC emacs-lisp
 ;; (setq-hook! '(typescript-mode-local-vars-hook typescript-tsx-mode-local-vars-hook)
 ;;   +format-with-lsp nil)
-;; (add-hook! (typescript-mode typescript-tsx-mode) #'tree-sitter-hl-mode)
+(add-hook! (typescript-mode typescript-tsx-mode) #'tree-sitter-hl-mode)
 
 ;; (define-derived-mode typescript-tsx-mode typescript-mode "TSX"
 ;;   "Major mode for editing TSX files.
