@@ -446,11 +446,10 @@ Some applications should always open in a specific workspace, so we move them as
   (setq exwm-input-line-mode-passthrough nil)
   (setq exwm--ewmh-state
         (delq xcb:Atom:_NET_WM_STATE_HIDDEN exwm--ewmh-state))
-  (evil-insert-state))
+  )
 
 (defun my/exwm-on-enter-line-mode ()
   (setq exwm-input-line-mode-passthrough t)
-  (evil-normal-state)
   )
 
 (defun my/exwm-handle-input-state ()
@@ -501,6 +500,14 @@ BUFFER may be a string or nil."
     (minibuffer-keyboard-quit)))
 #+end_src
 
+*** Workarounds
+**** Popups randomly closing
+#+begin_src emacs-lisp
+(setq exwm-manage-configurations
+        `(((equal exwm-instance-name "sun-awt-X11-XDialogPeer")
+           managed t
+           floating t)))
+#+end_src
 ** Keybindings
 *** Global keys
 #+begin_src emacs-lisp
@@ -598,7 +605,9 @@ BUFFER may be a string or nil."
   (add-hook 'exwm-update-title-hook #'my/exwm-update-class)
   (add-hook 'exwm-input-input-mode-change-hook #'my/exwm-handle-input-state)
 
-  (advice-add '+ivy/switch-workspace-buffer :around #'my/switch-buffer-advice)
+  (when (featurep! :completion ivy)
+    (advice-add '+ivy/switch-workspace-buffer :around #'my/switch-buffer-advice)
+    )
   (my/exwm-set-global-keys)
 
   (setq my/exwm-char-mode-class-names '("jetbrains-idea"))
@@ -693,8 +702,36 @@ Open IntelliJ in current project or if it already exists in project, open file i
       :desc "IDEA" "i" #'my/idea-in-project
       :desc "Browser" "b" #'my/brave-in-project)
 #+end_src
+** Custom modeline
+#+begin_src emacs-lisp
+(after! doom-modeline
+  (doom-modeline-def-segment exwm-modals
+    (when (exwm--buffer->id (current-buffer))
+      (doom-modeline--modal-icon
+       (format "%s" exwm--selected-input-mode)
+       (pcase exwm--selected-input-mode
+         ('char-mode 'doom-modeline-evil-insert-state)
+         ('line-mode 'doom-modeline-evil-normal-state)
+         )
+       (format "%s" exwm--selected-input-mode)
+       ))
+    )
+
+  (doom-modeline-def-modeline 'exwm-modeline
+    '(bar window-number exwm-modals buffer-info)
+    '(major-mode))
+
+  (defun my/exwm-modeline ()
+    (doom-modeline-set-modeline 'exwm-modeline))
+  (add-hook 'exwm-mode-hook 'my/exwm-modeline)
+  )
+#+end_src
 * Keybindings
 * Plugin configuration
+** Evil
+#+begin_src emacs-lisp
+(setq evil-move-cursor-back nil)
+#+end_src
 ** Alert
 #+begin_src emacs-lisp
 (setq alert-default-style (cond (IS-LINUX 'notifications)
