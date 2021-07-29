@@ -1236,6 +1236,15 @@ Capture annoyances for retro
 #+begin_src emacs-lisp
 (setq org-clock-clocked-in-display nil)
 #+end_src
+*** Additional exporters
+**** Slack
+#+begin_src emacs-lisp :tangle packages.el
+(package! ox-slack)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! ox-slack)
+#+end_src
 *** Custom configuration
 **** jira/pomodoro
 Insert the task id from last started pomodoro
