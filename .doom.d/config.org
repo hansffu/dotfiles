@@ -1759,6 +1759,17 @@ Set up from org mode as well
   (add-hook 'reason-mode-local-vars-hook #'lsp!)
   )
 #+END_SRC
+** C++
+*** PlatformIO
+#+begin_src emacs-lisp :tangle packages.el
+(package! platformio-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! platformio-mode
+  :hook c++-mode)
+#+end_src
+
 * Fun
 ** Speed types
 #+begin_src emacs-lisp :tangle packages.el
