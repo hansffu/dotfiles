@@ -1562,6 +1562,31 @@ keybindings
           "9" #'+workspace/switch-to-8
           "0" #'+workspace/switch-to-final)))
 #+end_src
+** Treemacs
+#+begin_src emacs-lisp
+(setq +treemacs-git-mode 'deferred)
+#+end_src
+** Uuid
+#+begin_src emacs-lisp :tangle packages.el
+(package! uuidgen)
+#+end_src
+#+begin_src emacs-lisp
+(use-package! uuidgen
+  :commands (uuidgen
+             uuidgen-1
+             uuidgen-3
+             uuidgen-4
+             uuidgen-5
+             uuidgen-cid
+             uuidgen-urn
+             insert-uuid-cid)
+  :init
+  (map! :leader
+        (:prefix "i"
+         :desc "UUID" "U" #'uuidgen))
+  )
+#+end_src
+
 * Languages
 ** Web
 *** nvm
