@@ -4,12 +4,15 @@ inoremap hh <ESC>
 set surround
 set multiple-cursors
 set commentary
-set easymotion
 set argtextobj
 set ReplaceWithRegister
 set highlightedyank
 set exchange
 set NERDTree
+set sneak
+
+set which-key
+set notimeout
 
 set nu
 set rnu
@@ -34,3 +37,6 @@ source ~/.ideavim/modules/buffer.vim
 source ~/.ideavim/modules/errors.vim
 source ~/.ideavim/modules/window.vim
 source ~/.ideavim/modules/open.vim
+
+
+nmap <leader>hr :source ~/.ideavimrc <cr>
