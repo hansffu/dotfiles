@@ -3,14 +3,13 @@
 
 (use-package! slack
   :commands slack-start
-  :custom
-  (slack-enable-global-mode-string nil)
   :init
   (setq slack-buffer-emojify t ;; if you want to enable emoji, default nil
         slack-prefer-current-team t
-        slack-modeline t
-        slack-enable-global-mode-string t
-        slack-modeline-count-only-subscribed-channel t)
+        slack-modeline nil
+        slack-enable-global-mode-string nil
+        ;; slack-modeline-count-only-subscribed-channel t
+        doom-modeline-irc nil)
 
   (map! :leader
         :prefix ("a" . "Applications")
@@ -41,7 +40,7 @@
   )
 
 (after! alert
-  ;; configure pomodoro alerts to use growl or libnotify
+  ;; configure slack alerts to use growl or libnotify
   (alert-add-rule :category "slack"
                   :style (cond (alert-growl-command
                                 'growl)
