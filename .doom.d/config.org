@@ -2,6 +2,10 @@
 #+STARTUP: overview
 
 * Workarounds
+** Magit unpin
+#+begin_src emacs-lisp :tangle packages.el
+;; (unpin! magit forge)
+#+end_src
 * Setup
 ** init.el
 :HELPTEXT:
@@ -31,7 +35,7 @@ NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
         +childframe)           ; the ultimate code completion backend
        ;; helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-       ;;(vertico +icons)
+       ;; (vertico +icons)
         (ivy +icons
              ;; +childframe
              ;; +fuzzy
@@ -161,7 +165,7 @@ NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
        (org              ; organize your plain life in plain text
         +dragndrop       ; drag & drop files/images into org buffers
         +pretty
-        +roam
+        +roam2
         ;;+hugo            ; use Emacs for hugo blogging
         ;;+jupyter        ; ipython/jupyter support for babel
         ;; +pandoc          ; export-with-pandoc support
@@ -180,7 +184,7 @@ NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        ;;scala             ; java, but good
        ;;scheme            ; a fully conniving family of lisps
-       sh                ; she sells {ba,z,fi}sh shells on the C xor
+       (sh +fish)                ; she sells {ba,z,fi}sh shells on the C xor
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
@@ -188,7 +192,7 @@ NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
        yaml
 
        :email
-       (mu4e +gmail)
+       (mu4e +gmail +org)
        ;;notmuch
        ;;(wanderlust +gmail)
 
@@ -288,7 +292,8 @@ our package manager can't deal with; see raxod502/straight.el#279)
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "Jetbrains Mono" :size 14))
+(setq doom-font (font-spec :family "Jetbrains Mono" :size 14)
+      doom-unicode-font (font-spec :family "JetbrainsMono Nerd Font" :size 14))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -338,7 +343,9 @@ To make sure frame has correct size on yabai
 * Desktop
 ** packages
 #+begin_src emacs-lisp :tangle packages.el
-(package! exwm)
+;; (package! exwm)
+(package! exwm
+  :recipe (:host github :repo "hansffu/exwm"))
 #+end_src
 ** Functions
 *** Utilities
@@ -458,6 +465,17 @@ Some applications should always open in a specific workspace, so we move them as
     ('line-mode (my/exwm-on-enter-line-mode)))
   )
 #+end_src
+**** Switch to line mode on buffer change
+#+begin_src emacs-lisp
+(defun my/exwm-escape-buffer-switch ()
+  "Switch to normal state, and cancel possible fullscreen layout.  Also close minibuffer."
+  (interactive)
+  (when (and exwm-class-name (eq 'char-mode exwm--selected-input-mode))
+    (call-interactively 'exwm-input-grab-keyboard)
+    (exwm-layout-unset-fullscreen)
+    (when (active-minibuffer-window)
+      (minibuffer-keyboard-quit))))
+#+end_src
 *** Advice
 #+begin_src emacs-lisp
 (defun my/switch-buffer-advice (orig-fun &rest args)
@@ -494,10 +512,11 @@ BUFFER may be a string or nil."
 (defun my/exwm-escape ()
   "Switch to normal state, and cancel possible fullscreen layout.  Also close minibuffer."
   (interactive)
-  (call-interactively 'exwm-input-grab-keyboard)
-  (exwm-layout-unset-fullscreen)
-  (when (active-minibuffer-window)
-    (minibuffer-keyboard-quit)))
+  (when exwm-class-name
+    (call-interactively 'exwm-input-grab-keyboard)
+    (exwm-layout-unset-fullscreen)
+    (when (active-minibuffer-window)
+      (minibuffer-keyboard-quit))))
 #+end_src
 
 *** Workarounds
@@ -507,6 +526,35 @@ BUFFER may be a string or nil."
         `(((equal exwm-instance-name "sun-awt-X11-XDialogPeer")
            managed t
            floating t)))
+#+end_src
+***** Manually set to project root
+#+begin_src emacs-lisp
+(defun my/set-default-directory-to-project-root (&optional buffers-or-names)
+  "Copy project root of buffer"
+  (interactive (list
+                (let ((*persp-restrict-buffers-to* 0)
+                      persp-restrict-buffers-to-if-foreign-buffer)
+                  (if persp-mode
+                      (persp-read-buffer
+                       "Copy buffer: " (current-buffer) t nil t)
+                    (read-buffer "Copy buffer: " (current-buffer) t)))))
+  (unless (listp buffers-or-names)
+    (setq buffers-or-names (list buffers-or-names)))
+
+  (let ((buffer-or-name (car buffers-or-names))
+        (project-root nil))
+    (message "%s" buffer-or-name)
+
+    (when buffer-or-name
+      (with-current-buffer buffer-or-name
+        (setq project-root (projectile-project-root))
+        ))
+    (message "%s" project-root)
+    (when project-root
+      (setq-local default-directory project-root)
+      )
+    )
+  buffers-or-names)
 #+end_src
 ** Keybindings
 *** Global keys
@@ -604,15 +652,16 @@ BUFFER may be a string or nil."
   (add-hook 'exwm-mode-hook #'my/exwm-mode-hook)
   (add-hook 'exwm-update-title-hook #'my/exwm-update-class)
   (add-hook 'exwm-input-input-mode-change-hook #'my/exwm-handle-input-state)
+  ;; (add-hook 'buffer-list-update-hook #'my/exwm-escape-buffer-switch)
 
   (when (featurep! :completion ivy)
     (advice-add '+ivy/switch-workspace-buffer :around #'my/switch-buffer-advice)
     )
   (my/exwm-set-global-keys)
 
-  (setq my/exwm-char-mode-class-names '("jetbrains-idea"))
   )
 #+end_src
+
 ** Desktop environment
 Handle media keys and such
 #+begin_src emacs-lisp :tangle packages.el
@@ -675,6 +724,23 @@ Open IntelliJ in current project or if it already exists in project, open file i
     (when idea-window (switch-to-buffer idea-window)))
   )
 #+end_src
+*** Android Studio
+Open IntelliJ in current project or if it already exists in project, open file in running instance.
+#+begin_src emacs-lisp
+(defun my/android-studio-in-project ()
+  (interactive)
+  "Open Android Studio in project root."
+
+  (my/run-in-background (format "studio1 %s" (if (buffer-file-name)
+                                              (format ". %s" (buffer-file-name))
+                                            "."))
+                        (projectile-project-root))
+
+  (let* ((exwm-buffers (--filter (exwm--buffer->id it) (+workspace-buffer-list) ))
+         (studio-window (car (--filter (with-current-buffer it (string= "jetbrains-studio" exwm-class-name)) exwm-buffers))))
+    (when studio-window (switch-to-buffer studio-window)))
+  )
+#+end_src
 *** Brave
 #+begin_src emacs-lisp
 (defun my/brave-in-project ()
@@ -698,8 +764,9 @@ Open IntelliJ in current project or if it already exists in project, open file i
 *** Keybinds
 #+begin_src emacs-lisp
 (map! :leader
-      :prefix ("a" . "Applications")
+      :prefix ("r" . "Run")
       :desc "IDEA" "i" #'my/idea-in-project
+      :desc "Android Studio" "a" #'my/android-studio-in-project
       :desc "Browser" "b" #'my/brave-in-project)
 #+end_src
 ** Custom modeline
@@ -732,6 +799,12 @@ Open IntelliJ in current project or if it already exists in project, open file i
 #+begin_src emacs-lisp
 (setq evil-move-cursor-back nil)
 #+end_src
+** Completion
+*** Consult
+#+begin_src emacs-lisp
+(after! consult
+  (setq consult-preview-key (kbd "M-SPC")))
+#+end_src
 ** Alert
 #+begin_src emacs-lisp
 (setq alert-default-style (cond (IS-LINUX 'notifications)
@@ -759,6 +832,20 @@ Open IntelliJ in current project or if it already exists in project, open file i
 
 #+end_src
 *** org-roam
+**** Workarounds
+#+begin_src emacs-lisp
+(after! org-roam
+  (advice-add
+   'org-roam-get-keyword
+   :around
+   (lambda (orig-func &rest r)
+     (unwind-protect
+         (progn
+           (advice-add 'insert-file-contents-literally :override #'insert-file-contents)
+           (apply orig-func r))
+       (advice-remove 'insert-file-contents-literally  #'insert-file-contents))))
+  )
+#+end_src
 **** File locations
 Org roam will track all org files
 #+begin_src emacs-lisp
@@ -767,7 +854,10 @@ Org roam will track all org files
 but only capture to the roam directory to not create a mess with normal org files
 #+begin_src emacs-lisp
 (setq org-roam-capture-templates
-      '(("d" "default" plain #'org-roam-capture--get-point "%?" :file-name "roam/%<%Y%m%d%H%M%S>-${slug}" :head "#+title: ${title}\n" :unnarrowed t)))
+      '(("d" "default" plain "%?"
+         :if-new (file+head "roam/%<%Y%m%d%H%M%S>-${slug}.org"
+                            "#+title: ${title}\n")
+         :unnarrowed t)))
 #+end_src
 **** Setup
 #+begin_src emacs-lisp
@@ -781,16 +871,10 @@ Daily notes goes to ~org/daily~
 Set up two contexts. One for random notes and another for storing link to capture location
 #+begin_src emacs-lisp
 (setq org-roam-dailies-capture-templates
-      '(("d" "default" entry
-         #'org-roam-capture--get-point
-         "* %?"
-         :file-name "daily/%<%Y-%m-%d>"
-         :head "#+title: %<%Y-%m-%d>\n\n")
-        ("c" "With context" entry
-         #'org-roam-capture--get-point
-         "* %?\n%a"
-         :file-name "daily/%<%Y-%m-%d>"
-         :head "#+title: %<%Y-%m-%d>\n\n")))
+      '(("d" "default" entry "* %?"
+         :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n\n"))
+        ("c" "With context" entry "* %?\n%a"
+         :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n\n"))))
 #+end_src
 Probably a temporary fix to make SPC-n-r consistent with SPC-m-m bindings
 #+begin_src emacs-lisp
@@ -881,7 +965,7 @@ To speed it up even further, cache the result
 (advice-add 'org-get-entries-from-diary :around #'my/remember-diary-items)
 #+end_src
 **** Popup
-Agenda window shoult show in a popup window
+Agenda window should show in a popup window
 #+BEGIN_SRC emacs-lisp
 (after! org-agenda
   (set-popup-rule! "^\\*Org Agenda\\*"
@@ -912,6 +996,7 @@ Recursively find files in ~org-directory~
 #+end_src
 #+BEGIN_SRC emacs-lisp
 (use-package! org-super-agenda
+  :after org-agenda
   :config
   (org-super-agenda-mode)
   (setq org-super-agenda-header-map (make-sparse-keymap)
@@ -1178,7 +1263,7 @@ Capture annoyances for retro
 
   (setq org-jira-working-dir "~/Dropbox/org/org-jira"
         org-jira-use-status-as-todo nil
-        org-jira-done-states '("Done" "Prod" "PROD" "Closed" "Resolved" "Accept" "Dev (Done)")
+        org-jira-done-states '("Done" "DONE" "Prod" "PROD" "Closed" "Resolved" "Accept" "Dev (Done)" "Approved for prod")
         org-jira-jira-status-to-org-keyword-alist
         '(("In Progress" . "STRT")
           ("DEV" . "DONE")
@@ -1186,6 +1271,7 @@ Capture annoyances for retro
           ("Demo" . "DONE")
           ("Pull request" . "HOLD")
           ("Pull Request" . "HOLD")
+          ("DEV READY FOR REVIEW" . "HOLD")
           ("Prod" . "DONE")
           ("rejected" . "KILL")))
   (make-directory org-jira-working-dir 'parents)
@@ -1227,6 +1313,7 @@ Capture annoyances for retro
 #+end_src
 #+begin_src emacs-lisp
 (use-package! org-wild-notifier
+  :after org-agenda
   :init
   (setq org-wild-notifier-keyword-whitelist '())
   :config
@@ -1243,7 +1330,8 @@ Capture annoyances for retro
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! ox-slack)
+(use-package! ox-slack
+  :after org)
 #+end_src
 *** Custom configuration
 **** jira/pomodoro
@@ -1301,7 +1389,7 @@ Copy the file into dropbox and insert a link to it
 **** Open notes in workspace
 Set ~org-roam-find-file~ as default note finding binding. It will not include non-org files.
 #+begin_src emacs-lisp
-(global-set-key [remap +default/find-in-notes] #'org-roam-find-file)
+;; (global-set-key [remap +default/find-in-notes] #'org-roam-find-file)
 #+end_src
 
 Make sure notes are opened in ~Notes~ workspace
@@ -1310,13 +1398,11 @@ Make sure notes are opened in ~Notes~ workspace
   "Open notes workspace. If it doesn't exist, open roam index."
   (let ((exists (+workspace-exists-p "Notes")))
     (+workspace-switch "Notes" t)
-    (when (not exists)
-      (org-roam-jump-to-index))
     (+workspace/display)))
 
-(advice-add 'org-roam-find-file :before #'my/switch-to-notes-workspace)
-(advice-add '+default/org-notes-search :before #'my/switch-to-notes-workspace)
-(advice-add 'org-agenda-switch-to :before #'my/switch-to-notes-workspace)
+;; (advice-add 'org-roam-node-find :before #'my/switch-to-notes-workspace)
+;; (advice-add '+default/org-notes-search :before #'my/switch-to-notes-workspace)
+;; (advice-add 'org-agenda-switch-to :before #'my/switch-to-notes-workspace)
 #+end_src
 ** Calendar
 Monday is first day of the week
@@ -1336,8 +1422,8 @@ Monday is first day of the week
 #+END_SRC
 ** Tree sitter
 #+begin_src emacs-lisp :tangle packages.el
-(package! tree-sitter)
-(package! tree-sitter-langs)
+(package! tree-sitter :pin "2acca5c8d2e3dc66d4d0a99831b33140b5a5f973")
+(package! tree-sitter-langs :pin "fa47b55f7bd11bd2b17ab48deb03ed23000bb974")
 #+end_src
 #+BEGIN_SRC emacs-lisp
 (use-package! tree-sitter)
@@ -1349,8 +1435,7 @@ Monday is first day of the week
 #+END_SRC
 ** Projectile
 #+BEGIN_SRC emacs-lisp
-(setq projectile-project-search-path '("~/code" "~/code/work")
-      projectile-switch-project-action 'projectile-vterm)
+(setq projectile-project-search-path '("~/code" "~/code/work"))
 #+END_SRC
 ** Lastpass
 #+begin_src emacs-lisp :tangle packages.el
@@ -1382,6 +1467,10 @@ Monday is first day of the week
 *** vterm
 #+begin_src emacs-lisp
 (when (featurep! :term vterm)
+  (defun my/add-to-workspace ()
+    (persp-add-buffer (current-buffer)))
+  (add-hook! vterm-mode #'my/add-to-workspace)
+  (remove-hook! vterm-mode 'hide-mode-line-mode)
   (setq vterm-buffer-name-string "vterm: %s"))
 #+end_src
 ** LSP
@@ -1423,43 +1512,6 @@ We use commitlint with max summary length 100
 ** Emacs Everywhere
 #+begin_src emacs-lisp
 (setq! emacs-everywhere-markdown-apps '("Discord" "Slack"))
-#+end_src
-** Email
-#+begin_src emacs-lisp :tangle packages.el
-(package! mu4e-thread-folding
-  :disable t
-  :recipe (:host github :repo "rougier/mu4e-thread-folding"))
-#+end_src
-#+begin_src emacs-lisp
-  (use-package! mu4e-thread-folding
-    :after mu4e
-    :config
-    (setq +mu4e-header-colorized-faces
-          '(all-the-icons-green
-            all-the-icons-lblue
-            all-the-icons-purple-alt
-            all-the-icons-blue-alt
-            all-the-icons-purple
-            all-the-icons-yellow))
-    (add-to-list 'mu4e-header-info-custom
-                 '(:empty .
-                   (:name "Empty"
-                    :shortname ""
-                    :function (lambda (msg) "  ")))
-                 )
-    (setq mu4e-headers-fields
-          '(
-            (:empty . 2)
-            (:account . 12)
-            (:human-date . 12)
-            (:flags . 4)
-            (:from . 25)
-            (:subject . 235)
-            (:maildir . 20)
-            ))
-    (map! :map (mu4e-view-header-field-keymap mu4e-view-mode-map mu4e-headers-mode-map)
-          :n "f" #'mu4e-org-store-and-capture)
-    )
 #+end_src
 ** Window configuration
 Configure so both evil-window (windmove) and ace windows works for all frames
@@ -1506,10 +1558,6 @@ keybindings
       :prefix ("l" . "Logs")
       :desc "AWS" "a" #'aws-logs
       :desc "Localstack" "l" #'localstack-logs)
-#+end_src
-** vterm
-#+begin_src emacs-lisp
-(remove-hook! vterm-mode 'hide-mode-line-mode)
 #+end_src
 ** Jest
 #+begin_src emacs-lisp :tangle packages.el
@@ -1587,6 +1635,17 @@ keybindings
   )
 #+end_src
 
+** Email
+*** Workaround mu4e 1.6.1
+#+begin_src emacs-lisp
+(after! (mu4e)
+  (defadvice! +mu4e-draft-open-signature-a (orig-fn compose-type &optional msg switch-function)
+    "Prevent `mu4e-compose-signature' from being used with `org-msg-mode'."
+    :around #'mu4e-draft-open
+    (let ((mu4e-compose-signature (unless org-msg-mode mu4e-compose-signature)))
+      (funcall orig-fn compose-type msg switch-function)))
+  )
+#+end_src
 * Languages
 ** Web
 *** nvm
@@ -1605,7 +1664,7 @@ keybindings
   (compile (format "yarn test %s" (buffer-file-name (buffer-base-buffer)))))
 
 (map! :map (typescript-mode-map typescript-tsx-mode-map)
-      :leader
+      :localleader
       (:prefix "r"
        :desc "Run tests in file" "t" #'my/run-tests-in-file) )
 #+end_src
@@ -1613,24 +1672,23 @@ keybindings
 #+BEGIN_SRC emacs-lisp
 ;; (setq-hook! '(typescript-mode-local-vars-hook typescript-tsx-mode-local-vars-hook)
 ;;   +format-with-lsp nil)
-(add-hook! (typescript-mode typescript-tsx-mode) #'tree-sitter-hl-mode)
 
-;; (define-derived-mode typescript-tsx-mode typescript-mode "TSX"
-;;   "Major mode for editing TSX files.
+(define-derived-mode typescript-tsx-mode typescript-mode "TSX"
+  "Major mode for editing TSX files.
+Refer to Typescript documentation for syntactic differences between normal and TSX
+variants of Typescript.")
 (setq tree-sitter-hl-use-font-lock-keywords nil)
-;; Refer to Typescript documentation for syntactic differences between normal and TSX
-;; variants of Typescript.")
 
+(add-hook! (typescript-mode typescript-tsx-mode) #'tree-sitter-hl-mode)
 (setq-hook! '(typescript-tsx-mode-hook typescript-mode-hook)
   +format-with-lsp nil)
 
 (setq typescript-indent-level 2
-      ;; lsp-clients-typescript-log-verbosity "info"
+      lsp-clients-typescript-log-verbosity "warn"
       lsp-clients-typescript-plugins
       (vector
        (list :name "@vsintellicode/typescript-intellicode-plugin"
-             :location "~/.vscode/extensions/visualstudioexptteam.vscodeintellicode-1.2.11/")))
-
+             :location "~/.vscode/extensions/visualstudioexptteam.vscodeintellicode-1.2.14/")))
 #+END_SRC
 
 **** COMMENT Inline html
@@ -1665,11 +1723,11 @@ keybindings
     :hostmode 'poly-typescript-hostmode
     :innermodes '(poly-typescript-graphql-innermode))
 
-  (define-hostmode poly-typescript-tsx-hostmode
-    :mode 'typescript-tsx-mode)
-  (define-polymode poly-typescript-tsx-mode
-    :hostmode 'poly-typescript-tsx-hostmode
-    :innermodes '(poly-typescript-graphql-innermode))
+  ;; (define-hostmode poly-typescript-tsx-hostmode
+  ;;   :mode 'typescript-tsx-mode)
+  ;; (define-polymode poly-typescript-tsx-mode
+  ;;   :hostmode 'poly-typescript-tsx-hostmode
+  ;;   :innermodes '(poly-typescript-graphql-innermode))
   )
 #+end_src
 ** GraphQL

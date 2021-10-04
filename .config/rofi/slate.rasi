@@ -8,6 +8,7 @@
 }
 
 inputbar {
+  background-color: #282c33;
   border: 0 0 10px 0;
   children: [prompt, entry];
 }
@@ -19,7 +20,6 @@ prompt {
 }
 
 textbox {
-  background-color: #2e343f;
   border: 0 0 1px 0;
   border-color: #282c33;
   padding: 8px 16px;
@@ -36,16 +36,19 @@ listview {
 }
 
 element-icon {
-  size: 20;
+  margin: 0.5em;
+  size: 1.2em;
 }
 
 element-text {
   padding: 8;
 }
 
-element selected {
+element.selected, element-text.selected, element-icon.selected {
   background-color: #2257a0;
 }
+
+
 window {
   border: 10 5 5 5;
   location: south;

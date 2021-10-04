@@ -154,6 +154,9 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+# Howdy - disable debug log
+export OPENCV_LOG_LEVEL=ERROR
+
 ###VTERM###
 if [[ "$INSIDE_EMACS" = "vterm" ]]; then
   vterm_printf(){
@@ -169,6 +172,7 @@ if [[ "$INSIDE_EMACS" = "vterm" ]]; then
       fi
   }
 
+  alias ff="find_file"
 
   vterm_cmd() {
       local vterm_elisp
@@ -184,14 +188,14 @@ if [[ "$INSIDE_EMACS" = "vterm" ]]; then
       vterm_cmd find-file "$(realpath "$@")"
   }
 
+  autoload -U add-zsh-hook
+  add-zsh-hook -Uz chpwd (){ print -Pn "\e]2;%2~\a" }
+
+
   vterm_prompt_end() {
       vterm_printf "51;A$(whoami)@$(hostname):$(pwd)";
   }
   setopt PROMPT_SUBST
   PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
 
-  alias ff="find_file"
 fi
-
-# Howdy - disable debug log
-export OPENCV_LOG_LEVEL=ERROR

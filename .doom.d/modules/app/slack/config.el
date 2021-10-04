@@ -9,10 +9,11 @@
         slack-modeline nil
         slack-enable-global-mode-string nil
         ;; slack-modeline-count-only-subscribed-channel t
-        doom-modeline-irc nil)
+        doom-modeline-irc nil
+        slack-buffer-function #'pop-to-buffer)
 
   (map! :leader
-        :prefix ("a" . "Applications")
+        :prefix ("r" . "Run")
         :desc "Slack" "s" #'+slack/start)
 
   (map! :after slack
