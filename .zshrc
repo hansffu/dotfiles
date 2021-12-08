@@ -80,7 +80,7 @@ plugins=(
   web-search
   adb
   brew
-  osx
+  macos
   vscode
   mvn
   # vi-mode
@@ -186,6 +186,10 @@ if [[ "$INSIDE_EMACS" = "vterm" ]]; then
 
   find_file() {
       vterm_cmd find-file "$(realpath "$@")"
+  }
+
+  rn() {
+    vterm_cmd rename-buffer "vterm: $1"
   }
 
   autoload -U add-zsh-hook
