@@ -2,10 +2,6 @@
 #+STARTUP: overview
 
 * Workarounds
-** Magit unpin
-#+begin_src emacs-lisp :tangle packages.el
-;; (unpin! magit forge)
-#+end_src
 * Setup
 ** init.el
 :HELPTEXT:
@@ -35,11 +31,11 @@ NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
         +childframe)           ; the ultimate code completion backend
        ;; helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-       ;; (vertico +icons)
-        (ivy +icons
-             ;; +childframe
-             ;; +fuzzy
-             +prescient)
+       (vertico +icons)
+       ;; (ivy +icons
+       ;;      ;; +childframe
+       ;;      ;; +fuzzy
+       ;;      +prescient)
                                         ; a search engine for love and life
 
        :ui
@@ -174,7 +170,7 @@ NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
        ;;perl              ; write code no one else can comprehend
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
-       ;;purescript        ; javascript, but functional
+       (purescript +lsp)        ; javascript, but functional
        (python +lsp)            ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
@@ -208,7 +204,8 @@ NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
 
        :config
        literate
-       (default +bindings +smartparens))
+       (default +bindings +smartparens)
+       )
 #+end_src
 ** packages.el
 Temporarily tangle this file here until I move them to a more logical spot
@@ -445,7 +442,8 @@ Some applications should always open in a specific workspace, so we move them as
 **** Config for new EXWM buffers
 #+begin_src emacs-lisp
 (defun my/exwm-mode-hook ()
-  (doom-mark-buffer-as-real-h))
+  (doom-mark-buffer-as-real-h)
+  (persp-add-buffer (current-buffer)))
 #+end_src
 **** Input change hook
 #+begin_src emacs-lisp
@@ -1471,7 +1469,10 @@ Monday is first day of the week
     (persp-add-buffer (current-buffer)))
   (add-hook! vterm-mode #'my/add-to-workspace)
   (remove-hook! vterm-mode 'hide-mode-line-mode)
-  (setq vterm-buffer-name-string "vterm: %s"))
+  (after! vterm
+    (add-to-list 'vterm-eval-cmds '("rename-buffer" rename-buffer))
+    )
+  )
 #+end_src
 ** LSP
 #+begin_src emacs-lisp
@@ -1673,10 +1674,10 @@ keybindings
 ;; (setq-hook! '(typescript-mode-local-vars-hook typescript-tsx-mode-local-vars-hook)
 ;;   +format-with-lsp nil)
 
-(define-derived-mode typescript-tsx-mode typescript-mode "TSX"
-  "Major mode for editing TSX files.
-Refer to Typescript documentation for syntactic differences between normal and TSX
-variants of Typescript.")
+;; (define-derived-mode typescript-tsx-mode typescript-mode "TSX"
+;;   "Major mode for editing TSX files.
+;; Refer to Typescript documentation for syntactic differences between normal and TSX
+;; variants of Typescript.")
 (setq tree-sitter-hl-use-font-lock-keywords nil)
 
 (add-hook! (typescript-mode typescript-tsx-mode) #'tree-sitter-hl-mode)
@@ -1685,10 +1686,11 @@ variants of Typescript.")
 
 (setq typescript-indent-level 2
       lsp-clients-typescript-log-verbosity "warn"
-      lsp-clients-typescript-plugins
-      (vector
-       (list :name "@vsintellicode/typescript-intellicode-plugin"
-             :location "~/.vscode/extensions/visualstudioexptteam.vscodeintellicode-1.2.14/")))
+      ;; lsp-clients-typescript-plugins
+      ;; (vector
+      ;;  (list :name "@vsintellicode/typescript-intellicode-plugin"
+      ;;        :location "~/.vscode/extensions/visualstudioexptteam.vscodeintellicode-1.2.14/"))
+      )
 #+END_SRC
 
 **** COMMENT Inline html
@@ -1741,42 +1743,42 @@ Set up graphql with lsp
   :hook (graphql-mode . lsp!)
   :mode "\\.graphqls?\\'"
   :config
-  (after! lsp-mode
+  ;; (after! lsp-mode
 
-    (defcustom lsp-vscode-graphql-debug nil "Enable debug logs" :type
-      '(repeat boolean))
-    (defcustom lsp-vscode-graphql-trace-server "off" "Enable tracing for language server" :type
-      '(repeat string))
-    (defcustom lsp-vscode-graphql-show-exec-codelens t "Show codelens to execute operations inline" :type 'boolean)
-    (defcustom lsp-vscode-graphql-use-schema-file-definitions nil "Use local SDL/IDL files for definition lookups. Default is to use generated_schema.graphql from GraphQL Config settings for definitions" :type 'boolean)
-    (defcustom lsp-graphql-config-load-root-dir nil "Base dir for graphql config loadConfig()" :type
-      '(repeat string))
-    (defcustom lsp-graphql-config-load-file-path nil "filePath for graphql config loadConfig()" :type
-      '(repeat string))
-    (defcustom lsp-graphql-config-load-legacy nil "legacy mode for graphql config v2 config" :type 'boolean)
-    (defcustom lsp-graphql-config-load-config-name nil "optional <configName>.config.js instead of default `graphql`" :type
-      '(repeat string))
-    (defcustom lsp-graphql-config-dot-env-path nil "optional .env load path, if not the default" :type
-      '(repeat string))
-    (lsp-register-custom-settings
-     '(("graphql-config.dotEnvPath" lsp-graphql-config-dot-env-path)
-       ("graphql-config.load.configName" lsp-graphql-config-load-config-name)
-       ("graphql-config.load.legacy" lsp-graphql-config-load-legacy t)
-       ("graphql-config.load.filePath" lsp-graphql-config-load-file-path)
-       ("graphql-config.load.rootDir" lsp-graphql-config-load-root-dir)
-       ("vscode-graphql.useSchemaFileDefinitions" lsp-vscode-graphql-use-schema-file-definitions t)
-       ("vscode-graphql.showExecCodelens" lsp-vscode-graphql-show-exec-codelens t)
-       ("vscode-graphql.trace.server" lsp-vscode-graphql-trace-server)
-       ("vscode-graphql.debug" lsp-vscode-graphql-debug)))
-    (lsp-register-client
-     (make-lsp-client :new-connection
-                      (lsp-tcp-connection (lambda (port) `("graphql-lsp" "server" "-m" "socket" "-p" ,(number-to-string port))))
-                      :major-modes '(graphql-mode)
-                      :initialization-options (lambda () `())
-                      :server-id 'graphql))
-    (add-to-list 'lsp-language-id-configuration '(graphql-mode . "graphql"))
-    (lsp-enable-which-key-integration 'graphql-mode)
-    )
+  ;;   (defcustom lsp-vscode-graphql-debug nil "Enable debug logs" :type
+  ;;     '(repeat boolean))
+  ;;   (defcustom lsp-vscode-graphql-trace-server "off" "Enable tracing for language server" :type
+  ;;     '(repeat string))
+  ;;   (defcustom lsp-vscode-graphql-show-exec-codelens t "Show codelens to execute operations inline" :type 'boolean)
+  ;;   (defcustom lsp-vscode-graphql-use-schema-file-definitions nil "Use local SDL/IDL files for definition lookups. Default is to use generated_schema.graphql from GraphQL Config settings for definitions" :type 'boolean)
+  ;;   (defcustom lsp-graphql-config-load-root-dir nil "Base dir for graphql config loadConfig()" :type
+  ;;     '(repeat string))
+  ;;   (defcustom lsp-graphql-config-load-file-path nil "filePath for graphql config loadConfig()" :type
+  ;;     '(repeat string))
+  ;;   (defcustom lsp-graphql-config-load-legacy nil "legacy mode for graphql config v2 config" :type 'boolean)
+  ;;   (defcustom lsp-graphql-config-load-config-name nil "optional <configName>.config.js instead of default `graphql`" :type
+  ;;     '(repeat string))
+  ;;   (defcustom lsp-graphql-config-dot-env-path nil "optional .env load path, if not the default" :type
+  ;;     '(repeat string))
+  ;;   (lsp-register-custom-settings
+  ;;    '(("graphql-config.dotEnvPath" lsp-graphql-config-dot-env-path)
+  ;;      ("graphql-config.load.configName" lsp-graphql-config-load-config-name)
+  ;;      ("graphql-config.load.legacy" lsp-graphql-config-load-legacy t)
+  ;;      ("graphql-config.load.filePath" lsp-graphql-config-load-file-path)
+  ;;      ("graphql-config.load.rootDir" lsp-graphql-config-load-root-dir)
+  ;;      ("vscode-graphql.useSchemaFileDefinitions" lsp-vscode-graphql-use-schema-file-definitions t)
+  ;;      ("vscode-graphql.showExecCodelens" lsp-vscode-graphql-show-exec-codelens t)
+  ;;      ("vscode-graphql.trace.server" lsp-vscode-graphql-trace-server)
+  ;;      ("vscode-graphql.debug" lsp-vscode-graphql-debug)))
+  ;;   (lsp-register-client
+  ;;    (make-lsp-client :new-connection
+  ;;                     (lsp-tcp-connection (lambda (port) `("graphql-lsp" "server" "-m" "socket" "-p" ,(number-to-string port))))
+  ;;                     :major-modes '(graphql-mode)
+  ;;                     :initialization-options (lambda () `())
+  ;;                     :server-id 'graphql))
+  ;;   (add-to-list 'lsp-language-id-configuration '(graphql-mode . "graphql"))
+  ;;   (lsp-enable-which-key-integration 'graphql-mode)
+  ;;   )
   )
 #+END_SRC
 Set up from org mode as well
