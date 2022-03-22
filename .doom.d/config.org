@@ -171,7 +171,7 @@ NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
        (purescript +lsp)        ; javascript, but functional
-       (python +lsp)            ; beautiful is better than ugly
+       ;; (python +lsp)            ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        rest              ; Emacs as a REST client
@@ -342,7 +342,7 @@ To make sure frame has correct size on yabai
 #+begin_src emacs-lisp :tangle packages.el
 ;; (package! exwm)
 (package! exwm
-  :recipe (:host github :repo "hansffu/exwm"))
+  :recipe (:host github :repo "ch11ng/exwm"))
 #+end_src
 ** Functions
 *** Utilities
@@ -375,6 +375,7 @@ To make sure frame has correct size on yabai
   (my/run-in-background "blueman-applet")
   (my/run-in-background "dropbox")
   (my/run-in-background "flameshot")
+  (my/run-in-background "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
   (setenv "LPASS_AGENT_TIMEOUT" "0")
   (my/run-in-background (format "lpass login %s" user-mail-address))
   )
@@ -847,13 +848,13 @@ Open IntelliJ in current project or if it already exists in project, open file i
 **** File locations
 Org roam will track all org files
 #+begin_src emacs-lisp
-(setq org-roam-directory  org-directory)
+(setq org-roam-directory  (format "%s/roam" org-directory))
 #+end_src
 but only capture to the roam directory to not create a mess with normal org files
 #+begin_src emacs-lisp
 (setq org-roam-capture-templates
       '(("d" "default" plain "%?"
-         :if-new (file+head "roam/%<%Y%m%d%H%M%S>-${slug}.org"
+         :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
                             "#+title: ${title}\n")
          :unnarrowed t)))
 #+end_src
@@ -862,7 +863,7 @@ but only capture to the roam directory to not create a mess with normal org file
 (setq org-roam-graph-viewer nil)
 #+end_src
 **** Dailies
-Daily notes goes to ~org/daily~
+Daily notes goes to ~org/roam/daily~
 #+begin_src emacs-lisp
 (setq org-roam-dailies-directory "daily/")
 #+end_src
@@ -922,13 +923,18 @@ Supports `org-roam' filenames by chopping prefix cookie."
 **** Populate from external sources
 I want to view my meetings and jira tasks in my agenda. Jira tasks are synced with org-jira while calendars are imported into the diary.
 #+begin_src emacs-lisp
-(setq org-agenda-include-diary t)
+(setq org-agenda-include-diary t
+      org-element-use-cache nil)
 
 (defun my/import-daily-tasks ()
   "Import calendars to diary and "
   (interactive)
   (call-interactively #'my/import-calendars)
-  (call-interactively #'org-jira-get-issues))
+  (call-interactively #'org-jira-get-issues-from-custom-jql)
+  ;; (let ((org-element-use-cache nil)
+  ;;       (org-jira-worklog-sync-p nil))
+  ;;   (org-jira-get-issues (org-jira-get-issue-list org-jira-get-issue-list-callback)))
+  )
 
 (map! :leader
       (:prefix "n"
@@ -1014,18 +1020,27 @@ The workday page will show
   '("w" "Workday"
     ((alltodo "" ((org-agenda-span 'day)
                   (org-super-agenda-groups
-                   '(
-                     (:name "JIRA-issues"
-                      :file-path "/org-jira/")
+                   `(
+                     (:name "Current JIRA-issues"
+                      :and (
+                            :file-path "/org-jira/"
+                            :todo "STRT"
+                            :regexp ( ,(format ":assignee: %s" user-full-name ))
+                            ))
+                     (:name "Pull requests"
+                      :and (
+                            :file-path "/org-jira/"
+                            :todo "HOLD"))
+                     (:name "JIRA todo"
+                      :and (
+                            :file-path "/org-jira/"
+                            :todo "TODO"))
                      (:name "Today"
                       :and (:not (:category "private")
                             :scheduled today)
                       :and (:not (:category "private")
                             :scheduled past)
                       )
-                     (:name "Unscheduled"
-                      :and (:category "work"
-                            :not (:habit t)))
                      (:name "Personal"
                       :and (:category "private"
                             :date today))
@@ -1265,6 +1280,7 @@ Capture annoyances for retro
         org-jira-jira-status-to-org-keyword-alist
         '(("In Progress" . "STRT")
           ("DEV" . "DONE")
+          ("Sprint Backlog" . "TODO")
           ("Dev (Done)" . "DONE")
           ("Demo" . "DONE")
           ("Pull request" . "HOLD")
@@ -1420,8 +1436,8 @@ Monday is first day of the week
 #+END_SRC
 ** Tree sitter
 #+begin_src emacs-lisp :tangle packages.el
-(package! tree-sitter :pin "2acca5c8d2e3dc66d4d0a99831b33140b5a5f973")
-(package! tree-sitter-langs :pin "fa47b55f7bd11bd2b17ab48deb03ed23000bb974")
+(package! tree-sitter)
+(package! tree-sitter-langs)
 #+end_src
 #+BEGIN_SRC emacs-lisp
 (use-package! tree-sitter)
@@ -1637,7 +1653,7 @@ keybindings
 #+end_src
 
 ** Email
-*** Workaround mu4e 1.6.1
+*** COMMENT Workaround mu4e 1.6.1
 #+begin_src emacs-lisp
 (after! (mu4e)
   (defadvice! +mu4e-draft-open-signature-a (orig-fn compose-type &optional msg switch-function)
@@ -1645,6 +1661,33 @@ keybindings
     :around #'mu4e-draft-open
     (let ((mu4e-compose-signature (unless org-msg-mode mu4e-compose-signature)))
       (funcall orig-fn compose-type msg switch-function)))
+  )
+#+end_src
+** COMMENT Tabnine code completion
+#+begin_src emacs-lisp :tangle packages.el
+(package! company-tabnine)
+#+end_src
+#+begin_src emacs-lisp
+(use-package! company-tabnine
+  :after company
+  :config
+  (cl-pushnew 'company-tabnine (default-value 'company-backends))
+
+  ;; workaround for company-transformers
+  (setq company-tabnine--disable-next-transform nil)
+  (defun my-company--transform-candidates (func &rest args)
+    (if (not company-tabnine--disable-next-transform)
+        (apply func args)
+      (setq company-tabnine--disable-next-transform nil)
+      (car args)))
+
+  (defun my-company-tabnine (func &rest args)
+    (when (eq (car args) 'candidates)
+      (setq company-tabnine--disable-next-transform t))
+    (apply func args))
+
+  (advice-add #'company--transform-candidates :around #'my-company--transform-candidates)
+  (advice-add #'company-tabnine :around #'my-company-tabnine)
   )
 #+end_src
 * Languages
