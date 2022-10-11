@@ -376,7 +376,7 @@ To make sure frame has correct size on yabai
   (my/run-in-background "flameshot")
   (my/run-in-background "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
   (setenv "LPASS_AGENT_TIMEOUT" "0")
-  (my/run-in-background (format "lpass login %s" user-mail-address))
+  (my/run-in-background (format "lpass login --trust %s" user-mail-address))
   )
 #+end_src
 *** Hooks
@@ -929,7 +929,7 @@ I want to view my meetings and jira tasks in my agenda. Jira tasks are synced wi
   "Import calendars to diary and "
   (interactive)
   (call-interactively #'my/import-calendars)
-  (call-interactively #'org-jira-get-issues-from-custom-jql)
+  ;; (call-interactively #'org-jira-get-issues-from-custom-jql)
   ;; (let ((org-element-use-cache nil)
   ;;       (org-jira-worklog-sync-p nil))
   ;;   (org-jira-get-issues (org-jira-get-issue-list org-jira-get-issue-list-callback)))
@@ -937,7 +937,8 @@ I want to view my meetings and jira tasks in my agenda. Jira tasks are synced wi
 
 (map! :leader
       (:prefix "n"
-       :desc "Import agenda items" "i" #'my/import-daily-tasks))
+       :desc "Import agenda items" "i" #'my/import-daily-tasks
+       :desc "Import jira tasks from sprint" "j" #'org-jira-get-issues-from-custom-jql))
 #+end_src
 
 Fetching items from the diary can be really slow. This is because when the agenda includes it, it will show the entire description which causes some slowness. Here I add an advice to remove everything after the summary
@@ -1030,10 +1031,26 @@ The workday page will show
                             :todo "STRT"
                             :regexp ( ,(format ":assignee: %s" user-full-name ))
                             ))
-                     (:name "Pull requests"
+                     (:name "My pull requests"
                       :and (
                             :file-path "/org-jira/"
-                            :todo "HOLD"))
+                            :todo "HOLD"
+                            :regexp ( ":status:   Pull Request" )
+                            :regexp ( ,(format ":assignee: %s" user-full-name ))
+                            ))
+                     (:name "To review"
+                      :and (
+                            :file-path "/org-jira/"
+                            :todo "HOLD"
+                            :regexp ( ":status:   Pull Request" )
+                            ))
+                     (:name "Awaiting verification in dev"
+                      :and (
+                            :file-path "/org-jira/"
+                            :todo "HOLD"
+                            :regexp ( ,(format ":assignee: %s" user-full-name ))
+                            :regexp ( ":status:   In Dev" )
+                            ))
                      (:name "JIRA todo"
                       :and (
                             :file-path "/org-jira/"
@@ -1279,23 +1296,37 @@ Capture annoyances for retro
 
   (setq org-jira-working-dir "~/Dropbox/org/org-jira"
         org-jira-use-status-as-todo nil
-        org-jira-done-states '("Done" "DONE" "Prod" "PROD" "Closed" "Resolved" "Accept" "Dev (Done)" "Approved for prod")
+        org-jira-deadline-duedate-sync-p nil
+        org-jira-boards-default-limit 70
+        org-jira-done-states '("Done" "DONE" "Prod" "PROD" "Closed" "Resolved"
+                               "ACCEPT" "Accept" "Dev (Done)" "Approved for prod"
+                               "In Prod" "Testing" "Ready for Test")
         org-jira-jira-status-to-org-keyword-alist
         '(("In Progress" . "STRT")
           ("DEV" . "DONE")
+          ("To Do" . "TODO")
           ("Sprint Backlog" . "TODO")
           ("Dev (Done)" . "DONE")
           ("Demo" . "DONE")
           ("Pull request" . "HOLD")
           ("Pull Request" . "HOLD")
+          ("In Dev" . "HOLD")
           ("DEV READY FOR REVIEW" . "HOLD")
+          ("ACCEPT" . "DONE")
+          ("Accept" . "DONE")
           ("Prod" . "DONE")
+          ("In Prod" . "DONE")
+          ("Testing" . "DONE")
+          ("Ready for Test" . "DONE")
           ("rejected" . "KILL"))
         org-jira-progress-issue-flow
-        '(("Sprint Backlog" . "In Progress")
+        '(("To Do" . "In Progress")
           ("In Progress" . "Pull request")
-          ("Pull request" . "Dev"))
-        jiralib-update-issue-fields-exclude-list '(components reporter priority))
+          ("Pull request" . "In Dev")
+          ("In Dev" . "Done"))
+        jiralib-update-issue-fields-exclude-list '(components reporter priority)
+
+                )
   (make-directory org-jira-working-dir 'parents)
   :config
   (defadvice! my/org-jira-filename-fix-advice ()
@@ -1383,9 +1414,38 @@ Insert the task id from last started pomodoro
   )
 #+end_src
 **** Import files
+
 Copy the file into dropbox and insert a link to it
 #+begin_src emacs-lisp
 (setq my/org-file-import-dir "~/Dropbox/org/filer")
+
+(defun my/embark-import-file (buf)
+  (my/import-link-file buf))
+(defun my/import-link-file (buf)
+  "Import selected file into 'my/org-file-import-dir' and insert a link to it"
+  (interactive (list (buffer-file-name)))
+  (message "%s" buf)
+  (let* ((old-file-name (file-name-nondirectory buf))
+         (new-dirname (format "%s/%s/%s"
+                              my/org-file-import-dir
+                              (format-time-string "%Y" (current-time))
+                              (format-time-string "%m" (current-time))
+                              ))
+         (new-file-path (format "%s/%s-%s" new-dirname
+                                (format-time-string "%Y%m%d%H%M%S" (current-time))
+                                old-file-name)))
+    (message "%s -> %s" old-file-name new-file-path)
+    (make-directory new-dirname 'parents)
+    (copy-file buf new-file-path)
+
+    (setq imported-file (format "[[%s][%s]]" new-file-path old-file-name))
+    (insert imported-file)
+    )
+  )
+
+(map! (:map embark-file-map
+       :desc "Import file" "i" #'my/embark-import-file
+       ))
 
 (defun my/import-file ()
   "Select a file into 'my/org-file-import-dir'"
@@ -1691,6 +1751,11 @@ keybindings
   (advice-add #'company--transform-candidates :around #'my-company--transform-candidates)
   (advice-add #'company-tabnine :around #'my-company-tabnine)
   )
+#+end_src
+** csv
+#+begin_src emacs-lisp
+(customize-set-variable 'csv-separators '("," "	" "|"))
+
 #+end_src
 * Languages
 ** Web
