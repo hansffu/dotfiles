@@ -1,0 +1,7 @@
+#! /bin/bash
+
+desktophash=(29 18 19 20 21 23 22 26 28 25)
+desktop=$($HOME/.config/skhd/cwm_get_absolute_desktop_id_from_monitor_id $1)
+desktopkey=${desktophash[$desktop]}
+osascript -e "tell application \"System Events\" to key code $desktopkey using control down"
+alias switchdesktop=switchdesktop

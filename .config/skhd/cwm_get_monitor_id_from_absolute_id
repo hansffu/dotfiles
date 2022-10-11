@@ -1,0 +1,10 @@
+#! /bin/bash
+
+DESKTOPS=`/usr/local/bin/yabai -m query --spaces --display | grep "index" | sed 's/[^0-9]*//g'`
+FIRST=($DESKTOPS[0])
+let DESKTOP_ID=$1-$FIRST+1
+if [ -z $1 ]; then
+    exit 1
+fi;
+#chunkc tiling::desktop --focus $DESKTOP_ID
+echo $DESKTOP_ID
