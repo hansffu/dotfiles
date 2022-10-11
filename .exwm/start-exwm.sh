@@ -8,6 +8,7 @@ xinit
 wmname LG3D
 export _JAVA_AWT_WM_NONREPARENTING=1
 # export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/1000/bus"
+export LSP_USE_PLISTS=true
 
 export VISUAL=emacsclient
 export EDITOR="$VISUAL"

@@ -203,3 +203,4 @@ if [[ "$INSIDE_EMACS" = "vterm" ]]; then
   PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
 
 fi
+export LSP_USE_PLISTS=true
