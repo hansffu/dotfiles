@@ -7,56 +7,20 @@ export ZSH=~/.oh-my-zsh
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 #ZSH_THEME="agnoster"
-ZSH_THEME="spaceship"
 DEFAULT_USER="hansffu"
 
 SPACESHIP_BATTERY_SHOW=always
 SPACESHIP_ELM_SHOW=true
+ZSH_THEME="spaceship"
 
-# Set list of themes to load
-# Setting this variable when ZSH_THEME=random
-# cause zsh load theme from this variable instead of
-# looking in ~/.oh-my-zsh/themes/
-# An empty array have no effect
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+if [ -f "/opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
+  source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+elif [ -f "/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
+  source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
 
-# Uncomment the following line to use hyphen-insensitive completion. Case
-# sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-export ZSH_CUSTOM=~/.dotfiles/zsh/oh-my-zsh-custom
+# export ZSH_CUSTOM=~/.dotfiles/zsh/oh-my-zsh-custom
 
 # Node version manager
 [ -d "/usr/share/nvm" ] && source /usr/share/nvm/init-nvm.sh
@@ -75,7 +39,6 @@ plugins=(
   docker
   gradle
   npm
-  tmux
   yarn
   web-search
   adb
@@ -84,8 +47,10 @@ plugins=(
   vscode
   mvn
   # vi-mode
-  zsh-autosuggestions
+  # zsh-autosuggestions
 )
+
+export LSP_USE_PLISTS=true
 
 source $ZSH/oh-my-zsh.sh
 
@@ -127,7 +92,7 @@ export TERM="xterm-256color"
 #PATH=$HOME/.cabal/bin:$HOME/.local/bin:/home/hansffu/Android/Sdk/platform-tools/:$HOME/.gem/ruby/2.6.0/bin:$PATH
 LOCAL_PATH="$HOME/.scripts/jetbrains:$HOME/.emacs.d/bin"
 
-PATH=$LOCAL_PATH:$HOME/.dotfiles/utils/bin:$HOME/.dotfiles/macos/scripts:$HOME/.yarn/bin:$PATH
+PATH=$LOCAL_PATH:$HOME/.yarn/bin:$PATH
 
 # terminalName=`basename "/"$(ps -f -p $(cat /proc/$(echo $$)/stat | cut -d \  -f 4) | tail -1 | sed 's/^.* //')`
 # if [ $terminalName = "drop-down-terminal@gs-extensions.zzrough.org" ]
@@ -203,4 +168,3 @@ if [[ "$INSIDE_EMACS" = "vterm" ]]; then
   PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
 
 fi
-export LSP_USE_PLISTS=true

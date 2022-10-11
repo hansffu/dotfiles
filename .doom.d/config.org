@@ -92,7 +92,7 @@ NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
 
        :checkers
        syntax              ; tasing you for every semicolon you forget
-       (spell +flyspell +aspell)             ; tasing you for misspelling mispelling
+       ;; (spell +flyspell +aspell)             ; tasing you for misspelling mispelling
        ;;grammar           ; tasing grammar mistake every you make
 
        :tools
