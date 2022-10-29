@@ -140,6 +140,7 @@ NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
        ;;fstar             ; (dependent) types and (monadic) effects and Z3
        ;;go                ; the hipster dialect
        graql
+       (graphql +lsp)
        (haskell +dante)  ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ;
@@ -1820,18 +1821,20 @@ keybindings
 #+end_src
 ***** typescript lsp workaround
 #+begin_src emacs-lisp
-;; (advice-add 'json-parse-string :around
-;;             (lambda (orig string &rest rest)
-;;               (apply orig (s-replace "\\u0000" "" string)
-;;                      rest)))
+(after! lsp
+  (advice-add 'json-parse-string :around
+              (lambda (orig string &rest rest)
+                (apply orig (s-replace "\\u0000" "" string)
+                       rest)))
 
-;; ;; minor changes: saves excursion and uses search-forward instead of re-search-forward
-;; (advice-add 'json-parse-buffer :around
-;;             (lambda (oldfn &rest args)
-;; 	      (save-excursion
-;;                 (while (search-forward "\\u0000" nil t)
-;;                   (replace-match "" nil t)))
-;; 	      (apply oldfn args)))
+  ;; minor changes: saves excursion and uses search-forward instead of re-search-forward
+  (advice-add 'json-parse-buffer :around
+              (lambda (oldfn &rest args)
+                (save-excursion
+                  (while (search-forward "\\u0000" nil t)
+                    (replace-match "" nil t)))
+                (apply oldfn args)))
+  )
 #+end_src
 
 **** COMMENT Inline html
@@ -1849,98 +1852,6 @@ keybindings
   )
 #+end_src
 
-**** COMMENT Inline graphql
-#+begin_src emacs-lisp
-(after! (:and polymode)
-
-  (define-innermode poly-typescript-graphql-innermode
-    :mode 'graphql-mode
-    :head-matcher "[^a-zA-Z]gql`"
-    :tail-matcher "`"
-    :head-mode 'host
-    :tail-mode 'host)
-
-  (define-hostmode poly-typescript-hostmode
-    :mode 'typescript-mode)
-  (define-polymode poly-typescript-mode
-    :hostmode 'poly-typescript-hostmode
-    :innermodes '(poly-typescript-graphql-innermode))
-
-  ;; (define-hostmode poly-typescript-tsx-hostmode
-  ;;   :mode 'typescript-tsx-mode)
-  ;; (define-polymode poly-typescript-tsx-mode
-  ;;   :hostmode 'poly-typescript-tsx-hostmode
-  ;;   :innermodes '(poly-typescript-graphql-innermode))
-  )
-#+end_src
-** GraphQL
-Set up graphql with lsp
-#+begin_src emacs-lisp :tangle packages.el
-(package! graphql-mode)
-(package! ob-graphql)
-#+end_src
-#+BEGIN_SRC emacs-lisp
-(use-package! graphql-mode
-  :hook (graphql-mode . lsp!)
-  :mode "\\.graphqls?\\'"
-  :config
-  ;; (after! lsp-mode
-
-  ;;   (defcustom lsp-vscode-graphql-debug nil "Enable debug logs" :type
-  ;;     '(repeat boolean))
-  ;;   (defcustom lsp-vscode-graphql-trace-server "off" "Enable tracing for language server" :type
-  ;;     '(repeat string))
-  ;;   (defcustom lsp-vscode-graphql-show-exec-codelens t "Show codelens to execute operations inline" :type 'boolean)
-  ;;   (defcustom lsp-vscode-graphql-use-schema-file-definitions nil "Use local SDL/IDL files for definition lookups. Default is to use generated_schema.graphql from GraphQL Config settings for definitions" :type 'boolean)
-  ;;   (defcustom lsp-graphql-config-load-root-dir nil "Base dir for graphql config loadConfig()" :type
-  ;;     '(repeat string))
-  ;;   (defcustom lsp-graphql-config-load-file-path nil "filePath for graphql config loadConfig()" :type
-  ;;     '(repeat string))
-  ;;   (defcustom lsp-graphql-config-load-legacy nil "legacy mode for graphql config v2 config" :type 'boolean)
-  ;;   (defcustom lsp-graphql-config-load-config-name nil "optional <configName>.config.js instead of default `graphql`" :type
-  ;;     '(repeat string))
-  ;;   (defcustom lsp-graphql-config-dot-env-path nil "optional .env load path, if not the default" :type
-  ;;     '(repeat string))
-  ;;   (lsp-register-custom-settings
-  ;;    '(("graphql-config.dotEnvPath" lsp-graphql-config-dot-env-path)
-  ;;      ("graphql-config.load.configName" lsp-graphql-config-load-config-name)
-  ;;      ("graphql-config.load.legacy" lsp-graphql-config-load-legacy t)
-  ;;      ("graphql-config.load.filePath" lsp-graphql-config-load-file-path)
-  ;;      ("graphql-config.load.rootDir" lsp-graphql-config-load-root-dir)
-  ;;      ("vscode-graphql.useSchemaFileDefinitions" lsp-vscode-graphql-use-schema-file-definitions t)
-  ;;      ("vscode-graphql.showExecCodelens" lsp-vscode-graphql-show-exec-codelens t)
-  ;;      ("vscode-graphql.trace.server" lsp-vscode-graphql-trace-server)
-  ;;      ("vscode-graphql.debug" lsp-vscode-graphql-debug)))
-  ;;   (lsp-register-client
-  ;;    (make-lsp-client :new-connection
-  ;;                     (lsp-tcp-connection (lambda (port) `("graphql-lsp" "server" "-m" "socket" "-p" ,(number-to-string port))))
-  ;;                     :major-modes '(graphql-mode)
-  ;;                     :initialization-options (lambda () `())
-  ;;                     :server-id 'graphql))
-  ;;   (add-to-list 'lsp-language-id-configuration '(graphql-mode . "graphql"))
-  ;;   (lsp-enable-which-key-integration 'graphql-mode)
-  ;;   )
-  )
-#+END_SRC
-Set up from org mode as well
-#+BEGIN_SRC emacs-lisp
-(use-package! ob-graphql)
-#+END_SRC
-
-*** COMMENT Syntax highlight in js/jsx/ts/tsx
-#+BEGIN_SRC emacs-lisp
-(after! (:and graphql-mode mmm-mode typescript-mode)
-  (mmm-add-classes
-   '((ts-graphql
-      :submode graphql-mode
-      :face mmm-declaration-submode-face
-      :front "[^a-zA-Z]gql`" ;; regex to find the opening tag
-      :back "`"))) ;; regex to find the closing tag
-  (mmm-add-mode-ext-class 'typescript-mode nil 'ts-graphql)
-  (setq mmm-global-mode 'maybe)
-  (setq mmm-submode-decoration-level 0)
-  )
-#+END_SRC
 ** Rescript (ReasonML)
 #+begin_src emacs-lisp :tangle packages.el
 (package! reason-mode)
