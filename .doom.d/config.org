@@ -827,7 +827,7 @@ Open IntelliJ in current project or if it already exists in project, open file i
 ** Org mode
 *** Setup
 #+begin_src emacs-lisp
-(setq org-directory "~/Dropbox/org/")
+(setq org-directory "~/Dropbox/org/notes/")
 
 #+end_src
 *** org-roam
@@ -1295,7 +1295,7 @@ Capture annoyances for retro
   :init
   (require 'cl)
 
-  (setq org-jira-working-dir "~/Dropbox/org/org-jira"
+  (setq org-jira-working-dir "~/Dropbox/org/notes/org-jira"
         org-jira-use-status-as-todo nil
         org-jira-deadline-duedate-sync-p nil
         org-jira-boards-default-limit 70
