@@ -1645,6 +1645,9 @@ Configure so both evil-window (windmove) and ace windows works for all frames
 #+begin_src emacs-lisp
 (use-package! aws-logs
   :commands aws-logs
+  :custom
+  (aws-logs-format "json")
+  (aws-logs-since "5m")
   :config
   (set-popup-rule! "^\\*AWS logs - "
     :side 'bottom
