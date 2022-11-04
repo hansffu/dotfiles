@@ -159,6 +159,7 @@ NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org              ; organize your plain life in plain text
+        +contacts
         +dragndrop       ; drag & drop files/images into org buffers
         +pretty
         +roam2
@@ -1408,6 +1409,10 @@ Capture annoyances for retro
   )
 #+end_src
 
+*** org-contacts
+#+begin_src emacs-lisp
+(setq org-contacts-files (list (format "%s/kontakter.org" org-roam-directory)))
+#+end_src
 *** Additional exporters
 **** Slack
 #+begin_src emacs-lisp :tangle packages.el
