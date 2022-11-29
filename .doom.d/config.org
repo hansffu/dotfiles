@@ -141,7 +141,7 @@ NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
        ;;go                ; the hipster dialect
        graql
        (graphql +lsp)
-       (haskell +dante)  ; a language that's lazier than I am
+       (haskell +lsp)  ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ;
        (java +lsp) ; the poster child for carpal tunnel syndrome
@@ -166,7 +166,8 @@ NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
         ;;+jupyter        ; ipython/jupyter support for babel
         ;; +pandoc          ; export-with-pandoc support
         +pomodoro        ; be fruitful with the tomato technique
-        +present)        ; using org-mode for presentations
+        ;; +present        ; using org-mode for presentations
+        )
        ;;perl              ; write code no one else can comprehend
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
@@ -1380,6 +1381,33 @@ Capture annoyances for retro
 #+begin_src emacs-lisp
 (setq org-clock-clocked-in-display nil)
 #+end_src
+*** Presentation
+#+begin_src emacs-lisp :tangle packages.el
+  (package! org-tree-slide :pin "d6529bc2df727d09014e0e56abf4f15a8e8fc20f")
+#+end_src
+#+begin_src emacs-lisp
+(map! :leader
+      (:prefix "t"
+               (:when (modulep! :lang org)
+                 :desc "org-tree-slide mode" "p" #'org-tree-slide-mode)))
+(use-package! org-tree-slide
+  :commands org-tree-slide-mode
+  :config
+  (org-tree-slide-presentation-profile)
+  (setq org-tree-slide-activate-message " "
+        org-tree-slide-deactivate-message " "
+        org-tree-slide-modeline-display nil
+        org-tree-slide-heading-emphasis t)
+
+  (when (modulep! :editor evil)
+    (map! :map org-tree-slide-mode-map
+          :n [S-right] #'org-tree-slide-move-next-tree
+          :n [S-left]  #'org-tree-slide-move-previous-tree)
+    (add-hook 'org-tree-slide-mode-hook #'evil-normalize-keymaps))
+
+  )
+#+end_src
+
 *** Additional exporters
 **** Slack
 #+begin_src emacs-lisp :tangle packages.el
