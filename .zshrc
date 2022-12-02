@@ -122,6 +122,9 @@ export NVM_DIR="$HOME/.nvm"
 # Howdy - disable debug log
 export OPENCV_LOG_LEVEL=ERROR
 
+
+[ -f "/home/hansffu/.ghcup/env" ] && source "/home/hansffu/.ghcup/env" # ghcup-env
+
 ###VTERM###
 if [[ "$INSIDE_EMACS" = "vterm" ]]; then
   vterm_printf(){

@@ -806,6 +806,26 @@ Open IntelliJ in current project or if it already exists in project, open file i
 (after! consult
   (setq consult-preview-key (kbd "M-SPC")))
 #+end_src
+*** Github copilot
+**** Package
+#+begin_src emacs-lisp :tangle packages.el
+(package! copilot
+  :recipe (:host github :repo "zerolfx/copilot.el" :files ("*.el" "dist")))
+#+end_src
+**** Config
+#+begin_src emacs-lisp
+;; accept completion from copilot and fallback to company
+(use-package! copilot
+  :hook (prog-mode . copilot-mode)
+  :bind (("C-TAB" . 'copilot-accept-completion-by-word)
+         ("C-<tab>" . 'copilot-accept-completion-by-word)
+         :map copilot-completion-map
+         ("<tab>" . 'copilot-accept-completion)
+         ("TAB" . 'copilot-accept-completion)
+         ("C-j" . 'copilot-next-completion)
+         ("C-k" . 'copilot-previous-completion)
+         ))
+#+end_src
 ** Alert
 #+begin_src emacs-lisp
 (setq alert-default-style (cond (IS-LINUX 'notifications)
@@ -1857,7 +1877,7 @@ keybindings
 #+end_src
 ***** typescript lsp workaround
 #+begin_src emacs-lisp
-(after! lsp
+(after! lsp-mode
   (advice-add 'json-parse-string :around
               (lambda (orig string &rest rest)
                 (apply orig (s-replace "\\u0000" "" string)
