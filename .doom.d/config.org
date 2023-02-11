@@ -98,7 +98,7 @@ NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
        :tools
        ;;ansible
        (debugger +lsp)          ; FIXME stepping through code, to help you add bugs
-       ;;direnv
+       direnv
        (docker +lsp)
        ;;editorconfig      ; let someone else argue about tabs vs spaces
        ;;ein               ; tame Jupyter notebooks with emacs
@@ -156,7 +156,7 @@ NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
        ;;lua               ; one-based indices? one-based indices
        markdown          ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
-       ;;nix               ; I hereby declare "nix geht mehr!"
+       (nix +tree-sitter +lsp)               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org              ; organize your plain life in plain text
         +contacts
@@ -339,6 +339,15 @@ To make sure frame has correct size on yabai
 #+BEGIN_SRC emacs-lisp
 (setq frame-resize-pixelwise t)
 #+END_SRC
+** Temp bumps while doom is slow
+#+begin_src emacs-lisp :tangle packages.el
+(unpin! (:tools lsp) lsp-haskell)
+(package! tree-sitter-langs
+  :pin "bf125472c185f098136b26b30d5e74332b4ee46b")
+#+end_src
+#+begin_src emacs-lisp
+(add-hook 'haskell-mode-local-vars-hook #'tree-sitter! 'append)
+#+end_src
 * Desktop
 ** packages
 #+begin_src emacs-lisp :tangle packages.el
@@ -816,11 +825,12 @@ Open IntelliJ in current project or if it already exists in project, open file i
 #+begin_src emacs-lisp
 ;; accept completion from copilot and fallback to company
 (use-package! copilot
-  :hook (prog-mode . copilot-mode)
+  ;; :hook (prog-mode . copilot-mode)
   :bind (("C-TAB" . 'copilot-accept-completion-by-word)
          ("C-<tab>" . 'copilot-accept-completion-by-word)
          :map copilot-completion-map
          ("<tab>" . 'copilot-accept-completion)
+         ("M-RET" . 'copilot-accept-completion)
          ("TAB" . 'copilot-accept-completion)
          ("C-j" . 'copilot-next-completion)
          ("C-k" . 'copilot-previous-completion)
@@ -1815,6 +1825,10 @@ keybindings
 
 #+end_src
 * Languages
+** Haskell
+#+begin_src emacs-lisp
+(setq lsp-haskell-formatting-provider "fourmolu")
+#+end_src
 ** Web
 *** nvm
 #+begin_src emacs-lisp :tangle packages.el
@@ -1938,6 +1952,14 @@ keybindings
   :hook c++-mode)
 #+end_src
 
+** Arduino
+#+begin_src emacs-lisp :tangle packages.el
+(package! arduino-mode)
+#+end_src
+#+begin_src emacs-lisp
+(use-package! arduino-mode
+  :mode ("\\.ino//'" . arduino-mode))
+#+end_src
 * Fun
 ** Speed types
 #+begin_src emacs-lisp :tangle packages.el

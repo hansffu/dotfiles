@@ -46,6 +46,9 @@ plugins=(
   macos
   vscode
   mvn
+  aws
+  nix-shell
+  nix-zsh-completions
   # vi-mode
   # zsh-autosuggestions
 )
@@ -92,7 +95,7 @@ export TERM="xterm-256color"
 #PATH=$HOME/.cabal/bin:$HOME/.local/bin:/home/hansffu/Android/Sdk/platform-tools/:$HOME/.gem/ruby/2.6.0/bin:$PATH
 LOCAL_PATH="$HOME/.scripts/jetbrains:$HOME/.emacs.d/bin"
 
-PATH=$LOCAL_PATH:$HOME/.yarn/bin:$PATH
+PATH=$LOCAL_PATH:$HOME/.yarn/bin:$HOME/.nix-profile/bin:$PATH
 
 # terminalName=`basename "/"$(ps -f -p $(cat /proc/$(echo $$)/stat | cut -d \  -f 4) | tail -1 | sed 's/^.* //')`
 # if [ $terminalName = "drop-down-terminal@gs-extensions.zzrough.org" ]
@@ -124,6 +127,10 @@ export OPENCV_LOG_LEVEL=ERROR
 
 
 [ -f "/home/hansffu/.ghcup/env" ] && source "/home/hansffu/.ghcup/env" # ghcup-env
+
+export IHP_EDITOR="$HOME/bin/emacs-line"
+eval "$(direnv hook zsh)"
+
 
 ###VTERM###
 if [[ "$INSIDE_EMACS" = "vterm" ]]; then
